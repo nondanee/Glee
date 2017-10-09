@@ -16,6 +16,7 @@ Built by Electron, Vanilla JS, Plain CSS
 - 大概能用 (感觉还差很多呢, 先这样吧)
 - 下载歌曲写入ID3 Tag (灵感来自[codezjx/netease-cloud-music-dl](https://github.com/codezjx/netease-cloud-music-dl))
 
-![1](./screenshot/sshot-1.png)
-![2](./screenshot/sshot-2.png)
-![3](./screenshot/sshot-3.png)
+## Preview
+![1](./screenshot/1.png)
+![2](./screenshot/2.png)
+![3](./screenshot/3.png)
