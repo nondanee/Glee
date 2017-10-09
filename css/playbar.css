@@ -1,0 +1,395 @@
+@font-face {
+  font-family: 'groove style';
+  src: url('./groove.ttf') format('truetype');
+}
+#playbar{
+	display: block;
+	position: fixed;
+	box-sizing: border-box;
+	bottom: 0;
+	height: 64px;
+	width: 100%;
+	background-color: rgba(32,32,32,0.97);
+	z-index: 10;
+	/*drag cause button unfocus, dont know why*/
+	-webkit-app-region: no-drag;
+	-webkit-transition: all 0.36s cubic-bezier(0.37, -0.11, 0.14, 0.85);
+	/*backdrop-filter: blur(18px);*/
+}
+#playbar .cover{
+	display: block;
+	margin: 8px;
+	width: 48px;height: 48px;
+	background-color: rgba(255,255,255,0.1);
+	background-position: center;
+	background-size: cover;
+	cursor: pointer;
+	left: 0px;bottom: 0px;
+	-webkit-app-region: no-drag;
+}
+
+#playbar>.song,#playbar>.related{
+	color: #ffffff;
+	left: 64px;
+	cursor: default;
+}
+#playbar>.song{
+	bottom: 34px;
+	font-size: 15px;
+}
+#playbar>.song,#playbar>.related>.artist{
+	max-width: 210px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+#playbar>.related{
+	bottom: 12px;
+	font-size: 14px;
+	opacity: 0.7;
+}
+#playbar>.related .album{
+	opacity: 0;
+	visibility: hidden;
+	-webkit-transition: opacity 0.36s cubic-bezier(0.37, -0.11, 0.14, 0.85);
+}
+#playbar>.related .album::before{
+	content: "•";
+	margin: 6px;
+}
+
+#playbar #timeline{
+	bottom: 0px;
+	left: 300px;
+	height: 64px;
+	width: calc(100% - 300px - 270px);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+#timeline .time{
+	font-size: 11px;
+	color: #ffffff;
+	line-height: 66px;/*for vertical center*/
+	height: 64px;
+	cursor: default;
+}
+#progressbar{
+	-webkit-app-region: no-drag;
+	margin: 15px 12px 17px 12px;/*bug? 15+17*/
+	height: 32px;
+	flex-basis: auto;
+	flex-grow: 1;
+	cursor: pointer;
+	overflow: hidden;
+	white-space: nowrap;
+}
+#progressbar .filler{
+	position: relative;
+	display: inline-block;
+	margin: 17px 0;
+	height: 2px;	
+}
+#progressbar .filler.played{
+	background-color: rgba(255,255,255,1);
+	-webkit-transition:width 0.08s linear;
+}
+#progressbar .filler.unplayed{
+	width: 100%;
+	background-color: rgba(255,255,255,0.4);
+}
+#progressbar .cursor{
+	position: relative;
+	display: inline-block;
+	margin: 9px 0px 9px 0px;
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	box-sizing: border-box;
+	border: 2px solid #ffffff;
+	-webkit-transition:all 0.04s linear;
+}
+#progressbar .cursor:hover{
+	border: 2px solid rgba(255,255,255,0.6);
+}
+#progressbar .cursor:active{
+	background-color: #ffffff;
+}
+#controller{
+	height: 64px;
+	width: 240px;
+	bottom: 0px;
+	/*right: 12px;*/
+	left: calc(100% - 252px);
+	display: flex;
+}
+
+#playbar #extra{
+	height: 64px;
+	width: 90px;
+	right: 10px;
+	bottom: 24px;
+	opacity: 0;
+	visibility: hidden;
+	display: flex;
+}
+#controller button,#extra button{
+	font-family: "groove style";
+	width: 36px;height: 36px;
+	margin: auto;
+	border-radius: 50%;
+	color: rgba(255,255,255,1);
+	font-size: 20px;
+	cursor: pointer;
+	-webkit-transition:all 0.08s linear;
+}
+#controller button:hover,#extra button:hover{
+	color: rgba(255,255,255,0.4);
+}
+#controller button:active,#extra button:active{
+	color: rgba(255,255,255,1);
+	background-color: rgba(0,0,0,0.2);
+}
+button.previous::after{
+	content: "\e892";
+}
+button.play::after{
+	content: "\e768";
+}
+button.pause::after{
+	content: "\e769";
+}
+button.next::after{
+	content: "\e893";
+}
+button.random::after{
+	content: "\e8b1";
+}
+button.cycle::after{
+	content: "\e8ee";
+}
+button.cycle.single::after{
+	content: "\e8ed";
+}
+button.download::after{
+	content: "\e896";
+}
+button.list::after{
+	content: "\e93f";
+}
+button.random.on,button.cycle.all,button.cycle.single{
+	background-color: rgba(255,255,255,0.2);
+}
+
+#playbar .cover,#playbar>.song,#playbar>.related,#playbar #timeline,#playbar #controller,#playbar #extra,#playbar .bgblur,#playbar .drag{
+	position: absolute;
+	-webkit-transition: all 0.36s cubic-bezier(0.37, -0.11, 0.14, 0.85);
+}
+
+#playbar .bgblur{
+	width: 100%;
+	height: 100%;
+    padding: 24px;
+    margin: -24px;
+	overflow: hidden;
+	-webkit-filter: blur(20px);
+	background-position: top;
+	background-size: cover;
+	z-index: -1;
+}
+#playbar.extend .drag{
+	top: 0;left: 0;
+	width: 100%;
+	height: 40px;
+	-webkit-app-region: drag;
+}
+#playbar .fold{
+	margin: 6px auto;
+	font-family: "groove style";
+	color: #ffffff;
+	cursor: pointer;
+	width: 28px;
+	height: 28px;
+}
+#playbar .fold::after{
+	content: "\e70d";
+}
+#playbar .fold:hover{
+	color: rgba(255,255,255,0.6);
+}
+#playbar .fold:active{
+	color: rgba(255,255,255,0.3);
+}
+#playbar .bgblur,#playbar .drag{
+	display: block;
+	opacity: 0;
+	visibility: hidden;
+}
+#playbar.extend{
+	width: 100%;
+	height: 100%;
+}
+
+#playbar.extend .cover{
+	bottom: 128px;
+	left: 24px;
+	width: 110px;
+	height: 110px;
+	cursor: default;
+	margin: 0;
+}
+#playbar.extend .bgblur,#playbar.extend .drag,#playbar.extend>.related .album,#playbar.extend #extra{
+	opacity: 1;
+	visibility: visible;
+}
+
+#playbar.extend>.song{
+	bottom: 174px;
+	font-size: 34px;
+}
+#playbar.extend>.related{
+	bottom: 144px;
+	font-size: 18px;
+	opacity: 1;
+}
+#playbar.extend>.related>.artist{
+	max-width: initial;
+}
+#playbar.extend>.song,#playbar.extend>.related{
+	font-family: "Microsoft Yahei Light";
+	left: 150px;
+	max-width: calc(100% - 150px - 24px);
+}
+
+
+#playbar.extend #timeline{
+	bottom: 72px;
+	left: 24px;
+	width: calc(100% - 48px);
+}
+#playbar.extend #controller{
+	bottom: 24px;
+	left: 10px;
+}
+#playbar.extend #controller button:active,#playbar.extend #extra button:active{
+	background-color: rgba(255,255,255,0.12);
+
+}
+#playbar .bgblur::after{
+	content: " ";
+	width:	100%;
+	height: 100%;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background-color: rgba(0,0,0,0.6);
+	opacity: 0;
+	visibility: hidden;
+}
+#playbar.list .bgblur::after{
+	opacity: 1;
+	visibility: visible;
+}
+#playbar.list .cover,#playbar.list>.song,#playbar.list>.related,#playbar.list #timeline,#playbar.list #controller,#playbar.list #extra{
+	transform: translateY(-540px);
+}
+
+#playlist{
+	opacity: 0;
+	visibility: hidden;
+	-webkit-transition: 0.12s transform cubic-bezier(0.37, -0.11, 0.14, 0.85) 0.3s;
+}
+#playbar.list #playlist{
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(0px);
+}
+#playlist{
+	position: absolute;
+	bottom: 0px;
+	transform: translateY(540px);/*button unfoucs fixed, dont know why*/
+	height: 540px;
+	padding:0 24px;
+	width: 100%;
+	box-sizing: border-box;
+	overflow-y: scroll;
+}
+#playlist .entry{
+	-webkit-app-region: no-drag;
+	height: 48px;
+	line-height: 48px;
+	color: #ffffff;
+	font-size: 13px;
+	display: block;
+	padding: 0 28px;
+	border-bottom: 1px solid rgba(255,255,255,0.05);
+	cursor: default;
+	font-family: "Microsoft Yahei Light";
+	display: flex;
+}
+#playlist .entry:hover{
+	background-color: rgba(255,255,255,0.05);
+}
+
+.entry .song,
+.entry .related .artist,
+.entry .related .album,
+.entry .duration
+{
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.entry .song{
+	margin-right: 16px;
+	max-width: 260px;
+}
+.entry .related{
+	width: 580px;
+	display: flex;
+}
+.entry .related .artist,.entry .related .album{
+	width: 276px;
+	padding-right: 24px;
+	box-sizing: border-box;
+}
+.entry .duration{
+	width: 28px;
+	text-align: center;
+}
+.entry button{
+	font-family: "groove style";
+	font-size: 16px;
+	width: 48px;
+	height: 48px;
+	color: #ffffff;
+	opacity: 0;
+	visibility: hidden;
+	cursor: pointer;
+}
+.entry button.play::after{
+	content: "\e768";
+}
+.entry button.remove::after{
+	content: "\e711";
+}
+.entry button.remove{
+	margin-right: auto;
+}
+.entry:hover button{
+	opacity: 1;
+	visibility: visible;
+}
+.entry button:hover{
+	background-color: rgba(255,255,255,0.08);
+}
+.entry.playing .song::before{
+	content: "\e93d";
+	font-family: "groove style";
+	color: #ffffff;
+	margin-right: 6px;
+	vertical-align: sub;
+	font-size: 15px;
+}

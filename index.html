@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Glee</title>
+	<link rel="stylesheet" type="text/css" href="css/main.css" />
+	<!-- <link rel="stylesheet" type="text/css" href="css/sidebar.css" /> -->
+	<link rel="stylesheet" type="text/css" href="css/playbar.css" />
+</head>
+<style type="text/css"></style>
+<body>
+<div id="titlebar">
+	<div id="title">
+		<li class="focus">Artist</li>
+		<li>Album</li>
+		<li>Playlist</li>
+		<li>Top</li>
+	</div>
+	<div id="subtitle">
+		<!-- <button id="menu">=</button>
+		<button id="favor">の</button>
+		<button id="search">?</button> -->
+	</div>
+	<button id="minimize"></button>
+	<button id="close"></button>
+</div>
+<!-- <sidebar>
+	<nav>
+		<div class="cell">Explore</div>
+		<div class="cell">Release</div>
+		<div class="cell">Toplist</div>
+		<div class="cell active">Artists</div>
+	</nav>
+</sidebar> -->
+<container>
+</container>
+<div id="playbar">
+	<div class="bgblur"></div>
+	<div class="cover"></div>
+	<a class="song">NaN</a>
+	<span class="related"><a class="artist">NaN</a><a class="album">NaN</a></span>
+	<div id="timeline">
+		<div class="time played">0:00</div>
+		<div id="progressbar">
+			<div class="filler played"></div><div class="cursor"></div><div class="filler unplayed"></div>
+		</div>
+		<div class="time total">0:00</div>
+	</div>
+	<div id="controller">
+		<button class="previous"></button>
+		<button class="play"></button>
+		<button class="next"></button>
+		<button class="random"></button>
+		<button class="cycle"></button>
+	</div>
+	<div id="extra">
+		<button class="list"></button>
+		<button class="download"></button>
+	</div>
+	<div id="playlist"></div>
+	<div class="drag">
+		<button class="fold"></button>
+	</div>
+</div>
+<div id="mask">
+	<div id="dialog">
+		<div id="message"></div>
+		<button class="option prefer"></button><button class="option alter"></button>
+	</div>
+</div>
+</body>
+<script src="js/Vibrant.js"></script>
+<script src="js/data.js"></script>
+<script src="js/play.js"></script>
+<script src="js/index.js"></script>
+</html>

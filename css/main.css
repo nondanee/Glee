@@ -1,0 +1,270 @@
+html,body{
+	width: 100%;
+	height: 100%;
+}
+body{
+	margin: 0;
+	display: flex;
+	background-position: 0 0;
+	background-repeat: no-repeat;
+	font-family: "Microsoft Yahei";
+	-webkit-user-select: none;
+}
+::-webkit-scrollbar{  
+	width: 0px;  
+	height: 0px;
+}
+button{
+	display: block;
+	-webkit-app-region: no-drag;
+	border: 0;
+	padding: 0;
+	outline: 0;
+	background-color: rgba(0,0,0,0);
+}
+#titlebar{
+	display: block;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	height: 80px;
+	width: 100%;
+	padding: 12px 24px 0 24px;
+	box-sizing: border-box;
+	background-color: #ffffff;
+	z-index: 5;
+	-webkit-app-region: drag;
+}
+#titlebar #title{
+	margin-bottom: 3px;
+}
+#titlebar #subtitle{
+	bottom: 13px;
+	font-size: 14px;
+	color: #888888;
+	white-space: nowrap;
+	overflow-y: scroll;
+}
+#title li{
+	list-style-type:none;
+	display: inline-block;
+	font-size: 22px;
+	margin-right: 4px;
+	cursor: pointer;
+	-webkit-app-region: no-drag;
+	color: #e3e3e3;
+}
+#title li.focus{
+	color: #444444;
+	font-weight: bold;
+}
+#subtitle li{
+	list-style-type:none;
+	display: inline-block;
+	cursor: pointer;
+	-webkit-app-region: no-drag;
+	color: #dcdcdc;
+}
+#subtitle li:hover{
+	color: #a3a3a3;
+}
+#subtitle li.focus{
+	color: #888888;
+}
+#subtitle span{
+	margin: 0 4px;
+	color: #dcdcdc;
+}
+
+
+#titlebar button{
+	position: absolute;
+	width: 20px;height: 20px; 
+	top: 0px;bottom: 0px;
+	margin: auto;
+	color: #5d646b;
+	cursor: pointer;
+	opacity: 0.8;
+	text-align: center;
+}
+#titlebar button:hover{
+	opacity: 1
+}
+#close{
+	right: 20px;
+}
+#minimize{
+	right: 56px;
+}
+#close::before,#close::after,#minimize::after{
+	content: "";
+	position: absolute;
+	top: 0px;bottom: 0px;left: 0px;right: 0px;margin: auto;
+	height: 1px;
+	background-color: #000000;
+}
+#close::before{
+	width: 10px;
+	-webkit-transform:rotate(45deg);
+}
+#close::after{
+	width: 10px;
+	-webkit-transform:rotate(-45deg);
+}
+#minimize::after{
+	width: 5px;
+}
+
+
+
+
+
+
+
+
+
+container{
+	height: 100%;
+	/*width: 940px;*/
+	padding:70px 24px 64px 24px;
+	margin-right: -24px;
+	box-sizing: border-box;
+	overflow: auto;
+	display: inline-block;
+	/*display: flex;*/
+	/*flex-wrap: wrap;*/
+	/*align-content: flex-start;*/
+	/*justify-content:  space-between;*/
+	background-color: #ffffff;
+	/*display: flex;*/
+	/*flex-wrap: wrap;*/
+	/*justify-content: space-between;*/
+	/*align-content: flex-start;*/
+}
+container .recipe,
+container .album,
+container .chart
+{
+	display: inline-block;
+	margin: 16px 0;
+	margin-right: 24px;
+	width: 240px;
+	/*height: 320px;*/
+	/*flex-grow: 1;*/
+	/*vertical-align: top;*/
+
+	-webkit-animation: slide-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+	-webkit-animation-iteration-count: 1;
+	
+}
+.cover{
+	display: block;
+	position: relative;
+	/*background-size: cover;*/
+	/*background-position: center;*/
+	text-align:center;
+	cursor: pointer;
+	overflow: hidden;
+	height: 240px;
+}
+.cover img{
+	width: 100%;
+}
+.cover,.name,.description{
+	width: 240px;
+}
+.name{
+	display: block;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	text-align:center;
+	color: #171819;
+	margin-top: 32px;
+	font-size: 13px;
+}
+.description{
+	display: block;
+	text-align:center;
+	color: #b0b5b8;
+	margin-top: 6px;
+	font-size: 12px;
+}
+
+
+@-webkit-keyframes slide-top {
+	0% {
+		-webkit-transform: translateY(40px);
+		opacity: 0;
+	}
+	100% {
+		-webkit-transform: translateY(0px);
+		opacity: 1;
+	}
+}
+
+#mask{
+	position: absolute;
+	top: 0;left: 0;
+	width: 100%;height: 100%;
+	background-color: rgba(0,0,0,0.2);
+	z-index: 20;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0;
+	visibility: hidden;
+}
+#mask.active{
+	opacity: 1;
+	visibility: visible;
+}
+#mask.active #dialog{
+	transform: scale(1);
+}
+#mask,#dialog{
+	-webkit-transition:all 0.2s ease-out;
+}
+
+#dialog{
+	width: 440px;
+	background-color: #ffffff;
+	font-family: "Microsoft Yahei";
+	box-sizing: border-box;
+	padding: 0px 24px 24px 24px;
+	border-radius: 2px;
+	transform: scale(0.8);
+}
+#dialog #message{
+	color: #333333;
+	width: 100%;
+	text-align: center;
+	font-size: 24px;
+	font-weight: bold;
+	padding: 36px 0;
+}
+
+#dialog button.option{
+	width: 190px;
+	height: 40px;
+	font-size: 16px;
+	font-family: "Microsoft Yahei";
+	display: inline-block;
+	border-radius: 2px;
+	cursor: pointer;
+}
+.option.prefer{
+	margin-right: 12px;
+	color: #ffffff;
+	background-color: #3c3c3c;
+}
+.option.prefer:hover{
+	background-color: #303030;
+}
+.option.alter{
+	color: #333333;
+	background-color: #eeeeee;
+}
+.option.alter:hover{
+	background-color: #e1e1e1;
+}

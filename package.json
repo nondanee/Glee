@@ -1,0 +1,17 @@
+{
+  "name": "Glee",
+  "version": "0.1.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron-packager": "^9.0.0"
+  },
+  "dependencies": {
+    "big-integer": "^1.6.25",
+    "crypto": "^1.0.1",
+    "electron-json-storage": "^3.1.1",
+    "node-id3": "0.0.10"
+  }
+}
