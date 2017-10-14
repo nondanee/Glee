@@ -43,11 +43,45 @@ function loadRecommandRecipe(recipeType="全部",sortBy="hot"){
 			loading = 0
 		}
 	}
-	let offset = container.getElementsByClassName("recipe").length
+	let offset = document.querySelectorAll("container>.recipe").length
 
 	xhr.open('GET',"http://music.163.com/discover/playlist/?order="+sortBy+"&cat="+recipeType+"&limit=35&offset="+offset);
 	xhr.send();
 
+}
+
+function loadUserRecipe(userId){
+
+	var data = {
+		offset: 0,
+		uid: userId,
+		limit: 1000,
+		csrf_token: ''
+	}
+
+	webApiRequest("POST","/weapi/user/playlist",data,dataArrive)
+
+	function dataArrive(responseText) {
+		try{
+			var allRecipe = JSON.parse(responseText)
+			var allRecipe = allRecipe["playlist"]
+			for (var i=0;i<allRecipe.length;i++)
+			{
+				var recipeId = allRecipe[i]["id"]
+				if (!(recipeId in recipeInfo)){
+					var recipeName = allRecipe[i]["name"]
+					var coverUrl = allRecipe[i]["coverImgUrl"]
+					var playCount = allRecipe[i]["playCount"]
+					var oneRecipe = {"recipeName":recipeName,"playCount":playCount,"coverUrl":coverUrl}
+					recipeInfo[recipeId] = oneRecipe
+				}
+				showRecipe(recipeId)
+			}
+		}
+		catch(e){
+			console.log(e)
+		}
+	}
 }
 
 
@@ -88,7 +122,7 @@ function loadArtistAlbum(artistId){
 			loading = 0
 		}
 	}
-	let offset = container.getElementsByClassName("album").length
+	let offset = document.querySelectorAll("container>.album").length
 
 	xhr.open('GET',"http://music.163.com/artist/album?id="+artistId+"&limit=12&offset="+offset);
 	xhr.send();
@@ -164,7 +198,8 @@ function loadChartSongs(chartId,callBack,argument){
 							var duration = trackInfo[i]["duration"]
 							var status = trackInfo[i]["status"]
 							var fee = trackInfo[i]["fee"]
-							var oneSong = {"songName":songName,"albumId":albumId,"artistId":artistId,"duration":duration,"status":status,"fee":fee}
+							var expiration = new Date().getTime()
+							var oneSong = {"songName":songName,"albumId":albumId,"artistId":artistId,"duration":duration,"status":status,"fee":fee,"expiration":expiration}
 							songInfo[songId] = oneSong
 						}
 						if (!(artistId in artistInfo)){
@@ -220,7 +255,8 @@ function loadAlbumSongs(albumId,callBack,argument){
 							var duration = trackInfo[i]["duration"]
 							var status = trackInfo[i]["status"]
 							var fee = trackInfo[i]["fee"]
-							var oneSong = {"songName":songName,"albumId":albumId,"artistId":artistId,"duration":duration,"status":status,"fee":fee}
+							var expiration = new Date().getTime()
+							var oneSong = {"songName":songName,"albumId":albumId,"artistId":artistId,"duration":duration,"status":status,"fee":fee,"expiration":expiration}
 							songInfo[songId] = oneSong
 						}
 						if (!(artistId in artistInfo)){
@@ -252,7 +288,7 @@ function loadNewAlbums(albumType="ALL"){
 	if (loading == 1){console.log("loading");return;}
 	else{loading = 1}
 
-	let offset = container.getElementsByClassName("album").length
+	let offset = document.querySelectorAll("container>.album").length
 	if(offset==500){
 		container.onscroll = null
 		loading = 0
@@ -326,13 +362,14 @@ function loadRecipeSongs(recipeId,callBack,argument){
 		"csrf_token": ""
 	};
 
-	webApiRequestAjax("POST","/weapi/v3/playlist/detail?csrf_token=",data,dataArrive)
-	// webApiRequestHttp("POST","/weapi/v3/playlist/detail?csrf_token=",data,dataArrive)
+	// webApiRequestAjax("POST","/weapi/v3/playlist/detail?csrf_token=",data,dataArrive)
+	webApiRequest("POST","/weapi/v3/playlist/detail?csrf_token=",data,dataArrive)
 
 	function dataArrive(responseText) {
 		var recipeData = JSON.parse(responseText)
 		recipeInfo[recipeId]["description"] = recipeData["playlist"]["description"]
-		recipeInfo[recipeId]["description"] = recipeData["playlist"]["playCount"]
+		recipeInfo[recipeId]["playCount"] = recipeData["playlist"]["playCount"]
+		recipeInfo[recipeId]["creator"] = recipeData["playlist"]["creator"]["nickname"]
 		var musicTrack = []
 		var trackInfo = recipeData["playlist"]["tracks"]
 		var privileges = recipeData["privileges"]
@@ -362,7 +399,8 @@ function loadRecipeSongs(recipeId,callBack,argument){
 				var duration = trackInfo[x]["dt"]
 				var status = privileges[x]["st"]
 				var fee = privileges[x]["fee"]
-				var oneSong = {"songName":songName,"artistId":artistId,"albumId":albumId,"duration":duration,"status":status,"fee":fee}
+				var expiration = new Date().getTime()
+				var oneSong = {"songName":songName,"artistId":artistId,"albumId":albumId,"duration":duration,"status":status,"fee":fee,"expiration":expiration}
 				songInfo[songId] = oneSong
 			}
 		}
@@ -376,11 +414,13 @@ function loadRecipeSongs(recipeId,callBack,argument){
 
 
 function checkSongUrlStatus(songId){
+	var now = new Date().getTime()
 	if (songInfo[songId]["status"] < 0)/*offshelf*/
 		return -2
-	if(songInfo[songId]["fee"] == 1)/*toll*/
+	// fee = 8 is ok
+	else if(songInfo[songId]["fee"] == 1||songInfo[songId]["fee"] == 16)
 		return -1
-	else if(songInfo[songId]["songUrl"] == null)
+	else if(songInfo[songId]["songUrl"] == null||now>songInfo[songId]["expiration"])
 		return 0
 	else
 		return 1
@@ -409,19 +449,16 @@ function getSongUrl(songId,callBack,argument1,argument2,argument3){
 			var songId = songData["data"][x]["id"]
 			var fee = songData["data"][x]["fee"]
 			var songUrl = songData["data"][x]["url"]
-			if (fee==1){
-				songInfo[songId]["fee"] = fee
-				showDialog(20,"收费的听不了额","好吧","哦",noOperation,null,noOperation,null)
-				return
-			}
+			var songUrl = songData["data"][x]["url"]
+			var expire = songData["data"][x]["expi"]
+			console.log(fee)
+			songInfo[songId]["fee"] = fee
 			if (songUrl==null){
-				songInfo[songId]["status"] = -1
-				showDialog(20,"貌似是下架了额","好吧","哦",noOperation,null,noOperation,null)
+				showDialog(20,"听不了额","好吧","哦",noOperation,null,noOperation,null)
 				return
 			}
-			else if (songInfo[songId]["songUrl"]==null){
-				songInfo[songId]["songUrl"] = songUrl
-			}
+			songInfo[songId]["songUrl"] = songUrl
+			songInfo[songId]["expiration"] = new Date().getTime() + expire*1000
 		}
 		callBack(argument1,argument2,argument3)
 	}
@@ -652,14 +689,15 @@ function songDownload(songId){
 	var songUrl = songInfo[songId]["songUrl"]
 	var songFile = artistName + " - " + songName + ".mp3"
 
-	songFile = songFile.replace(/[\\|\/|:|*|?|"|<|>|\|]/," ") //illegal filename
-	// songFile = songFile.replace(":","：")
-	// songFile = songFile.replace("*","＊")
-	// songFile = songFile.replace("?","？")
-	// songFile = songFile.replace("\"","”")
-	// songFile = songFile.replace("<","《")
-	// songFile = songFile.replace(">","》")
-	// songFile = songFile.replace(">","》")
+	// songFile = songFile.replace(/[\\|\/|:|*|?|"|<|>|\|]/," ")
+	songFile = songFile.replace(":","：")
+	songFile = songFile.replace("*","＊")
+	songFile = songFile.replace("?","？")
+	songFile = songFile.replace("\"","＂")
+	songFile = songFile.replace("<","＜")
+	songFile = songFile.replace(">","＞")
+	songFile = songFile.replace("/","／")
+	songFile = songFile.replace("\\","＼")
 
 	var coverFile = albumId + ".jpg"
 	var songPath = path.join(__dirname+"/download",songFile)
@@ -670,8 +708,8 @@ function songDownload(songId){
 	// console.log(songPath)
 	// console.log(coverPath)
 
-    var songStream = fs.createWriteStream(songPath)
-    request(songUrl).pipe(songStream).on('close', downloadCover)
+	var songStream = fs.createWriteStream(songPath)
+	request(songUrl).pipe(songStream).on('close', downloadCover)
 
 	function downloadCover(){
 		var coverStream = fs.createWriteStream(coverPath)
@@ -679,24 +717,25 @@ function songDownload(songId){
 	}
 
 	function writeTag(){
-    	var tags = {
+		var tags = {
 			title: songName,
 			artist: artistName,
 			album: albumName,
 			// composer: "",
 			image: coverPath
 		}
-		
-		nodeID3.removeTags(songPath)
-		var success = nodeID3.write(tags, songPath);
-		if(success){
-			let notification = new Notification(artistName + " " + songName, {
-				icon: coverUrl, 
-				body: "下载完成, 点击查看"
-			});
-			notification.onclick = function(){
-				shell.showItemInFolder(songPath)
+		nodeID3.write(tags,songPath, function(err){
+			if(!err){
+				let notification = new Notification(artistName + " " + songName, {
+					icon: coverUrl, 
+					body: "下载完成, 点击查看"
+				});
+				notification.onclick = function(){
+					shell.showItemInFolder(songPath)
+				}
 			}
-		}
-    }
+		})
+		// nodeID3.removeTags(songPath)
+		// var success = nodeID3.write(tags, songPath)
+	}
 }

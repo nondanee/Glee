@@ -1,7 +1,3 @@
-@font-face {
-  font-family: 'groove style';
-  src: url('./groove.ttf') format('truetype');
-}
 #playbar{
 	display: block;
 	position: fixed;
@@ -190,8 +186,8 @@ button.random.on,button.cycle.all,button.cycle.single{
 #playbar .bgblur{
 	width: 100%;
 	height: 100%;
-    padding: 24px;
-    margin: -24px;
+    padding: 50px;
+    margin: -50px;
 	overflow: hidden;
 	-webkit-filter: blur(20px);
 	background-position: top;
@@ -315,7 +311,7 @@ button.random.on,button.cycle.all,button.cycle.single{
 	box-sizing: border-box;
 	overflow-y: scroll;
 }
-#playlist .entry{
+#playlist>.entry{
 	-webkit-app-region: no-drag;
 	height: 48px;
 	line-height: 48px;
@@ -332,34 +328,34 @@ button.random.on,button.cycle.all,button.cycle.single{
 	background-color: rgba(255,255,255,0.05);
 }
 
-.entry .song,
-.entry .related .artist,
-.entry .related .album,
-.entry .duration
+#playlist>.entry .song,
+#playlist>.entry .related .artist,
+#playlist>.entry .related .album,
+#playlist>.entry .duration
 {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
 }
 
-.entry .song{
+#playlist .entry .song{
 	margin-right: 16px;
 	max-width: 260px;
 }
-.entry .related{
+#playlist .entry .related{
 	width: 580px;
 	display: flex;
 }
-.entry .related .artist,.entry .related .album{
+#playlist .entry .related .artist,.entry .related .album{
 	width: 276px;
 	padding-right: 24px;
 	box-sizing: border-box;
 }
-.entry .duration{
+#playlist .entry .duration{
 	width: 28px;
 	text-align: center;
 }
-.entry button{
+#playlist .entry button{
 	font-family: "groove style";
 	font-size: 16px;
 	width: 48px;
@@ -369,23 +365,23 @@ button.random.on,button.cycle.all,button.cycle.single{
 	visibility: hidden;
 	cursor: pointer;
 }
-.entry button.play::after{
+#playlist .entry button.play::after{
 	content: "\e768";
 }
-.entry button.remove::after{
+#playlist .entry button.remove::after{
 	content: "\e711";
 }
-.entry button.remove{
+#playlist .entry button.remove{
 	margin-right: auto;
 }
-.entry:hover button{
+#playlist .entry:hover button{
 	opacity: 1;
 	visibility: visible;
 }
-.entry button:hover{
+#playlist .entry button:hover{
 	background-color: rgba(255,255,255,0.08);
 }
-.entry.playing .song::before{
+#playlist .entry.playing .song::before{
 	content: "\e93d";
 	font-family: "groove style";
 	color: #ffffff;

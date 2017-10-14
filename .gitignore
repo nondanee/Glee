@@ -1,0 +1,11 @@
+# Bash Script
+run.bat
+
+# Directory
+node_modules/
+cache/
+download/
+image/
+
+# FontCreator File
+*.fcp

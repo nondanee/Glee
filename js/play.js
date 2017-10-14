@@ -24,6 +24,9 @@ btn.fold.onclick = function(){
 btn.list.onclick = function(){
 	if (playBar.getAttribute("class")!="extend list"){
 		playBar.setAttribute("class","extend list")
+		var entryPlaying = playlist.getElementsByClassName("entry playing")
+		if(entryPlaying.length==1)
+			playlist.scrollTop = entryPlaying[0].offsetTop
 	}
 	else if(playBar.getAttribute("class")=="extend list"){
 		playBar.setAttribute("class","extend")
@@ -230,6 +233,9 @@ player.audio.addEventListener('ended',function(){
 			player.index = player.index+1
 			readyPlay()
 		}
+		else{
+			this.currentTime = 0
+		}
 	}
 	else if(player.cycle==1){//all cycle
 		player.index = (player.index+1)%player.list.length
@@ -273,8 +279,8 @@ progressbar.onmousedown = function(event){
 	var reviseWidth = event.clientX - offsetLeft - cursor.offsetWidth/2
 	var reviseProgressValue = reviseWidth/maxWidth
 
-	playedTime.innerHTML = secondReadable(player.duration*reviseProgressValue)
-	playedFiller.style.width = "calc(" + reviseProgressValue + " * (100% - " + cursor.offsetWidth + "px))"
+	// playedTime.innerHTML = secondReadable(player.duration*reviseProgressValue)
+	// playedFiller.style.width = "calc(" + reviseProgressValue + " * (100% - " + cursor.offsetWidth + "px))"
 
 	var alreadyPause = true
 	if(!player.paused){
@@ -413,11 +419,10 @@ function readyPlay(playNow=1,songId=player.list[player.index]){
 	var coverUrl = albumInfo[albumId]["coverUrl"]
 
 	var img = document.createElement('img');
-	img.width = "180"
-	img.height = "180"
+	img.width = 480
+	img.height = 480
 	img.setAttribute("src",coverUrl)
 
-	
 	let song = playBar.getElementsByClassName("song")[0]
 	let artist = playBar.getElementsByClassName("related")[0].getElementsByClassName("artist")[0]
 	let album = playBar.getElementsByClassName("related")[0].getElementsByClassName("album")[0]
@@ -445,51 +450,104 @@ function readyPlay(playNow=1,songId=player.list[player.index]){
 		player.pause()
 	}
 
-	// DarkMuted
-	// DarkVibrant
-	// LightMuted
-	// LightVibrant
-	// Muted
-	// Vibrant
-
-	// Vibrant
-	// Muted
-	// DarkVibrant
-	// DarkMuted
-	// LightVibrant
-
 	img.onload = function(){
-		var vibrant = new Vibrant(this);
-		var swatches = vibrant.swatches()
-		
-		// if(swatches["Vibrant"]){
+		// var vibrant = new Vibrant(this)
+		// var swatches = vibrant.swatches()
+		// if(swatches.Vibrant){
 		// 	var rgbArray = swatches.Vibrant.getRgb()
 		// }
-		// else if(swatches["LightVibrant"]){
-		// 	var rgbArray = swatches.LightVibrant.getRgb()
-		// }
-		// else if(swatches["Muted"]){
+		// else if(swatches.Muted){
 		// 	var rgbArray = swatches.Muted.getRgb()
 		// }
-		// else if(swatches["LightMuted"]){
+		// else if(swatches.DarkVibrant){
+		// 	var rgbArray = swatches.DarkVibrant.getRgb()
+		// }
+		// else if(swatches.DarkMuted){
+		// 	var rgbArray = swatches.DarkMuted.getRgb()
+		// }
+		// else if(swatches.LightVibrant){
+		// 	var rgbArray = swatches.LightVibrant.getRgb()
+		// }
+		// else if(swatches.LightMuted){
 		// 	var rgbArray = swatches.LightMuted.getRgb()
 		// }
 
-		for (var swatch in swatches){
-			if (swatches.hasOwnProperty(swatch) && swatches[swatch]){
-				var rgbArray = swatches[swatch].getRgb()
-				break
-			}	
-		}
-        
-		var rgbColor = Math.floor(rgbArray[0]) + "," + Math.floor(rgbArray[1]) + "," + Math.floor(rgbArray[2])
 
-		let cover = playBar.getElementsByClassName("cover")[0]
-		let bgBlur = playBar.getElementsByClassName("bgblur")[0]
+		// if(swatches.Vibrant){
+		// 	console.log("%c%s","color:" + swatches.Vibrant.getHex(),"Vibrant ▇▇")
+		// }
+		// if(swatches.Muted){
+		// 	console.log("%c%s","color:" + swatches.Muted.getHex(),"Muted ▇▇")
+		// }
+		// if(swatches.DarkVibrant){
+		// 	console.log("%c%s","color:" + swatches.DarkVibrant.getHex(),"DarkVibrant ▇▇")
+		// }
+		// if(swatches.DarkMuted){
+		// 	console.log("%c%s","color:" + swatches.DarkMuted.getHex(),"DarkMuted ▇▇")
+		// }
+		// if(swatches.LightVibrant){
+		// 	console.log("%c%s","color:" + swatches.LightVibrant.getHex(),"LightVibrant ▇▇")
+		// }
+		// if(swatches.LightMuted){
+		// 	console.log("%c%s","color:" + swatches.LightMuted.getHex(),"LightMuted ▇▇")
+		// }
 
-		cover.style.backgroundImage = "url("+coverUrl+")"
-		bgBlur.style.backgroundImage = "-webkit-linear-gradient(90deg, rgba(" + rgbColor + ",0.6), rgba(255, 255, 255, 0),rgba(" + rgbColor + ",0.3)),url(" +coverUrl + ")"
-		playBar.style.backgroundColor = "rgba(" + rgbColor + ",0.97)"
+		// var colorThief = new ColorThief()
+		// var rgbArray = colorThief.getColor(this)
+		// var alternative = colorThief.getPalette(this,8)
+		// for (var i=0;i<alternative.length;i++){
+		// 	console.log("%c%s","color:rgb(" + alternative[i][0] + "," + alternative[i][1] + "," + alternative[i][2] + ")","▇▇")
+		// 	var hsv = rgb2hsv(alternative[i][0], alternative[i][1], alternative[i][2])
+		// 	console.log(hsv)
+		// }		
+
+		// var rgbColor = Math.floor(rgbArray[0]) + "," + Math.floor(rgbArray[1]) + "," + Math.floor(rgbArray[2])
+
+		// let cover = playBar.getElementsByClassName("cover")[0]
+		// let bgBlur = playBar.getElementsByClassName("bgblur")[0]
+
+		// cover.style.backgroundImage = "url("+coverUrl+")"
+		// bgBlur.style.backgroundImage = "-webkit-linear-gradient(90deg, rgba(" + rgbColor + ",0.6), rgba(255, 255, 255, 0),rgba(" + rgbColor + ",0.3)),url(" +coverUrl + ")"
+		// playBar.style.backgroundColor = "rgba(" + rgbColor + ",0.97)"
+
+		Palette.generate([this]).done(function(palette) {
+				var accentColors = palette.getAccentColors()
+				if(accentColors.vibrant){
+					console.log("%c%s","color:" + accentColors.vibrant.toHex(),"Vibrant ▇▇")
+					var rgbColor = accentColors.vibrant.toString().slice(5,-4)
+				}
+				else if(accentColors.muted){
+					console.log("%c%s","color:" + accentColors.muted.toHex(),"Muted ▇▇")
+					var rgbColor = accentColors.muted.toString().slice(5,-4)
+				}
+				else if(accentColors.darkVibrant){
+					console.log("%c%s","color:" + accentColors.darkVibrant.toHex(),"DarkVibrant ▇▇")
+					var rgbColor = accentColors.darkVibrant.toString().slice(5,-4)
+				}
+				else if(accentColors.darkMuted){
+					console.log("%c%s","color:" + accentColors.darkMuted.toHex(),"DarkMuted ▇▇")
+					var rgbColor = accentColors.darkMuted.toString().slice(5,-4)
+				}
+				else if(accentColors.lightVibrant){
+					console.log("%c%s","color:" + accentColors.lightVibrant.toHex(),"LightVibrant ▇▇")
+					var rgbColor = accentColors.lightVibrant.toString().slice(5,-4)
+				}
+				else if(accentColors.lightMuted){
+					console.log("%c%s","color:" + accentColors.lightMuted.toHex(),"LightMuted ▇▇")
+					var rgbColor = accentColors.lightMuted.toString().slice(5,-4)
+				}
+
+				let cover = playBar.getElementsByClassName("cover")[0]
+				let bgBlur = playBar.getElementsByClassName("bgblur")[0]
+
+				cover.style.backgroundImage = "url("+coverUrl+")"
+				bgBlur.style.backgroundImage = "-webkit-linear-gradient(90deg, rgba(" + rgbColor + ",0.6), rgba(255, 255, 255, 0),rgba(" + rgbColor + ",0.3)),url(" +coverUrl + ")"
+				playBar.style.backgroundColor = "rgba(" + rgbColor + ",0.97)"
+
+			}, function(error) {
+				console.error(error);
+			}
+		)
 	}
 
 }
@@ -510,9 +568,49 @@ function readyPlay(playNow=1,songId=player.list[player.index]){
 // 		var swatches = vibrant.swatches()
 	
 // 		for (var swatch in swatches)
-//         if (swatches.hasOwnProperty(swatch) && swatches[swatch])
-//             console.log(swatch, swatches[swatch].getHex())
+// 			if (swatches.hasOwnProperty(swatch) && swatches[swatch])
+// 				console.log(swatch, swatches[swatch].getHex())
 // 	}
 // }
 
 
+
+function rgb2hsv () {
+	var rr, gg, bb,
+		r = arguments[0] / 255,
+		g = arguments[1] / 255,
+		b = arguments[2] / 255,
+		h, s,
+		v = Math.max(r, g, b),
+		diff = v - Math.min(r, g, b),
+		diffc = function(c){
+			return (v - c) / 6 / diff + 1 / 2;
+		};
+
+	if (diff == 0) {
+		h = s = 0;
+	} else {
+		s = diff / v;
+		rr = diffc(r);
+		gg = diffc(g);
+		bb = diffc(b);
+
+		if (r === v) {
+			h = bb - gg;
+		}else if (g === v) {
+			h = (1 / 3) + rr - bb;
+		}else if (b === v) {
+			h = (2 / 3) + gg - rr;
+		}
+		if (h < 0) {
+			h += 1;
+		}else if (h > 1) {
+			h -= 1;
+		}
+	}
+	return [
+		Math.round(h * 360),
+		Math.round(s * 100),
+		Math.round(v * 100)
+	]
+}
