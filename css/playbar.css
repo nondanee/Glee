@@ -2,12 +2,12 @@
 	display: block;
 	position: fixed;
 	box-sizing: border-box;
-	bottom: 0;
+	bottom: 0;left: 0;
 	height: 64px;
 	width: 100%;
 	background-color: rgba(32,32,32,0.97);
 	z-index: 10;
-	/*drag cause button unfocus, dont know why*/
+	/*transform&drag cause button unfocus*/
 	-webkit-app-region: no-drag;
 	-webkit-transition: all 0.36s cubic-bezier(0.37, -0.11, 0.14, 0.85);
 	/*backdrop-filter: blur(18px);*/
@@ -73,7 +73,7 @@
 }
 #progressbar{
 	-webkit-app-region: no-drag;
-	margin: 15px 12px 17px 12px;/*bug? 15+17*/
+	margin: 15px 12px 17px 12px;/*15+17 for vertical center*/
 	height: 32px;
 	flex-basis: auto;
 	flex-grow: 1;
@@ -304,7 +304,7 @@ button.random.on,button.cycle.all,button.cycle.single{
 #playlist{
 	position: absolute;
 	bottom: 0px;
-	transform: translateY(540px);/*button unfoucs fixed, dont know why*/
+	transform: translateY(540px);/*cause button unfoucs*/
 	height: 540px;
 	padding:0 24px;
 	width: 100%;

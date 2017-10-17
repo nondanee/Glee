@@ -60,12 +60,12 @@ const player = {
 		}
 		else{
 			this.index = (this._index-1+this._list.length)%this._list.length
-			readyPlay()
+			playSong()
 		}
 	},
 	next:function(){
 		this.index = (this._index+1)%this._list.length
-		readyPlay()
+		playSong()
 	},
 	setProgress:function(progressValue){
 		var expectTime = this.audio.duration * progressValue
@@ -174,21 +174,6 @@ Object.defineProperty(player,"cycle",{
 });
 
 
-const storage = require('electron-json-storage')
-storage.get('player', function(error, reserve) {
-	if (error) throw error;
-	if ("list" in reserve&&"index" in reserve&&"random" in reserve&&"cycle" in reserve){
-		player.list = reserve.list
-		player.index = reserve.index
-		player.random = reserve.random
-		player.cycle = reserve.cycle
-		if(player.list.length!=0){
-			readyPlay(0)
-		}
-	}
-	console.log(reserve);
-});
-
 btn.play.onclick = function(){
 	if(player.paused==true)
 		player.play()
@@ -217,7 +202,7 @@ player.audio.addEventListener('pause',function(){
 },false);
 player.audio.addEventListener('ended',function(){
 	if(player.cycle==2){//single cycle priority
-		readyPlay()
+		playSong()
 	}
 	else if(player.random==1){//random play
 		while(true){
@@ -226,12 +211,12 @@ player.audio.addEventListener('ended',function(){
 				break
 		}
 		player.index = nextIndex
-		readyPlay()
+		playSong()
 	}
 	else if(player.cycle==0){//cycle off
 		if(player.index+1!=player.list.length){
 			player.index = player.index+1
-			readyPlay()
+			playSong()
 		}
 		else{
 			this.currentTime = 0
@@ -239,14 +224,14 @@ player.audio.addEventListener('ended',function(){
 	}
 	else if(player.cycle==1){//all cycle
 		player.index = (player.index+1)%player.list.length
-		readyPlay()
+		playSong()
 	}
 },false);
 player.audio.addEventListener('canplaythrough',function(){
 	let totalTime = timeline.getElementsByClassName("time total")[0]
 	totalTime.innerHTML = secondReadable(this.duration)
 	if (!("duration" in songInfo[player.list[player.index]])){
-		songInfo[player.list[player.index]]["duration"] = Math.floor(this.duration*1000)
+		songInfo[player.list[player.index]]["duration"] = this.duration*1000
 	}
 },false);
 player.audio.addEventListener('timeupdate',function(){
@@ -326,14 +311,12 @@ function secondReadable(secondValue){
 
 function rebuildPlayList(){
 
-	while(playlist.childNodes.length!=0){
-		playlist.removeChild(playlist.childNodes[0]);
-	}
+	cleanDomChilds(playlist)
 	
 	for (var x=0;x<player.list.length;x++){
 		var songId = player.list[x]
 		if (!(songId in songInfo)){
-			getSongInfo(songId,rebuildPlayList)
+			getSongsInfo(player.list,rebuildPlayList)
 			return
 		}
 		var songName = songInfo[songId]["songName"]
@@ -344,31 +327,31 @@ function rebuildPlayList(){
 		entry.setAttribute("class","entry")
 		var song = document.createElement('a')
 		song.setAttribute("class","song")
+		song.setAttribute("songId",songId)
 		song.innerHTML = songName
 		var play = document.createElement('button')
 		play.setAttribute("class","play")
 		play.setAttribute("index",x)
 		play.onclick = function (){
 			player.index = parseInt(this.getAttribute("index"))
-			readyPlay()
+			playSong()
 		}
 		var remove = document.createElement('button')
 		remove.setAttribute("class","remove")
 		remove.setAttribute("index",x)
 		remove.onclick = function (){
-			index = this.getAttribute("index")
+			index = parseInt(this.getAttribute("index"))
 			list = player.list
-			list.splice(index,1)//slice on origin array can not touch set func
+			list.splice(index,1)
 			player.list = list
-			if(index==player.index)
-				readyPlay()
+			if(index==player.index&&player.paused==false)
+				playSong()
 		}
 		entry.appendChild(song)
 		entry.appendChild(play)
 		entry.appendChild(remove)
 		var related = document.createElement('span')
 		related.setAttribute("class","related")
-
 		var artist = document.createElement('a')
 		artist.setAttribute("class","artist")
 		artist.innerHTML = artistName
@@ -390,24 +373,31 @@ function rebuildPlayList(){
 
 
 
-function readyPlay(playNow=1,songId=player.list[player.index]){
+function playSong(params){
+
+	if(typeof(params) == "undefined"){
+		var playNow = 1
+		var songId = player.list[player.index]
+	}
+	else{
+		var playNow = params.playNow ? 1 : 0
+		var songId = params.songId ? params.songId : player.list[player.index]
+	}
+
+	params = {"playNow":playNow,"songId":songId}
 
 	if (!(songId in songInfo)){
-		getSongInfo(songId,readyPlay,playNow,songId)
+		getSongsInfo([songId],playSong,params)
 		return
 	}
 
 	var playStatus = checkSongUrlStatus(songId)
 	if (playStatus==0){
-		getSongUrl(songId,readyPlay,playNow,songId)
+		getSongUrl(songId,playSong,params)
 		return;
 	}
-	else if(playStatus==-1){
-		showDialog(20,"收费的听不了额","好吧","哦",noOperation,null,noOperation,null)
-		return;
-	}
-	else if(playStatus==-2){
-		showDialog(20,"貌似是下架了额","好吧","哦",noOperation,null,noOperation,null)
+	else if(playStatus<0){
+		showDialog(20,"听不了额","好吧","哦",noOperation,null,noOperation,null)
 		return;
 	}
 
@@ -453,6 +443,7 @@ function readyPlay(playNow=1,songId=player.list[player.index]){
 	img.onload = function(){
 		// var vibrant = new Vibrant(this)
 		// var swatches = vibrant.swatches()
+
 		// if(swatches.Vibrant){
 		// 	var rgbArray = swatches.Vibrant.getRgb()
 		// }
@@ -474,66 +465,49 @@ function readyPlay(playNow=1,songId=player.list[player.index]){
 
 
 		// if(swatches.Vibrant){
-		// 	console.log("%c%s","color:" + swatches.Vibrant.getHex(),"Vibrant ▇▇")
+		// 	console.log("%c%s","color:" + swatches.Vibrant.getHex(),"Vibrant ▇")
 		// }
 		// if(swatches.Muted){
-		// 	console.log("%c%s","color:" + swatches.Muted.getHex(),"Muted ▇▇")
+		// 	console.log("%c%s","color:" + swatches.Muted.getHex(),"Muted ▇")
 		// }
 		// if(swatches.DarkVibrant){
-		// 	console.log("%c%s","color:" + swatches.DarkVibrant.getHex(),"DarkVibrant ▇▇")
+		// 	console.log("%c%s","color:" + swatches.DarkVibrant.getHex(),"DarkVibrant ▇")
 		// }
 		// if(swatches.DarkMuted){
-		// 	console.log("%c%s","color:" + swatches.DarkMuted.getHex(),"DarkMuted ▇▇")
+		// 	console.log("%c%s","color:" + swatches.DarkMuted.getHex(),"DarkMuted ▇")
 		// }
 		// if(swatches.LightVibrant){
-		// 	console.log("%c%s","color:" + swatches.LightVibrant.getHex(),"LightVibrant ▇▇")
+		// 	console.log("%c%s","color:" + swatches.LightVibrant.getHex(),"LightVibrant ▇")
 		// }
 		// if(swatches.LightMuted){
-		// 	console.log("%c%s","color:" + swatches.LightMuted.getHex(),"LightMuted ▇▇")
+		// 	console.log("%c%s","color:" + swatches.LightMuted.getHex(),"LightMuted ▇")
 		// }
 
-		// var colorThief = new ColorThief()
-		// var rgbArray = colorThief.getColor(this)
-		// var alternative = colorThief.getPalette(this,8)
-		// for (var i=0;i<alternative.length;i++){
-		// 	console.log("%c%s","color:rgb(" + alternative[i][0] + "," + alternative[i][1] + "," + alternative[i][2] + ")","▇▇")
-		// 	var hsv = rgb2hsv(alternative[i][0], alternative[i][1], alternative[i][2])
-		// 	console.log(hsv)
-		// }		
-
-		// var rgbColor = Math.floor(rgbArray[0]) + "," + Math.floor(rgbArray[1]) + "," + Math.floor(rgbArray[2])
-
-		// let cover = playBar.getElementsByClassName("cover")[0]
-		// let bgBlur = playBar.getElementsByClassName("bgblur")[0]
-
-		// cover.style.backgroundImage = "url("+coverUrl+")"
-		// bgBlur.style.backgroundImage = "-webkit-linear-gradient(90deg, rgba(" + rgbColor + ",0.6), rgba(255, 255, 255, 0),rgba(" + rgbColor + ",0.3)),url(" +coverUrl + ")"
-		// playBar.style.backgroundColor = "rgba(" + rgbColor + ",0.97)"
 
 		Palette.generate([this]).done(function(palette) {
 				var accentColors = palette.getAccentColors()
 				if(accentColors.vibrant){
-					console.log("%c%s","color:" + accentColors.vibrant.toHex(),"Vibrant ▇▇")
+					console.log("%c%s","color:" + accentColors.vibrant.toHex(),"Vibrant ▇")
 					var rgbColor = accentColors.vibrant.toString().slice(5,-4)
 				}
 				else if(accentColors.muted){
-					console.log("%c%s","color:" + accentColors.muted.toHex(),"Muted ▇▇")
+					console.log("%c%s","color:" + accentColors.muted.toHex(),"Muted ▇")
 					var rgbColor = accentColors.muted.toString().slice(5,-4)
 				}
 				else if(accentColors.darkVibrant){
-					console.log("%c%s","color:" + accentColors.darkVibrant.toHex(),"DarkVibrant ▇▇")
+					console.log("%c%s","color:" + accentColors.darkVibrant.toHex(),"DarkVibrant ▇")
 					var rgbColor = accentColors.darkVibrant.toString().slice(5,-4)
 				}
 				else if(accentColors.darkMuted){
-					console.log("%c%s","color:" + accentColors.darkMuted.toHex(),"DarkMuted ▇▇")
+					console.log("%c%s","color:" + accentColors.darkMuted.toHex(),"DarkMuted ▇")
 					var rgbColor = accentColors.darkMuted.toString().slice(5,-4)
 				}
 				else if(accentColors.lightVibrant){
-					console.log("%c%s","color:" + accentColors.lightVibrant.toHex(),"LightVibrant ▇▇")
+					console.log("%c%s","color:" + accentColors.lightVibrant.toHex(),"LightVibrant ▇")
 					var rgbColor = accentColors.lightVibrant.toString().slice(5,-4)
 				}
 				else if(accentColors.lightMuted){
-					console.log("%c%s","color:" + accentColors.lightMuted.toHex(),"LightMuted ▇▇")
+					console.log("%c%s","color:" + accentColors.lightMuted.toHex(),"LightMuted ▇")
 					var rgbColor = accentColors.lightMuted.toString().slice(5,-4)
 				}
 
@@ -553,64 +527,20 @@ function readyPlay(playNow=1,songId=player.list[player.index]){
 }
 
 
+document.addEventListener("keydown", function(e) {
+	 if (e.keyCode == 32){// space
+	 	e.preventDefault()
+	 	btn.play.click()
+	 }
+	 else if (e.ctrlKey&&e.keyCode == 37){// ctrl + left
+	 	e.preventDefault()
+	 	btn.previous.click()
+	 }
+	 else if (e.ctrlKey&&e.keyCode == 39){// ctrl + right
+	 	e.preventDefault()
+	 	btn.next.click()
+	 }
+}, false);
 
 
 
-// var test = "http://p1.music.126.net/v3v6EV9jj3WBH8_fyF__Mg==/1652565976554623.jpg"
-
-
-// function vibrantTest(url){
-// 	var img = document.createElement('img');
-// 	img.setAttribute("src",url)
-// 	img.onload = function(){
-
-// 		var vibrant = new Vibrant(this);
-// 		var swatches = vibrant.swatches()
-	
-// 		for (var swatch in swatches)
-// 			if (swatches.hasOwnProperty(swatch) && swatches[swatch])
-// 				console.log(swatch, swatches[swatch].getHex())
-// 	}
-// }
-
-
-
-function rgb2hsv () {
-	var rr, gg, bb,
-		r = arguments[0] / 255,
-		g = arguments[1] / 255,
-		b = arguments[2] / 255,
-		h, s,
-		v = Math.max(r, g, b),
-		diff = v - Math.min(r, g, b),
-		diffc = function(c){
-			return (v - c) / 6 / diff + 1 / 2;
-		};
-
-	if (diff == 0) {
-		h = s = 0;
-	} else {
-		s = diff / v;
-		rr = diffc(r);
-		gg = diffc(g);
-		bb = diffc(b);
-
-		if (r === v) {
-			h = bb - gg;
-		}else if (g === v) {
-			h = (1 / 3) + rr - bb;
-		}else if (b === v) {
-			h = (2 / 3) + gg - rr;
-		}
-		if (h < 0) {
-			h += 1;
-		}else if (h > 1) {
-			h -= 1;
-		}
-	}
-	return [
-		Math.round(h * 360),
-		Math.round(s * 100),
-		Math.round(v * 100)
-	]
-}

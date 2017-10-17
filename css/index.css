@@ -13,6 +13,7 @@ body{
 	background-repeat: no-repeat;
 	font-family: "Microsoft Yahei";
 	-webkit-user-select: none;
+	overflow: hidden;
 }
 ::-webkit-scrollbar{  
 	width: 0px;  
@@ -33,49 +34,48 @@ button{
 	left: 0px;
 	height: 80px;
 	width: 100%;
-	padding: 12px 24px 0 24px;
+	padding: 9px 24px 0 24px;
 	box-sizing: border-box;
 	background-color: #ffffff;
 	z-index: 5;
 	-webkit-app-region: drag;
 }
-#titlebar #title{
-	margin-bottom: 3px;
-}
-#titlebar #subtitle{
-	bottom: 13px;
+#titlebar #subtab{
+	margin-top: 3px;
 	font-size: 14px;
 	color: #888888;
 	white-space: nowrap;
 	overflow-y: scroll;
 }
-#title li{
+#maintab li{
 	list-style-type:none;
 	display: inline-block;
-	font-size: 22px;
-	margin-right: 4px;
+	font-size: 26px;
+	margin-right: 6px;
 	cursor: pointer;
 	-webkit-app-region: no-drag;
-	color: #e3e3e3;
+	color: #d6d6d6;
+	letter-spacing: -2px;
 }
-#title li.focus{
-	color: #444444;
-	font-weight: bold;
+#maintab li.focus{
+	/*color: #444444;*/
+	color: #000000;
+	/*font-weight: bold;*/
 }
-#subtitle li{
+#subtab li{
 	list-style-type:none;
 	display: inline-block;
 	cursor: pointer;
 	-webkit-app-region: no-drag;
 	color: #dcdcdc;
 }
-#subtitle li:hover{
+#subtab li:hover{
 	color: #a3a3a3;
 }
-#subtitle li.focus{
+#subtab li.focus{
 	color: #888888;
 }
-#subtitle span{
+#subtab span{
 	margin: 0 4px;
 	color: #dcdcdc;
 }
@@ -120,31 +120,25 @@ button{
 }
 
 
-
-
-
-
-
-
-
 container{
 	height: 100%;
 	/*width: 940px;*/
 	padding:70px 24px 64px 24px;
 	margin-right: -24px;
-	box-sizing: border-box;
 	overflow: auto;
+	box-sizing: border-box;
 	display: inline-block;
+	background-color: #ffffff;
 	/*display: flex;*/
 	/*flex-wrap: wrap;*/
 	/*align-content: flex-start;*/
 	/*justify-content:  space-between;*/
-	background-color: #ffffff;
-	/*align-content: flex-start;*/
+	
 }
 container>.recipe,
 container>.album,
-container>.chart
+container>.chart,
+container>.artist
 {
 	display: inline-block;
 	margin: 16px 0;
@@ -169,7 +163,8 @@ container>.chart
 
 .recipe>.cover,
 .album>.cover,
-.chart>.cover
+.chart>.cover,
+.artist>.cover
 {
 	display: block;
 	position: relative;
@@ -192,37 +187,62 @@ container>.chart
 
 .recipe>.name,
 .album>.name,
-.chart>.name
+.chart>.name,
+.artist>.name
 {
 	display: block;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
 	color: #171819;
-	/*margin-top: 8px;*/
-	margin-top: 32px;
 	font-size: 13px;
 	text-align:center;
+	margin-top: 32px;
+	/*margin-top: 8px;*/
 	/*font-weight: bold;*/
 }
 
 .recipe>.description,
 .album>.description,
-.chart>.description
+.chart>.description,
+.artist>.description
 {
 	display: block;
 	color: #b0b5b8;
-	/*margin-top: 5px;*/
-	margin-top: 6px;
-	/*font-size: 13px;*/
-	font-size: 12px;
 	text-align:center;
+	margin-top: 6px;
+	font-size: 12px;
+	line-height: 16px;
+	/*margin-top: 5px;*/
+	/*font-size: 13px;*/
+}
+.recipe>.description::before,
+.album>.description::before,
+.chart>.description::before,
+.artist>.description::before
+{
+	font-family: "groove style";
+	margin-right: 3px;
+	vertical-align: bottom;
+}
+.recipe>.description::before{
+	content: "\e7f6";
+}
+.album>.description::before{
+	content: "\e719";
+}
+.chart>.description::before{
+	content: "\e895";
+}
+.artist>.description::before{
+	content: "\e940";
 }
 
 
 .recipe .operation,
 .album .operation,
-.chart .operation
+.chart .operation,
+.artist .operation
 {
 	display: block;
 	position: absolute;
@@ -251,6 +271,9 @@ button.play::after{
 button.add::after{
 	content: "\e710";
 }
+button.keep::after{
+	content: "\e734";
+}
 button.detail::after{
 	content: "\e700";
 }
@@ -258,7 +281,8 @@ button.detail::after{
 
 container>.recipe:hover .operation,
 container>.album:hover .operation,
-container>.chart:hover .operation
+container>.chart:hover .operation,
+container>.artist:hover .operation
 {
 	opacity: 1;
 	visibility: visible;
@@ -266,7 +290,8 @@ container>.chart:hover .operation
 
 container>.recipe:hover .description,
 container>.album:hover .description,
-container>.chart:hover .description
+container>.chart:hover .description,
+container>.artist:hover .description
 {
 	opacity: 0;
 	visibility: hidden;
@@ -284,10 +309,6 @@ container>.detail{
 	-webkit-transition-duration:;
 	-webkit-transition-timing-function:linear;
 }
-/*container>.detail.hide,container>.detail.prepare{
-	max-height: 0;
-	-webkit-transition: max-height 4s ease-in;
-}*/
 
 container>.detail::before{
 	content: "";
@@ -452,26 +473,6 @@ container>.detail::before{
 	font-size: 12px;
 	color: #727275;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

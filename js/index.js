@@ -1,14 +1,15 @@
-const BrowserWindow = require('electron').remote.BrowserWindow;
-const Encrypt = require('./js/crypto.js');
+const BrowserWindow = require('electron').remote.BrowserWindow
+const Encrypt = require('./js/crypto.js')
+const storage = require('electron-json-storage')
 
-var current_window = BrowserWindow.getFocusedWindow();
+var current_window = BrowserWindow.getFocusedWindow()
 var loading = 0
 
 document.getElementById('minimize').onclick = function(){
-	current_window.minimize();
+	current_window.minimize()
 }
 document.getElementById('close').onclick = function(){
-	current_window.close();
+	current_window.close()
 }
 // document.getElementById('maximize').onclick = function(){
 // 	current_window.isMaximized() ?
@@ -17,615 +18,128 @@ document.getElementById('close').onclick = function(){
 // }
 
 
-// var storeScene =false
-// window.onbeforeunload = function(event){
-// 	if(storeScene==0){
-// 		event.returnValue = false;
-// 		storage.set('player', { "list": player.list,"index":player.index,"random":player.random,"cycle":player.cycle }, function(error) {
-// 			current_window.close();
-// 			storeScene = true
-// 		})
-// 	}
-// }; 
-
-
-
-
-
-
-const container = document.getElementsByTagName("container")[0];
-
-const artistTab = document.getElementsByTagName("li")[0]
-const albumTab = document.getElementsByTagName("li")[1]
-const recipeTab = document.getElementsByTagName("li")[2]
-const chartTab = document.getElementsByTagName("li")[3]
-const userTab = document.getElementsByTagName("li")[4]
-
-const title = document.getElementById("title")
-const subtitle = document.getElementById("subtitle")
-const mainTabs = title.getElementsByTagName("li")
-
-var artists = [
-	{
-		"text":"欅坂46",
-		"param":"12009134"
-	},
-	{
-		"text":"乃木坂46",
-		"param":"20846"
-	},
-	{
-		"text":"AKB48",
-		"param":"18355"
-	},
-	// {
-	// 	"text":"SKE48",
-	// 	"param":"21401"
-	// },
-	{
-		"text":"NMB48",
-		"param":"20818"
-	},
-	{
-		"text":"HKT48",
-		"param":"711143"
-	},
-	{
-		"text":"NGT48",
-		"param":"12006263"
-	},
-	{
-		"text":"SNH48",
-		"param":"794014"
-	}
-]
-const albumTypes = [
-	{
-		"text":"全部",
-		"param":"ALL"
-	},
-	{
-		"text":"华语",
-		"param":"ZH"
-	},
-	{
-		"text":"欧美",
-		"param":"EA"
-	},
-	{
-		"text":"韩国",
-		"param":"KR"
-	},
-	{
-		"text":"日本",
-		"param":"JP"
-	},
-]
-
-var recipeTypes = [
-	{
-		"text":"全部",
-		"param":"全部"
-	},
-	{
-		"text":"华语",
-		"param":"华语"
-	},
-	{
-		"text":"流行",
-		"param":"流行"
-	},
-	{
-		"text":"摇滚",
-		"param":"摇滚"
-	},
-	{
-		"text":"民谣",
-		"param":"民谣"
-	},
-	{
-		"text":"电子",
-		"param":"电子"
-	},
-	{
-		"text":"轻音乐",
-		"param":"轻音乐"
-	},
-]
-
-
-// const types = ["全部","华语","欧美","日语","韩语","粤语","小语种","流行","摇滚","民谣","电子","舞曲","说唱","轻音乐","爵士","乡村","R&B/Soul","古典","民族","英伦","金属","朋克","蓝调","雷鬼","世界音乐","拉丁","另类/独立","NewAge","古风","后摇","BossaNova","清晨","夜晚","学习","工作","午休","下午茶","地铁","驾车","运动","旅行","散步","酒吧","怀旧","清新","浪漫","性感","伤感","治愈","放松","孤独","感动","兴奋","快乐","安静","思念","影视原声","ACG","校园","游戏","70后","80后","90后","网络歌曲","KTV","经典","翻唱","吉他","钢琴","器乐","儿童","榜单","00后"]
-
-
-
-
-window.onload = function(){
-	mainTabClickBind(artistTab,artists,loadArtistAlbum)
-	mainTabClickBind(albumTab,albumTypes,loadNewAlbums)
-	mainTabClickBind(recipeTab,recipeTypes,loadRecommandRecipe)
-	artistTab.click()
-}
-
-function setScrollLoad(loadFunc,argument){
-	container.onscroll = function(){
-		if (container.scrollHeight-120<container.scrollTop+window.innerHeight) {
-			loadFunc(argument)
-		}
+// store
+var storeScene = false
+window.onbeforeunload = function(event){
+	if(storeScene==0){
+		event.returnValue = false
+		storage.set('player', { "list": player.list,"index":player.index,"random":player.random,"cycle":player.cycle }, function(error) {
+			current_window.close()
+			storeScene = true
+		})
 	}
 }
 
-function mainTabClickBind(mainTab,data,targetfunc){
-
-	mainTab.onclick = function(){
-		for(var i=0;i<mainTabs.length;i++){
-			mainTabs[i].setAttribute("class","")
+// restore
+storage.get('player', function(error, reserve) {
+	if (error) throw error
+	if ("list" in reserve&&"index" in reserve&&"random" in reserve&&"cycle" in reserve){
+		player.list = reserve.list
+		player.index = reserve.index
+		player.random = reserve.random
+		player.cycle = reserve.cycle
+		if(player.list.length!=0){
+			playSong({playNow:0})
 		}
-		this.setAttribute("class","focus")
-
-		while(container.childNodes.length!=0){
-			container.removeChild(container.childNodes[0]);
-		}
-		while(subtitle.childNodes.length!=0){
-			subtitle.removeChild(subtitle.childNodes[0]);
-		}
-
-		for(var i=0;i<data.length;i++){
-			addSubTab(data[i]["text"],targetfunc,data[i]["param"])
-			if (i!=data.length-1){
-				var separator = document.createElement('span')
-				separator.innerHTML = "/"
-				subtitle.appendChild(separator)
-			}
-		}
-		var view = this.getAttribute("view")
-		view = view ? view : 0
-		subtitle.getElementsByTagName("li")[view].click()
 	}
-}
+})
+
+const userId = 38050391
+
+const container = document.getElementsByTagName("container")[0]
+const maintab = document.getElementById("maintab")
+const subtab = document.getElementById("subtab")
+const mainTabs = maintab.getElementsByTagName("li")
 
 
-function addSubTab(text,targetfunc,param){
-	var subTab = document.createElement('li')
-	subTab.innerHTML = text
-	subTab.setAttribute("param",param)
-	
-	subTab.onclick = function (){
+
+function Container(dataType,loadMoreFunc,loadMoreFuncParams) {
+	this.items = []
+	this.loadMoreFunc = loadMoreFunc
+	this.loadMoreFuncParams = loadMoreFuncParams
+	this.more = 1
+	this.scroll = 0
+	this.extend = null
+	this.dataType = dataType
+	this.add = function(value) {
+		for (var x=0;x<this.items.length;x++){
+			if(this.items[x]==value)
+				return
+		}
+		this.items.push(value)
+	}
+	this.refresh = function() {
+		var records = document.querySelectorAll("container>."+this.dataType)
+		var details = document.querySelectorAll("container>.detail")
+		while(Math.floor(this.items.length/4)+1!=details.length){
+			var detail = newDetailDom()
+			container.appendChild(detail)
+			var details = document.querySelectorAll("container>.detail")
+		}
+		for (var x=records.length;x<this.items.length;x++){
+			var detailIndex = Math.floor(x/4)
+			var recipe = newRecordDom(this,x,dataType)
+			container.insertBefore(recipe,details[detailIndex])
+		}
+	}
+	this.recover = function(){
 		loading = 0
-		var subTabs = subtitle.getElementsByTagName("li")
-		var focusedMainTab = title.getElementsByClassName("focus")[0]
-		for(var i=0;i<subTabs.length;i++){
-			if(subTabs[i]==this){
-				focusedMainTab.setAttribute("view",i)
-				this.setAttribute("class","focus")
+		if(this.items.length==0){
+			this.loadMoreFunc(this,this.loadMoreFuncParams)
+		}
+		else{
+			this.refresh()
+			var lastExtend = this.extend
+			if (lastExtend != null){
+				this.extend = null
+				this.extendControl(lastExtend)
 			}
-			else{
-				subTabs[i].setAttribute("class","")
-			}
+			var lastScroll = this.scroll
+			container.scrollTop = lastScroll
 		}
-		while(container.childNodes.length!=0){
-			container.removeChild(container.childNodes[0]);
+		if(this.more==1){
+			setScrollLoad(this.loadMoreFunc,this,this.loadMoreFuncParams)
 		}
-		var argument = this.getAttribute("param")
-		setScrollLoad(targetfunc,argument)
-		targetfunc(argument)
-	}
-
-	subtitle.appendChild(subTab)
-
-}
-
-
-chartTab.onclick = function(){
-	for(var i=0;i<mainTabs.length;i++){
-		mainTabs[i].setAttribute("class","")
-	}
-	chartTab.setAttribute("class","focus")
-
-	while(container.childNodes.length!=0){
-		container.removeChild(container.childNodes[0]);
-	}
-	while(subtitle.childNodes.length!=0){
-		subtitle.removeChild(subtitle.childNodes[0]);
-	}
-	subtitle.innerHTML = "排行榜"
-	container.onscroll = null
-	loadTopList()
-}
-
-
-userTab.onclick = function(){
-	for(var i=0;i<mainTabs.length;i++){
-		mainTabs[i].setAttribute("class","")
-	}
-	userTab.setAttribute("class","focus")
-
-	while(container.childNodes.length!=0){
-		container.removeChild(container.childNodes[0]);
-	}
-	while(subtitle.childNodes.length!=0){
-		subtitle.removeChild(subtitle.childNodes[0]);
-	}
-	subtitle.innerHTML = "用户歌单"
-	container.onscroll = null
-	loadUserRecipe(38050391)
-}
-
-
-function showAlbum(albumId){
-	var albumAmount = document.querySelectorAll("container>.album").length
-	if(albumAmount%4==0&&albumAmount!=0)
-		insertDetailBlock()
-	var album = document.createElement('div')
-	album.setAttribute("class","album")
-	var cover = document.createElement('div')
-	cover.setAttribute("class","cover")
-	cover.style.backgroundImage = "url("+albumInfo[albumId]["coverUrl"]+"?param=240y240)"
-	cover.addEventListener("click", showAlbumDetail)
-	var name = document.createElement('div')
-	name.setAttribute("class","name")
-	name.innerHTML = albumInfo[albumId]["albumName"]
-	var description = document.createElement('div')
-	description.setAttribute("class","description")
-	description.innerHTML = albumInfo[albumId]["publishDate"]
-	var operation = document.createElement('div')
-	operation.setAttribute("class","operation")
-	var play = document.createElement('button')
-	play.setAttribute("class","play")
-	play.addEventListener("click", playAlbum)
-	var add = document.createElement('button')
-	add.setAttribute("class","add")
-	var detail = document.createElement('button')
-	detail.setAttribute("class","detail")
-	detail.addEventListener("click", showAlbumDetail)
-	operation.appendChild(play)
-	operation.appendChild(add)
-	operation.appendChild(detail)
-	album.appendChild(cover)
-	album.appendChild(name)
-	album.appendChild(description)
-	album.appendChild(operation)
-	album.setAttribute("albumId",albumId)
-	container.appendChild(album)
-}
-
-
-function insertDetailBlock(){
-	var detail = document.createElement('div')
-	detail.setAttribute("class","detail hide")
-	var point = document.createElement('div')
-	point.setAttribute("class","point")
-	var cover = document.createElement('div')
-	cover.setAttribute("class","cover")
-	var title = document.createElement('div')
-	title.setAttribute("class","title")
-	var owner = document.createElement('div')
-	owner.setAttribute("class","owner")
-	var track = document.createElement('div')
-	track.setAttribute("class","track")
-	detail.appendChild(point)
-	detail.appendChild(cover)
-	detail.appendChild(title)
-	detail.appendChild(owner)
-	detail.appendChild(track)
-	detail.style.height = '0px'
-	container.appendChild(detail)
-}
-
-
-
-function showRecipe(recipeId){
-	var recipeAmount = document.querySelectorAll("container>.recipe").length
-	if(recipeAmount%4==0&&recipeAmount!=0)
-		insertDetailBlock()
-	var recipe = document.createElement('div')
-	recipe.setAttribute("class","recipe")
-	var cover = document.createElement('div')
-	cover.setAttribute("class","cover")
-	cover.style.backgroundImage = "url("+recipeInfo[recipeId]["coverUrl"]+"?param=240y240)"
-	cover.addEventListener("click", showRecipeDetail)
-	var name = document.createElement('div')
-	name.setAttribute("class","name")
-	name.innerHTML = recipeInfo[recipeId]["recipeName"]
-	var description = document.createElement('div')
-	description.setAttribute("class","description")
-	description.innerHTML = recipeInfo[recipeId]["playCount"]
-	var operation = document.createElement('div')
-	operation.setAttribute("class","operation")
-	var play = document.createElement('button')
-	play.setAttribute("class","play")
-	play.addEventListener("click", playRecipe)
-	var add = document.createElement('button')
-	add.setAttribute("class","add")
-	var detail = document.createElement('button')
-	detail.setAttribute("class","detail")
-	detail.addEventListener("click", showRecipeDetail)
-	operation.appendChild(play)
-	operation.appendChild(add)
-	operation.appendChild(detail)
-	recipe.appendChild(cover)
-	recipe.appendChild(name)
-	recipe.appendChild(description)
-	recipe.appendChild(operation)
-	recipe.setAttribute("recipeId",recipeId)
-	// recipe.addEventListener("click", playRecipe)
-	container.appendChild(recipe)
-}
-
-function showChart(chartId){
-	var chartAmount = document.querySelectorAll("container>.chart").length
-	if(chartAmount%4==0&&chartAmount!=0)
-		insertDetailBlock()
-	var chart = document.createElement('div')
-	chart.setAttribute("class","chart")
-	var cover = document.createElement('div')
-	cover.setAttribute("class","cover")
-	cover.style.backgroundImage = "url("+chartInfo[chartId]["coverUrl"]+"?param=240y240)"
-	cover.addEventListener("click", showChartDetail)
-	var name = document.createElement('div')
-	name.setAttribute("class","name")
-	name.innerHTML = chartInfo[chartId]["chartName"]
-	var description = document.createElement('div')
-	description.setAttribute("class","description")
-	description.innerHTML = chartInfo[chartId]["updateTime"]
-	var operation = document.createElement('div')
-	operation.setAttribute("class","operation")
-	var play = document.createElement('button')
-	play.setAttribute("class","play")
-	play.addEventListener("click", playChart)
-	var add = document.createElement('button')
-	add.setAttribute("class","add")
-	var detail = document.createElement('button')
-	detail.setAttribute("class","detail")
-	detail.addEventListener("click", showChartDetail)
-	operation.appendChild(play)
-	operation.appendChild(add)
-	operation.appendChild(detail)
-	chart.appendChild(cover)
-	chart.appendChild(name)
-	chart.appendChild(description)
-	chart.appendChild(operation)
-	chart.setAttribute("chartId",chartId)
-	// chart.addEventListener("click", playChart)
-	container.appendChild(chart)
-}
-
-
-function playAlbum(albumId){
-
-	if (albumId.toString() === "[object MouseEvent]"){
-		var thisAlbum = this
-		while (thisAlbum.getAttribute("class")!="album"){
-			var thisAlbum = thisAlbum.parentNode
+		else{
+			setScrollLoad(noOperation,this,null)
 		}
-		albumId = thisAlbum.getAttribute("albumId")
 	}
-
-	if (albumInfo[albumId]["musicTrack"] == null){
-		loadAlbumSongs(albumId,playAlbum,albumId)
-		return
+	this.reload = function(){
+		this.items = []
+		this.more = 1
+		this.extend = null
+		loadMoreFunc(this,loadMoreFuncParams)
 	}
-
-	
-	if (addToPlayList(albumInfo[albumId]["musicTrack"],1) == false){
-		showDialog(5,"一首都听不了欸","好吧","哦",noOperation,null,noOperation,null)
-		return
+	this.getOffset = function(){
+		return this.items.length
 	}
-	
-	readyPlay()
-
-}
-
-function playRecipe(recipeId){
-
-	if (recipeId.toString() === "[object MouseEvent]"){
-		var thisRecipe = this
-		while (thisRecipe.getAttribute("class")!="recipe"){
-			var thisRecipe = thisRecipe.parentNode
-		}
-		recipeId = thisRecipe.getAttribute("recipeId")
+	this.scrollStop = function(){
+		this.more = 0
+		setScrollLoad(noOperation,this,null)
 	}
-
-	if (recipeInfo[recipeId]["musicTrack"] == null){
-		loadRecipeSongs(recipeId,playRecipe,recipeId)
-		return
+	this.play = function(index){
+		var id = this.items[index]
+		playRecord({id:id,dataType:this.dataType})
 	}
+	this.extendControl = function(index){
 
-	if (addToPlayList(recipeInfo[recipeId]["musicTrack"],1) == false){
-		showDialog(5,"一首都听不了欸","好吧","哦",noOperation,null,noOperation,null)
-		return
-	}
-
-	readyPlay()
-
-}
-
-function playChart(chartId){
-
-	if (chartId.toString() === "[object MouseEvent]"){
-		var thisChart = this
-		while (thisChart.getAttribute("class")!="chart"){
-			var thisChart = thisChart.parentNode
-		}
-		chartId = thisChart.getAttribute("chartId")
-	}
-
-	if (chartInfo[chartId]["musicTrack"] == null){
-		loadChartSongs(chartId,playChart,chartId)
-		return
-	}
-
-	if(addToPlayList(chartInfo[chartId]["musicTrack"],1) == false){
-		showDialog(5,"一首都听不了欸","好吧","哦",noOperation,null,noOperation,null)
-		return
-	}
-
-	readyPlay()
-
-}
-
-function showAlbumDetail(albumId){
-
-	if (albumId.toString() === "[object MouseEvent]"){
-		var thisAlbum = this
-		while (thisAlbum.getAttribute("class")!="album"){
-			var thisAlbum = thisAlbum.parentNode
-		}
-		albumId = thisAlbum.getAttribute("albumId")
-		var allAlbums = document.querySelectorAll("container>.album")
-		var albumIndex = 0
-		for (var x=0;x<allAlbums.length;x++){
-			if (allAlbums[x]==thisAlbum){
-				albumIndex = x
-				break
+		var targetIndex = Math.floor(index/4)
+		var targetDom = document.querySelectorAll("container>.detail")[targetIndex]
+		
+		if (this.extend!=null){
+			var beforeIndex = Math.floor(this.extend/4)
+			var beforeDom = document.querySelectorAll("container>.detail")[beforeIndex]
+			foldDetail(beforeDom)//scrollTop !!!
+			if (this.extend == index){
+				this.extend = null
+				return
 			}
 		}
-		var detailIndex = Math.floor(albumIndex/4)
-		var pointIndex = albumIndex%4
-		if(prepareDetail(detailIndex,pointIndex)==0){
-			return
-		}
-	}
 
-	if (albumInfo[albumId]["musicTrack"] == null){
-		loadAlbumSongs(albumId,showAlbumDetail,albumId)
-		return
-	}
-
-	var coverUrl = albumInfo[albumId]["coverUrl"]+"?param=360y360"
-	var titleText = albumInfo[albumId]["albumName"]
-	var ownerText = artistInfo[albumInfo[albumId]["artistId"]]["artistName"]
-	var musicTrack = albumInfo[albumId]["musicTrack"]
-
-	showDetail(coverUrl,titleText,ownerText,musicTrack)
-	
-}
-
-function showRecipeDetail(recipeId){
-
-	if (recipeId.toString() === "[object MouseEvent]"){
-		var thisRecipe = this
-		while (thisRecipe.getAttribute("class")!="recipe"){
-			var thisRecipe = thisRecipe.parentNode
-		}
-		recipeId = thisRecipe.getAttribute("recipeId")
-		var allRecipes = document.querySelectorAll("container>.recipe")
-		var recipeIndex = 0
-		for (var x=0;x<allRecipes.length;x++){
-			if (allRecipes[x]==thisRecipe){
-				recipeIndex = x
-				break
-			}
-		}
-		var detailIndex = Math.floor(recipeIndex/4)
-		var pointIndex = recipeIndex%4
-		if(prepareDetail(detailIndex,pointIndex)==0){
-			return
-		}
-	}
-
-	if (recipeInfo[recipeId]["musicTrack"] == null){
-		loadRecipeSongs(recipeId,showRecipeDetail,recipeId)
-		return
-	}
-
-	var coverUrl = recipeInfo[recipeId]["coverUrl"]+"?param=360y360"
-	var titleText = recipeInfo[recipeId]["recipeName"]
-	var ownerText = recipeInfo[recipeId]["creator"]
-	var musicTrack = recipeInfo[recipeId]["musicTrack"]
-
-	showDetail(coverUrl,titleText,ownerText,musicTrack)
-	
-}
-
-function showChartDetail(chartId){
-
-	if (chartId.toString() === "[object MouseEvent]"){
-		var thisChart = this
-		while (thisChart.getAttribute("class")!="chart"){
-			var thisChart = thisChart.parentNode
-		}
-		chartId = thisChart.getAttribute("chartId")
-		var allCharts = document.querySelectorAll("container>.chart")
-		var chartIndex = 0
-		for (var x=0;x<allCharts.length;x++){
-			if (allCharts[x]==thisChart){
-				chartIndex = x
-				break
-			}
-		}
-		var detailIndex = Math.floor(chartIndex/4)
-		var pointIndex = chartIndex%4
-		if(prepareDetail(detailIndex,pointIndex)==0){
-			return
-		}
-	}
-
-	if (chartInfo[chartId]["musicTrack"] == null){
-		loadChartSongs(chartId,showChartDetail,chartId)
-		return
-	}
-
-	var coverUrl = chartInfo[chartId]["coverUrl"]+"?param=360y360"
-	var titleText = chartInfo[chartId]["chartName"]
-	var ownerText = chartInfo[chartId]["updateTime"]
-	var musicTrack = chartInfo[chartId]["musicTrack"]
-
-	showDetail(coverUrl,titleText,ownerText,musicTrack)
-	
-}
-
-
-function prepareDetail(detailIndex,pointIndex){
-
-	var allDetails = document.querySelectorAll("container>.detail")
-	var speed = 3200
-	if(detailIndex>=allDetails.length){
-		insertDetailBlock()
-		var allDetails = document.querySelectorAll("container>.detail")
-	}
-	if(allDetails[detailIndex].getAttribute("belong")==pointIndex){
-		var heightbefore = parseInt(allDetails[detailIndex].style.height.slice(0,-2))
-		if (heightbefore == 0)
-			var heightafter = allDetails[detailIndex].scrollHeight
-		else
-			var heightafter = 0
-		var duration = (Math.abs(heightafter-heightbefore))/speed
-		allDetails[detailIndex].style.transitionDuration = duration+"s"
-		allDetails[detailIndex].style.height = heightafter+"px"
-
-		return 0
-	}
-
-	for (var x=0;x<allDetails.length;x++){
-		var heightbefore = parseInt(allDetails[x].style.height.slice(0,-2))
-		if (heightbefore==0)
-			continue
-		allDetails[x].style.transitionDuration = heightbefore/speed+"s"
-		allDetails[x].style.height = "0px"
-	}
-	allDetails[detailIndex].setAttribute("class","detail prepare")
-	allDetails[detailIndex].setAttribute("belong",pointIndex)
-	return 1
-
-}
-
-function showDetail(coverUrl,titleText,ownerText,musicTrack){
-	
-	var img = document.createElement('img');
-	img.setAttribute("src",coverUrl)
-
-	// albumColors = new AlbumColors(coverUrl);
-	// albumColors.getColors(function(colors) 
-
-	img.onload = function() {
-
-		var colorThief = new ColorThief()
-		var textColor = colorThief.getColor(this).toString()
-
-		var detail = document.querySelectorAll("container>.detail.prepare")[0]
-	
-		var pointIndex = detail.getAttribute("belong")
-		var point = detail.getElementsByClassName("point")[0]
+		this.extend = index
+		var id = this.items[index]
+		var pointIndex = index%4
+		var point = targetDom.getElementsByClassName("point")[0]
 		if (pointIndex==0)
 			point.setAttribute("class","point first")
 		else if (pointIndex==1)
@@ -635,23 +149,129 @@ function showDetail(coverUrl,titleText,ownerText,musicTrack){
 		else if (pointIndex==3)
 			point.setAttribute("class","point fourth")
 
-		var cover = detail.getElementsByClassName("cover")[0]
+		showDetail({detailDom:targetDom,id:id,dataType:this.dataType})
+	}
+	this.hide = function(){
+		this.scroll = container.scrollTop
+		cleanDomChilds(container)
+	}
+}
+
+
+function setScrollLoad(loadMoreFunc,containerInstance,loadMoreFuncParams){
+	container.onscroll = function(){
+		if (container.scrollHeight-640<container.scrollTop+container.offsetHeight) {
+			loadMoreFunc(containerInstance,loadMoreFuncParams)
+		}
+	}
+}
+
+function foldDetail(detailDom){
+	var speed = 3200
+	var heightbefore = parseInt(detailDom.style.height.slice(0,-2))
+	if (heightbefore == 0)
+		var heightafter = detailDom.scrollHeight
+	else
+		var heightafter = 0
+	var duration = (Math.abs(heightafter-heightbefore))/speed
+	detailDom.style.transitionDuration = duration+"s"
+	detailDom.style.height = heightafter+"px"
+}
+
+
+function showDetail(params){
+
+	const id = params.id
+	const dataType = params.dataType
+	// const detailDom = params.detailDom
+
+	if (dataType=="album"){
+		if (albumInfo[id]["musicTrack"] == null){
+			loadAlbumSongs(id,showDetail,params)
+			return
+		}
+	}
+	else if (dataType=="recipe"){
+		if (recipeInfo[id]["musicTrack"] == null){
+			loadRecipeSongs(id,showDetail,params)
+			return
+		}
+	}
+	else if (dataType=="chart"){
+		if (chartInfo[id]["musicTrack"] == null){
+			loadChartSongs(id,showDetail,params)
+			return
+		}
+	}
+	else if (dataType=="artist"){
+		if (artistInfo[id]["musicTrack"] == null){
+			loadArtistSongs(id,showDetail,params)
+			return
+		}
+	}
+
+	fillDetailDom(params)
+	
+}
+
+function fillDetailDom(params){
+
+	const id = params.id
+	const dataType = params.dataType
+	const detailDom = params.detailDom
+
+	const sizeControl = "?param=360y360"
+	
+	if (dataType=="album"){
+		var coverUrl = albumInfo[id]["coverUrl"] + sizeControl
+		var titleText = albumInfo[id]["albumName"]
+		var ownerText = artistInfo[albumInfo[id]["artistId"]]["artistName"]
+		var musicTrack = albumInfo[id]["musicTrack"]
+	}
+	else if (dataType=="recipe"){
+		var coverUrl = recipeInfo[id]["coverUrl"] + sizeControl
+		var titleText = recipeInfo[id]["recipeName"]
+		var ownerText = recipeInfo[id]["creator"]
+		var musicTrack = recipeInfo[id]["musicTrack"]
+	}
+	else if (dataType=="chart"){
+		var coverUrl = chartInfo[id]["coverUrl"] + sizeControl
+		var titleText = chartInfo[id]["chartName"]
+		var ownerText = chartInfo[id]["updateTime"]
+		var musicTrack = chartInfo[id]["musicTrack"]
+	}
+	else if (dataType=="artist"){
+		var coverUrl = artistInfo[id]["artistImage"] + sizeControl
+		var titleText = artistInfo[id]["artistName"]
+		var ownerText = artistInfo[id]["description"]
+		var musicTrack = artistInfo[id]["musicTrack"]
+	}
+
+
+	var img = document.createElement('img')
+	img.setAttribute("src",coverUrl)
+
+	// albumColors = new AlbumColors(coverUrl)
+	// albumColors.getColors(function(colors) 
+
+	img.onload = function() {
+
+		var colorThief = new ColorThief()
+		var textColor = colorThief.getColor(this).toString()
+
+		var cover = detailDom.getElementsByClassName("cover")[0]
 		cover.style.backgroundImage = "url(" + coverUrl + ")"
 
-
-		var title = detail.getElementsByClassName("title")[0]
+		var title = detailDom.getElementsByClassName("title")[0]
 		title.innerHTML = titleText
 		
-		var owner = detail.getElementsByClassName("owner")[0]
+		var owner = detailDom.getElementsByClassName("owner")[0]
 		owner.innerHTML = ownerText
 		owner.style.color = "rgb(" + textColor + ")"
 		
-		var track = detail.getElementsByClassName("track")[0]
-		while(track.childNodes.length!=0){
-			track.removeChild(track.childNodes[0])
-		}
-		track.setAttribute("list",musicTrack.toString())
-		
+		var track = detailDom.getElementsByClassName("track")[0]
+		cleanDomChilds(track)
+
 		for(var x=0;x<musicTrack.length;x++){
 			var songId = musicTrack[x]
 			var songName = songInfo[songId]["songName"]
@@ -669,10 +289,10 @@ function showDetail(coverUrl,titleText,ownerText,musicTrack){
 				// entry.appendChild(button)
 				entry.ondblclick = function(){
 					var songId = this.getAttribute("songId")
-					var musicTrack = this.parentNode.getAttribute("list").split(',')
-					addToPlayList(musicTrack,1)
+					// var musicTrack = this.parentNode.getAttribute("list").split(',')
+					addToPlayList(musicTrack,1)// can direct read!
 					player.index = inPlayList(songId)
-					readyPlay()
+					playSong()
 				}
 			}
 			else{
@@ -701,17 +321,328 @@ function showDetail(coverUrl,titleText,ownerText,musicTrack){
 			entry.appendChild(duration)
 			track.appendChild(entry)
 		}
+
 		var speed = 3200
-		var heightbefore = parseInt(detail.style.height.slice(0,-2))
+		var heightbefore = parseInt(detailDom.style.height.slice(0,-2))
 		var heightafter = track.offsetTop + track.offsetHeight + 28
 		var duration = (Math.abs(heightafter-heightbefore))/speed
-		detail.style.transitionDuration = duration+"s"
-		detail.style.height = heightafter+"px"
+		detailDom.style.transitionDuration = duration+"s"
+		detailDom.style.height = heightafter+"px"
 
-		detail.setAttribute("class","detail")
 	}
 
 }
+
+function newDetailDom(){
+	var detail = document.createElement('div')
+	detail.setAttribute("class","detail")
+	var point = document.createElement('div')
+	point.setAttribute("class","point")
+	var cover = document.createElement('div')
+	cover.setAttribute("class","cover")
+	var title = document.createElement('div')
+	title.setAttribute("class","title")
+	var owner = document.createElement('div')
+	owner.setAttribute("class","owner")
+	var track = document.createElement('div')
+	track.setAttribute("class","track")
+	detail.appendChild(point)
+	detail.appendChild(cover)
+	detail.appendChild(title)
+	detail.appendChild(owner)
+	detail.appendChild(track)
+	detail.style.height = '0px'
+	return detail
+}
+
+function newRecordDom(containerInstance,index,dataType){
+
+	var id = containerInstance.items[index]
+
+	if (dataType=="recipe"){
+		var recordClass = "recipe"
+		var coverUrl = recipeInfo[id]["coverUrl"]
+		var nameText = recipeInfo[id]["recipeName"]
+		var descriptionText = recipeInfo[id]["playCount"]
+		// var keepClass = ["keep keeped","keep"][]
+	}
+	else if (dataType=="album"){
+		var recordClass = "album"
+		var coverUrl = albumInfo[id]["coverUrl"]
+		var nameText = albumInfo[id]["albumName"]
+		var descriptionText = albumInfo[id]["publishDate"]
+	}
+	else if (dataType=="chart"){
+		var recordClass = "chart"
+		var coverUrl = chartInfo[id]["coverUrl"]
+		var nameText = chartInfo[id]["chartName"]
+		var descriptionText = chartInfo[id]["updateTime"]
+	}
+	else if (dataType=="artist"){
+		var recordClass = "artist"
+		var coverUrl = artistInfo[id]["artistImage"]
+		var nameText = artistInfo[id]["artistName"]
+		var descriptionText = artistInfo[id]["musicSize"]
+	}
+
+	var record = document.createElement('div')
+	record.setAttribute("class",recordClass)
+	var cover = document.createElement('div')
+	cover.setAttribute("class","cover")
+	cover.style.backgroundImage = "url("+coverUrl+"?param=240y240)"
+	cover.onclick = function(){
+		containerInstance.extendControl(index)
+	}
+	var name = document.createElement('div')
+	name.setAttribute("class","name")
+	name.innerHTML = nameText
+	var description = document.createElement('div')
+	description.setAttribute("class","description")
+	description.innerHTML = descriptionText
+	var operation = document.createElement('div')
+	operation.setAttribute("class","operation")
+	var play = document.createElement('button')
+	play.setAttribute("class","play")
+	play.onclick = function(){
+		containerInstance.play(index)
+	}
+	var add = document.createElement('button')
+	add.setAttribute("class","add")
+	add.onclick = function(){
+
+	}
+	var detail = document.createElement('button')
+	detail.setAttribute("class","detail")
+	detail.onclick = function(){
+		containerInstance.extendControl(index)
+	}
+	operation.appendChild(play)
+	operation.appendChild(add)
+	operation.appendChild(detail)
+	record.appendChild(cover)
+	record.appendChild(name)
+	record.appendChild(description)
+	record.appendChild(operation)
+	return record
+}
+
+
+function playRecord(params){
+
+	const id = params.id
+	const dataType = params.dataType
+
+	if (dataType=="recipe"){
+		if (recipeInfo[id]["musicTrack"] == null){
+			loadRecipeSongs(id,playRecord,params)
+			return
+		}
+		var musicTrack = recipeInfo[id]["musicTrack"]
+	}
+	else if (dataType=="chart"){
+		if (chartInfo[id]["musicTrack"] == null){
+			loadChartSongs(id,playRecord,params)
+			return
+		}
+		var musicTrack = chartInfo[id]["musicTrack"]
+	}
+	else if (dataType=="album"){
+		if (albumInfo[id]["musicTrack"] == null){
+			loadAlbumSongs(id,playRecord,params)
+			return
+		}
+		var musicTrack = albumInfo[id]["musicTrack"]
+	}
+	else if (dataType=="artist"){
+		if (artistInfo[id]["musicTrack"] == null){
+			loadArtistSongs(id,playRecord,params)
+			return
+		}
+		var musicTrack = artistInfo[id]["musicTrack"]
+	}
+
+	if (addToPlayList(musicTrack,1) == false){
+		showDialog(5,"一首都听不了欸","好吧","哦",noOperation,null,noOperation,null)
+		return
+	}
+	
+	playSong()
+
+}
+
+
+window.onload = function(){
+	mainTabs[0].onclick()
+}
+
+// const types = ["全部","华语","流行","摇滚","民谣","电子","轻音乐"]
+// const types = ["全部","华语","欧美","日语","韩语","粤语","小语种","流行","摇滚","民谣","电子","舞曲","说唱","轻音乐","爵士","乡村","R&B/Soul","古典","民族","英伦","金属","朋克","蓝调","雷鬼","世界音乐","拉丁","另类/独立","NewAge","古风","后摇","BossaNova","清晨","夜晚","学习","工作","午休","下午茶","地铁","驾车","运动","旅行","散步","酒吧","怀旧","清新","浪漫","性感","伤感","治愈","放松","孤独","感动","兴奋","快乐","安静","思念","影视原声","ACG","校园","游戏","70后","80后","90后","网络歌曲","KTV","经典","翻唱","吉他","钢琴","器乐","儿童","榜单","00后"]
+
+
+var tabs = {
+	"mainTabs":[
+		// playlist 0 
+		{
+			"subTabs":[
+				{
+					"text":"自建",
+					"containerInstance":new Container("recipe",loadUserRecipe,{userId:userId,self:1})
+				},
+				{
+					"text":"收藏",
+					"containerInstance":new Container("recipe",loadUserRecipe,{userId:userId,self:0})
+				},
+				{
+					"text":"精选",
+					"containerInstance":new Container("recipe",loadHighQualityRecipe,{cat:"全部"})
+				},
+				{
+					"text":"推荐",
+					"containerInstance":new Container("recipe",loadRecommandRecipe,{cat:"全部",order:"hot"})
+				},
+				{
+					"text":"榜单",
+					"containerInstance":new Container("chart",loadTopList,{})
+				},
+			],
+			"focus":3,
+		},
+		//album 1
+		{
+			"subTabs":[
+				// {
+				// 	"text":"我收藏的",
+				// 	"containerInstance":""
+				// },
+				// {
+				// 	"text":"热门新碟",
+				// 	"containerInstance":new Container("album",loadNewAlbums,{albumType:"ALL"})
+				// },
+				{
+					"text":"全部",
+					"containerInstance":new Container("album",loadNewAlbums,{albumType:"ALL"})
+				},
+				{
+					"text":"华语",
+					"containerInstance":new Container("album",loadNewAlbums,{albumType:"ZH"})
+				},
+				{
+					"text":"欧美",
+					"containerInstance":new Container("album",loadNewAlbums,{albumType:"EA"})
+				},
+				{
+					"text":"韩国",
+					"containerInstance":new Container("album",loadNewAlbums,{albumType:"KR"})
+				},
+				{
+					"text":"日本",
+					"containerInstance":new Container("album",loadNewAlbums,{albumType:"JP"})
+				},
+				
+			],
+			"focus":0,
+		},
+		//artist 2
+		{
+			"subTabs":[
+				// {
+				// 	"text":"入驻歌手",
+				// 	"containerInstance":new Container("artist",loadTopArtist,{})
+				// },
+				{
+					"text":"热门歌手",
+					"containerInstance":new Container("artist",loadTopArtist,{})
+				},
+				{
+					"text":"欅坂46",
+					"containerInstance":new Container("album",loadArtistAlbum,{artistId:12009134})
+				},
+				{
+					"text":"乃木坂46",
+					"containerInstance":new Container("album",loadArtistAlbum,{artistId:20846})
+				},
+				{
+					"text":"AKB48",
+					"containerInstance":new Container("album",loadArtistAlbum,{artistId:18355})
+				},
+				{
+					"text":"西野カナ",
+					"containerInstance":new Container("album",loadArtistAlbum,{artistId:17313})
+				},
+				{
+					"text":"浜崎あゆみ",
+					"containerInstance":new Container("album",loadArtistAlbum,{artistId:16405})
+				}
+			],
+			"focus":0,
+		},
+	],
+	"focus":0
+}
+
+for (let i=0;i<mainTabs.length;i++){
+	mainTabs[i].onclick = function(){
+		unfoucsTabs(maintab)
+		this.setAttribute("class","focus")
+		var mainTabFocusBeforeIndex = tabs["focus"]
+		// if(i == mainTabFocusBeforeIndex){
+		// 	return
+		// }
+		tabs["focus"] = i
+		var mainTabFocusBefore = tabs["mainTabs"][mainTabFocusBeforeIndex]
+		var mainTabFocusNow = tabs["mainTabs"][i]
+
+		var subTabFocusBeforeIndex = mainTabFocusBefore["focus"]
+		var subTabFocusBefore = mainTabFocusBefore["subTabs"][subTabFocusBeforeIndex]
+		subTabFocusBefore["containerInstance"].hide()
+		// console.log("hide",subTabFocusBefore)
+		cleanDomChilds(subtab)
+
+		for(let j = 0;j<mainTabFocusNow["subTabs"].length;j++){
+			var subTab = document.createElement('li')
+			subTab.innerHTML = mainTabFocusNow["subTabs"][j]["text"]
+			var separator = document.createElement('span')
+			separator.innerHTML = "/"
+			subTab.onclick = function(){
+				unfoucsTabs(subtab)
+				this.setAttribute("class","focus")
+				var subTabFocusBeforeIndex = mainTabFocusNow["focus"]
+				var subTabFocusBefore = mainTabFocusNow["subTabs"][subTabFocusBeforeIndex]
+				// if(j == subTabFocusBeforeIndex){
+				// 	return
+				// }
+				subTabFocusBefore["containerInstance"].hide()
+				// console.log("hide",subTabFocusBefore)
+				mainTabFocusNow["focus"] = j
+				var subTabFocusNow = mainTabFocusNow["subTabs"][j]
+				// console.log("recover",subTabFocusNow)
+				subTabFocusNow["containerInstance"].recover()		
+			}
+			subtab.appendChild(subTab)
+			if(j!=mainTabFocusNow["subTabs"].length-1)
+				subtab.appendChild(separator)
+		}
+
+		var subTabs = subtab.getElementsByTagName("li")
+		var subTabFocusNowIndex = mainTabFocusNow["focus"]
+		subTabs[subTabFocusNowIndex].setAttribute("class","focus")
+		mainTabFocusNow["subTabs"][subTabFocusNowIndex]["containerInstance"].recover()
+	}
+}
+
+function unfoucsTabs(dom){
+	var domTabs = dom.getElementsByTagName("li")
+	for(var i=0;i<domTabs.length;i++){
+		domTabs[i].setAttribute("class","")
+	}
+}
+
+function cleanDomChilds(dom){
+	while(dom.childNodes.length!=0){
+		dom.removeChild(dom.childNodes[0])
+	}
+}
+
 
 function inPlayList(songId){
 	for(var x=0;x<player.list.length;x++){
@@ -737,7 +668,7 @@ function addToPlayList(songIds,cover=0){
 		player.index = 0
 	}
 	else if(cover==0){
-		player.list = player.list.concat(checked);
+		player.list = player.list.concat(checked)
 	}
 	return true
 }

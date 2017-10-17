@@ -5,7 +5,7 @@ const fs = require('fs')
 
 // 保持一个对于 window 对象的全局引用，如果你不这样做，
 // 当 JavaScript 对象被垃圾回收， window 会被自动地关闭
-let win
+let mainWindow
 let Menu = require('electron').Menu
 
 var downloadTask = {}
@@ -47,7 +47,6 @@ function createWindow () {
 	})
 
 	// mainWindow.webContents.session.on('will-download', (event, item, webContents) => {
-
 	// 	const totalBytes = item.getTotalBytes();
 
 	// 	if(downloadTask["used"] == "playing-notify"){
@@ -55,13 +54,6 @@ function createWindow () {
 	// 		var iconPath = filePath
 	// 		try{
 	// 			fs.openSync(filePath, 'r+')
-	// 			notifier.notify({
-	// 				title: downloadTask["title"],
-	// 				message: downloadTask["message"],
-	// 				icon: iconPath,
-	// 				sound: false,
-	// 				wait: false
-	// 			}, false);
 	// 			event.preventDefault()
 	// 			return
 	// 		}
@@ -69,15 +61,10 @@ function createWindow () {
 	// 			console.log(e)
 	// 		}
 	// 	}
-	// 	else if(downloadTask["used"] == "song-download"){
-	// 		var filePath = path.join(app.getPath('downloads'),downloadTask["filename"]);
-	// 		var iconPath = ""
-	// 	}
 	// 	else{
 	// 		event.preventDefault()
 	// 		return
 	// 	}
-	// 	console.log(filePath)
 	// 	item.setSavePath(filePath);
 
 	// 	item.on('updated', (event, state) => {
@@ -96,13 +83,6 @@ function createWindow () {
 	// 	item.once('done', (event, state) => {
 	// 		if (state === 'completed') {
 	// 			console.log('Download successfully')
-	// 			notifier.notify({
-	// 				title: downloadTask["title"],
-	// 				message: downloadTask["message"],
-	// 				icon: iconPath,
-	// 				sound: false,
-	// 				wait: false
-	// 			}, false);
 	// 		}
 	// 	})
 	// });
@@ -128,10 +108,6 @@ app.on('activate', () => {
 	if (mainWindow === null) {
 		createWindow()
 	}
-	// session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
-	// 	details.requestHeaders['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Electron/1.7.5 Safari/537.36'
-	// 	callback({cancel: false, requestHeaders: details.requestHeaders})
-	// })
 })
 
 // ipcMain.on('download', (event, task) => {
