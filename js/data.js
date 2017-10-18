@@ -18,7 +18,7 @@ function loadRecommandRecipe(containerInstance,params){
 		cat: cat,
 		order: order,
 		offset: offset,
-		total: 'true',
+		total: "true",
 		limit: 50
 	}
 
@@ -35,9 +35,9 @@ function loadRecommandRecipe(containerInstance,params){
 				var recipeName = allRecipe[i]["name"]
 				var coverUrl = allRecipe[i]["coverImgUrl"]
 				var playCount = allRecipe[i]["playCount"]
-				var description = allRecipe[i]["description"]
-				var creator = allRecipe[i]["creator"]["nickname"]
-				var oneRecipe = {"recipeName":recipeName,"playCount":playCount,"coverUrl":coverUrl,"description":description,"creator":creator}
+				// var description = allRecipe[i]["description"]
+				// var creator = allRecipe[i]["creator"]["nickname"]
+				var oneRecipe = {"recipeName":recipeName,"playCount":playCount,"coverUrl":coverUrl}
 				recipeInfo[recipeId] = oneRecipe
 			}
 			containerInstance.add(recipeId)
@@ -51,10 +51,36 @@ function loadRecommandRecipe(containerInstance,params){
 
 }
 
-function loadHighQualityRecipe(containerInstance,params){
+function loadPersonalizedRecipe(containerInstance){
 
-	if (loading == 1){console.log("loading");return;}
-	else{loading = 1}
+	const data = {}
+
+	webApiRequest("POST","/weapi/personalized/playlist",data,dataArrive)
+
+	function dataArrive(responseText) {
+
+		var allRecipe = JSON.parse(responseText)
+		allRecipe = allRecipe["result"]
+		for (var i=0;i<allRecipe.length;i++)
+		{
+			var recipeId = allRecipe[i]["id"]
+			if (!(recipeId in recipeInfo)){
+				var recipeName = allRecipe[i]["name"]
+				var coverUrl = allRecipe[i]["picUrl"]
+				var playCount = parseInt(allRecipe[i]["playCount"])
+				var oneRecipe = {"recipeName":recipeName,"playCount":playCount,"coverUrl":coverUrl}
+				recipeInfo[recipeId] = oneRecipe
+			}
+			containerInstance.add(recipeId)
+		}
+		containerInstance.refresh()
+		containerInstance.scrollStop()
+	}
+
+}
+
+
+function loadHighQualityRecipe(containerInstance,params){
 
 	const cat = params.cat ? params.cat : "全部"
 
@@ -78,25 +104,21 @@ function loadHighQualityRecipe(containerInstance,params){
 				var recipeName = allRecipe[i]["name"]
 				var coverUrl = allRecipe[i]["coverImgUrl"]
 				var playCount = allRecipe[i]["playCount"]
-				var description = allRecipe[i]["description"]
-				var creator = allRecipe[i]["creator"]["nickname"]
-				var oneRecipe = {"recipeName":recipeName,"playCount":playCount,"coverUrl":coverUrl,"description":description,"creator":creator}
+				// var description = allRecipe[i]["description"]
+				// var creator = allRecipe[i]["creator"]["nickname"]
+				var oneRecipe = {"recipeName":recipeName,"playCount":playCount,"coverUrl":coverUrl}
 				recipeInfo[recipeId] = oneRecipe
 			}
 			containerInstance.add(recipeId)
 		}
 		containerInstance.refresh()
 		containerInstance.scrollStop()
-		loading = 0
 	}
 
 }
 
 
 function loadUserRecipe(containerInstance,params){
-
-	if (loading == 1){console.log("loading");return;}
-	else{loading = 1}
 
 	const userId = params.userId
 	const self = params.self
@@ -105,7 +127,7 @@ function loadUserRecipe(containerInstance,params){
 		offset: 0,
 		uid: userId,
 		limit: 1000,
-		csrf_token: ''
+		csrf_token: ""
 	}
 
 	webApiRequest("POST","/weapi/user/playlist",data,dataArrive)
@@ -135,24 +157,19 @@ function loadUserRecipe(containerInstance,params){
 		}
 		containerInstance.refresh()
 		containerInstance.scrollStop()
-		loading = 0
 	}
 }
 
 function loadTopArtist(containerInstance,params){
 
-	if (loading == 1){console.log("loading");return;}
-	else{loading = 1}
-
 	// const type = params.type
-	// const offset = containerInstance.getOffset()
 
 	const data = {
 		// type: type,
 		offset: 0,
 		limit: 100,
 		total: false,
-		csrf_token: ''
+		csrf_token: ""
 	}
 
 	webApiRequest("POST","/weapi/artist/top",data,dataArrive)
@@ -186,7 +203,6 @@ function loadTopArtist(containerInstance,params){
 		}
 		containerInstance.refresh()
 		containerInstance.scrollStop()
-		loading = 0
 	}
 
 }
@@ -242,6 +258,43 @@ function loadArtistAlbum(containerInstance,params){
 
 }
 
+function loadHotAlbums(containerInstance){
+
+	const data = {
+		"csrf_token": ""
+	}
+
+	webApiRequest("POST","/api/discovery/newAlbum",data,dataArrive)
+
+	function dataArrive(responseText) {
+		var albumData = JSON.parse(responseText)
+		allAlbum = albumData["albums"]
+		for (var i=0;i<allAlbum.length;i++)
+		{
+			var albumId = allAlbum[i]["id"]
+			var artistId = allAlbum[i]["artist"]["id"]
+			if (!(albumId in albumInfo)){
+				var albumName = allAlbum[i]["name"]
+				var coverUrl = allAlbum[i]["picUrl"]
+				var publishDate = transformPublishDate(allAlbum[i]["publishTime"])
+				var oneAlbum = {"albumName":albumName,"publishDate":publishDate,"coverUrl":coverUrl,"artistId":artistId}
+				albumInfo[albumId] = oneAlbum
+			}
+			else if(!("publishDate" in albumInfo[albumId]))
+				albumInfo[albumId]["publishDate"] = publishDate
+			if (!(artistId in artistInfo)){
+				var artistName = allAlbum[i]["artist"]["name"]
+				var oneArtist = {"artistName":artistName}
+				artistInfo[artistId] = oneArtist
+			}
+			containerInstance.add(albumId)
+		}
+		containerInstance.refresh()
+		containerInstance.scrollStop()
+	}
+
+}
+
 function loadNewAlbums(containerInstance,params){
 
 	const albumType = params.albumType ? params.albumType : "ALL"
@@ -252,10 +305,10 @@ function loadNewAlbums(containerInstance,params){
 
 	// type ALL,ZH,EA,KR,JP
 	const data = {
-		'offset': offset,
-		'total': true,
-		'limit': 35,
-		'area': albumType,
+		"offset": offset,
+		"total": true,
+		"limit": 35,
+		"area": albumType,
 		"csrf_token": ""
 	}
 
@@ -295,7 +348,8 @@ function loadNewAlbums(containerInstance,params){
 }
 
 function loadTopList(containerInstance){
-	var xhr = new XMLHttpRequest();
+
+	var xhr = new XMLHttpRequest()
 
 	xhr.onreadystatechange=function()
 	{
@@ -305,7 +359,7 @@ function loadTopList(containerInstance){
 				try{
 					var toplist = xhr.responseText.match(/(<div id="toplist"[^>]+?>[\s\S]+?)<div class="g-mn3">/)[0]
 					var domParser = new DOMParser();
-					var toplist = domParser.parseFromString(toplist,'text/html');
+					var toplist = domParser.parseFromString(toplist,"text/html");
 					var allChart = toplist.getElementsByTagName("li")
 					for (var i=0;i<allChart.length;i++)
 					{
@@ -330,8 +384,9 @@ function loadTopList(containerInstance){
 		}
 	}
 
-	xhr.open('GET',"https://music.163.com/discover/toplist");
-	xhr.send();
+	xhr.open("GET","https://music.163.com/discover/toplist")
+	xhr.send()
+
 }
 
 
@@ -383,8 +438,10 @@ function loadChartSongs(chartId,callBack,callBackParams){
 			}
 		}
 	}
-	xhr.open('GET',"http://music.163.com/api/playlist/detail?id="+chartId)
+
+	xhr.open("GET","http://music.163.com/api/playlist/detail?id="+chartId)
 	xhr.send()
+
 }
 
 function loadArtistSongs(artistId,callBack,callBackParams){
@@ -394,9 +451,9 @@ function loadArtistSongs(artistId,callBack,callBackParams){
 	}
 
 	const data = {
-		csrf_token: ''
+		csrf_token: ""
 	}
-	// /weapi/v1/artist/${id}?offset=${offset}&limit=${limit}
+
 	webApiRequest("POST","/weapi/v1/artist/"+artistId,data,dataArrive)
 
 	function dataArrive(responseText) {
@@ -445,7 +502,7 @@ function loadAlbumSongs(albumId,callBack,callBackParams){
 	}
 
 	const data = {
-		csrf_token: ''
+		csrf_token: ""
 	}
 
 	webApiRequest("POST","/weapi/v1/album/"+albumId,data,dataArrive)
@@ -502,10 +559,15 @@ function loadRecipeSongs(recipeId,callBack,callBackParams){
 	webApiRequest("POST","/weapi/v3/playlist/detail?csrf_token=",data,dataArrive)
 
 	function dataArrive(responseText) {
+
 		var recipeData = JSON.parse(responseText)
+		recipeInfo[recipeId]["description"] = recipeData["playlist"]["description"]
+		recipeInfo[recipeId]["creator"] = recipeData["playlist"]["creator"]["nickname"]
+
 		var musicTrack = []
 		var trackInfo = recipeData["playlist"]["tracks"]
 		var privileges = recipeData["privileges"]
+
 		if(trackInfo.length!=privileges.length){console.log("error","tracks",trackInfo.length,"privileges",privileges.length)}//debug
 		for (var x=0;x<trackInfo.length;x++)
 		{
@@ -550,8 +612,7 @@ function checkSongUrlStatus(songId){
 	var now = new Date().getTime()
 	if (songInfo[songId]["status"] == -1||songInfo[songId]["status"] == -200)
 		return -2
-	// fee = 8 is ok
-	if(songInfo[songId]["fee"] == 1||songInfo[songId]["fee"] == 16)
+	else if(songInfo[songId]["fee"] == 1||songInfo[songId]["fee"] == 4||songInfo[songId]["fee"] == 16)// fee = 8 is ok
 		return -1
 	else if(songInfo[songId]["songUrl"] == null||now>songInfo[songId]["expiration"])
 		return 0
@@ -576,13 +637,13 @@ function getSongsInfo(songIds,callBack,callBackParams){
 	const data = {
 		c: JSON.stringify(c),
 		ids: JSON.stringify(ids),
-		csrf_token: ''
+		csrf_token: ""
 	}
 
 	// const data = {
 	// 	c: JSON.stringify([{id:songId}]),
 	// 	ids: JSON.stringify([songId]),
-	// 	csrf_token: ''
+	// 	csrf_token: ""
 	// }
 
 	webApiRequest("POST","/weapi/v3/song/detail",data,dataArrive)
@@ -745,34 +806,6 @@ function webApiRequest(method="POST",path,data,callBack) {
 }
 
 
-// function randomUserAgent() {
-// 	const userAgentList = [
-// 		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36',
-// 		'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
-// 		'Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Mobile Safari/537.36',
-// 		'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Mobile Safari/537.36',
-// 		'Mozilla/5.0 (Linux; Android 5.1.1; Nexus 6 Build/LYZ28E) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Mobile Safari/537.36',
-// 		'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_2 like Mac OS X) AppleWebKit/603.2.4 (KHTML, like Gecko) Mobile/14F89;GameHelper',
-// 		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/603.2.4 (KHTML, like Gecko) Version/10.1.1 Safari/603.2.4',
-// 		'Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 like Mac OS X) AppleWebKit/602.1.38 (KHTML, like Gecko) Version/10.0 Mobile/14A300 Safari/602.1',
-// 		'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36',
-// 		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:46.0) Gecko/20100101 Firefox/46.0',
-// 		'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:46.0) Gecko/20100101 Firefox/46.0',
-// 		'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)',
-// 		'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)',
-// 		'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)',
-// 		'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Win64; x64; Trident/6.0)',
-// 		'Mozilla/5.0 (Windows NT 6.3; Win64, x64; Trident/7.0; rv:11.0) like Gecko',
-// 		'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/13.10586',
-// 		'Mozilla/5.0 (iPad; CPU OS 10_0 like Mac OS X) AppleWebKit/602.1.38 (KHTML, like Gecko) Version/10.0 Mobile/14A300 Safari/602.1',
-		
-// 	]
-// 	const num = Math.floor(Math.random() * userAgentList.length)
-// 	return userAgentList[num]
-// }
-
-
-
 // const os = require('os')
 const path = require('path')
 const fs = require('fs')
@@ -811,11 +844,11 @@ function songDownload(songId){
 	// console.log(coverPath)
 
 	var songStream = fs.createWriteStream(songPath)
-	request(songUrl).pipe(songStream).on('close', downloadCover)
+	request(songUrl).pipe(songStream).on("close", downloadCover)
 
 	function downloadCover(){
 		var coverStream = fs.createWriteStream(coverPath)
-		request(coverUrl).pipe(coverStream).on('close', writeTag)
+		request(coverUrl).pipe(coverStream).on("close", writeTag)
 	}
 
 	function writeTag(){
@@ -839,5 +872,6 @@ function songDownload(songId){
 				}
 			}
 		})
+		btn.download.setAttribute("class","download")
 	}
 }

@@ -177,6 +177,20 @@ button.list::after{
 button.random.on,button.cycle.all,button.cycle.single{
 	background-color: rgba(255,255,255,0.2);
 }
+button.download.doing{
+	-webkit-animation: twinkle 1s ease-in-out infinite;
+}
+@-webkit-keyframes twinkle {
+	0% {
+		background-color: rgba(255,255,255,0.2);
+	}
+	50% {
+		background-color: rgba(255,255,255,0);
+	}
+	100% {
+		background-color: rgba(255,255,255,0.2);
+	}
+}
 
 #playbar .cover,#playbar>.song,#playbar>.related,#playbar #timeline,#playbar #controller,#playbar #extra,#playbar .bgblur,#playbar .drag{
 	position: absolute;
@@ -253,7 +267,7 @@ button.random.on,button.cycle.all,button.cycle.single{
 	max-width: initial;
 }
 #playbar.extend>.song,#playbar.extend>.related{
-	font-family: "Microsoft Yahei Light";
+	font-weight: 200;
 	left: 150px;
 	max-width: calc(100% - 150px - 24px);
 }
@@ -321,7 +335,7 @@ button.random.on,button.cycle.all,button.cycle.single{
 	padding: 0 28px;
 	border-bottom: 1px solid rgba(255,255,255,0.05);
 	cursor: default;
-	font-family: "Microsoft Yahei Light";
+	font-weight: 200;
 	display: flex;
 }
 #playlist .entry:hover{

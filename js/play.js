@@ -35,6 +35,7 @@ btn.list.onclick = function(){
 btn.download.onclick = function(){
 	var songId = player.list[player.index]
 	songDownload(songId)
+	this.setAttribute("class","download doing")
 }
 
 

@@ -231,7 +231,7 @@ function fillDetailDom(params){
 	else if (dataType=="recipe"){
 		var coverUrl = recipeInfo[id]["coverUrl"] + sizeControl
 		var titleText = recipeInfo[id]["recipeName"]
-		var ownerText = recipeInfo[id]["creator"]
+		var ownerText = "by " + recipeInfo[id]["creator"]
 		var musicTrack = recipeInfo[id]["musicTrack"]
 	}
 	else if (dataType=="chart"){
@@ -493,11 +493,15 @@ var tabs = {
 					"containerInstance":new Container("recipe",loadUserRecipe,{userId:userId,self:0})
 				},
 				{
+					"text":"推荐",
+					"containerInstance":new Container("recipe",loadPersonalizedRecipe,{})
+				},
+				{
 					"text":"精选",
 					"containerInstance":new Container("recipe",loadHighQualityRecipe,{cat:"全部"})
 				},
 				{
-					"text":"推荐",
+					"text":"热门",
 					"containerInstance":new Container("recipe",loadRecommandRecipe,{cat:"全部",order:"hot"})
 				},
 				{
@@ -505,7 +509,7 @@ var tabs = {
 					"containerInstance":new Container("chart",loadTopList,{})
 				},
 			],
-			"focus":3,
+			"focus":2,
 		},
 		//album 1
 		{
@@ -514,10 +518,10 @@ var tabs = {
 				// 	"text":"我收藏的",
 				// 	"containerInstance":""
 				// },
-				// {
-				// 	"text":"热门新碟",
-				// 	"containerInstance":new Container("album",loadNewAlbums,{albumType:"ALL"})
-				// },
+				{
+					"text":"热门",
+					"containerInstance":new Container("album",loadHotAlbums,{})
+				},
 				{
 					"text":"全部",
 					"containerInstance":new Container("album",loadNewAlbums,{albumType:"ALL"})
@@ -550,7 +554,7 @@ var tabs = {
 				// 	"containerInstance":new Container("artist",loadTopArtist,{})
 				// },
 				{
-					"text":"热门歌手",
+					"text":"热门",
 					"containerInstance":new Container("artist",loadTopArtist,{})
 				},
 				{
