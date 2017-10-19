@@ -814,6 +814,9 @@ const shell = require('electron').shell
 
 function songDownload(songId){
 
+	const songDir = path.join(__dirname,"download")
+	const coverDir = path.join(__dirname,"cache")
+
 	var albumId = songInfo[songId]["albumId"]
 	var artistId = songInfo[songId]["artistId"]
 
@@ -835,20 +838,24 @@ function songDownload(songId){
 	songFile = songFile.replace("\\","＼")
 
 	var coverFile = albumId + ".jpg"
-	var songPath = path.join(__dirname+"/download",songFile)
-	var coverPath = path.join(__dirname+"/cache",coverFile)
 
-	// console.log(songUrl)
-	// console.log(coverUrl)
-	// console.log(songPath)
-	// console.log(coverPath)
+	var songPath = path.join(songDir,songFile)
+	var coverPath = path.join(coverDir,coverFile)
 
-	var songStream = fs.createWriteStream(songPath)
-	request(songUrl).pipe(songStream).on("close", downloadCover)
+	downloadMusic()
+
+	function downloadMusic(){
+		fs.mkdir(songDir, 0777, function(error){
+			var songStream = fs.createWriteStream(songPath)
+			request(songUrl).pipe(songStream).on("close", downloadCover)
+		})
+	}
 
 	function downloadCover(){
-		var coverStream = fs.createWriteStream(coverPath)
-		request(coverUrl).pipe(coverStream).on("close", writeTag)
+		fs.mkdir(coverDir, 0777, function(error){
+			var coverStream = fs.createWriteStream(coverPath)
+			request(coverUrl).pipe(coverStream).on("close", writeTag)
+		})
 	}
 
 	function writeTag(){

@@ -1,6 +1,9 @@
+<img src="resource/mac.png" alt="logo" width="144" height="144"/>
+*Rebound of [Music Service Branding - G](https://dribbble.com/shots/1203920-Music-Service-Branding-G) by [Zack McBride](https://dribbble.com/zMcBride)*
+
 # Glee
 Built by Electron, Vanilla JS, Plain CSS
-> 主要是感觉 "目前最好的网易云音乐客户端 [trazyn/ieaseMusic](https://github.com/trazyn/ieaseMusic)" 不太和我审美
+> 勉强算是 "目前最好的网易云音乐客户端 [trazyn/ieaseMusic](https://github.com/trazyn/ieaseMusic)" 的竞品
 
 ## Description
 - 基于Electron，~~Windows专属~~ (自己试了下在macOS上也还是可以看的=。=)

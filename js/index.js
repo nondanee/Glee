@@ -231,7 +231,7 @@ function fillDetailDom(params){
 	else if (dataType=="recipe"){
 		var coverUrl = recipeInfo[id]["coverUrl"] + sizeControl
 		var titleText = recipeInfo[id]["recipeName"]
-		var ownerText = "by " + recipeInfo[id]["creator"]
+		var ownerText = "@" + recipeInfo[id]["creator"]
 		var musicTrack = recipeInfo[id]["musicTrack"]
 	}
 	else if (dataType=="chart"){

@@ -177,7 +177,7 @@ button.list::after{
 button.random.on,button.cycle.all,button.cycle.single{
 	background-color: rgba(255,255,255,0.2);
 }
-button.download.doing{
+button.download.ing{
 	-webkit-animation: twinkle 1s ease-in-out infinite;
 }
 @-webkit-keyframes twinkle {

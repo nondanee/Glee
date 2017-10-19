@@ -7,6 +7,9 @@ const fs = require('fs')
 // 当 JavaScript 对象被垃圾回收， window 会被自动地关闭
 let mainWindow
 let Menu = require('electron').Menu
+let mac = process.platform === 'darwin'
+let taskbarIcon = path.join(__dirname, '/resource/win.png')
+let dockIcon = path.join(__dirname, '/resource/mac.png')
 
 var downloadTask = {}
 
@@ -26,7 +29,13 @@ function createWindow () {
 		//	 experimentalFeatures: true
 		// },
 		// transparent: true
+		title: "Glee",
+		icon: taskbarIcon
 	})
+
+	if(mac){
+		app.dock.setIcon(dockIcon)
+	}
 
 	// 加载应用的 index.html。
 	mainWindow.loadURL(url.format({

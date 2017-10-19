@@ -304,9 +304,7 @@ container>.detail{
 	overflow: hidden;
 	height: 0px;
 	/*-webkit-transition: height 0.2s ease-out;*/
-
 	-webkit-transition-property:height;
-	-webkit-transition-duration:;
 	-webkit-transition-timing-function:linear;
 }
 
