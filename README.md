@@ -1,4 +1,4 @@
-<img src="resource/mac.png" alt="logo" width="144" height="144"/>
+<img src="resource/mac.png" alt="logo" width="144" height="144" align="right" />
 
 
 # Glee
