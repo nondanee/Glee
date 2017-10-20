@@ -8,8 +8,8 @@ const fs = require('fs')
 let mainWindow
 let Menu = require('electron').Menu
 let mac = process.platform === 'darwin'
-let taskbarIcon = path.join(__dirname, '/resource/win.png')
-let dockIcon = path.join(__dirname, '/resource/mac.png')
+let taskbarIcon = path.join(__dirname, '/resource/glee.png')
+let dockIcon = path.join(__dirname, '/resource/dock.png')
 
 var downloadTask = {}
 
