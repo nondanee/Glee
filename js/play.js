@@ -314,7 +314,7 @@ function rebuildPlayList(){
 
 	cleanDomChilds(playlist)
 	
-	for (var x=0;x<player.list.length;x++){
+	for (let x=0;x<player.list.length;x++){
 		var songId = player.list[x]
 		if (!(songId in songInfo)){
 			getSongsInfo(player.list,rebuildPlayList)
@@ -332,18 +332,15 @@ function rebuildPlayList(){
 		song.innerHTML = songName
 		var play = document.createElement('button')
 		play.setAttribute("class","play")
-		play.setAttribute("index",x)
 		play.onclick = function (){
-			player.index = parseInt(this.getAttribute("index"))
+			player.index = x
 			playSong()
 		}
 		var remove = document.createElement('button')
 		remove.setAttribute("class","remove")
-		remove.setAttribute("index",x)
 		remove.onclick = function (){
-			index = parseInt(this.getAttribute("index"))
-			list = player.list
-			list.splice(index,1)
+			let list = player.list
+			list.splice(x,1)
 			player.list = list
 			if(index==player.index&&player.paused==false)
 				playSong()

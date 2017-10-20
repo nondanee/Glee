@@ -44,13 +44,11 @@ storage.get('player', function(error, reserve) {
 	}
 })
 
-const userId = 38050391
 
 const container = document.getElementsByTagName("container")[0]
 const maintab = document.getElementById("maintab")
 const subtab = document.getElementById("subtab")
 const mainTabs = maintab.getElementsByTagName("li")
-
 
 
 function Container(dataType,loadMoreFunc,loadMoreFuncParams) {
@@ -432,33 +430,35 @@ function playRecord(params){
 	const id = params.id
 	const dataType = params.dataType
 
+	let musicTrack = []
+
 	if (dataType=="recipe"){
 		if (recipeInfo[id]["musicTrack"] == null){
 			loadRecipeSongs(id,playRecord,params)
 			return
 		}
-		var musicTrack = recipeInfo[id]["musicTrack"]
+		musicTrack = recipeInfo[id]["musicTrack"]
 	}
 	else if (dataType=="chart"){
 		if (chartInfo[id]["musicTrack"] == null){
 			loadChartSongs(id,playRecord,params)
 			return
 		}
-		var musicTrack = chartInfo[id]["musicTrack"]
+		musicTrack = chartInfo[id]["musicTrack"]
 	}
 	else if (dataType=="album"){
 		if (albumInfo[id]["musicTrack"] == null){
 			loadAlbumSongs(id,playRecord,params)
 			return
 		}
-		var musicTrack = albumInfo[id]["musicTrack"]
+		musicTrack = albumInfo[id]["musicTrack"]
 	}
 	else if (dataType=="artist"){
 		if (artistInfo[id]["musicTrack"] == null){
 			loadArtistSongs(id,playRecord,params)
 			return
 		}
-		var musicTrack = artistInfo[id]["musicTrack"]
+		musicTrack = artistInfo[id]["musicTrack"]
 	}
 
 	if (addToPlayList(musicTrack,1) == false){
@@ -472,6 +472,12 @@ function playRecord(params){
 
 
 window.onload = function(){
+	for(let i=0;i<favoriteArtists.length;i++){
+		tabs["mainTabs"][2]["subTabs"].push({
+			"text":favoriteArtists[i]["name"],
+			"containerInstance":new Container("album",loadArtistAlbum,{artistId:favoriteArtists[i]["id"]})
+		})
+	}
 	mainTabs[0].onclick()
 }
 
@@ -479,7 +485,7 @@ window.onload = function(){
 // const types = ["全部","华语","欧美","日语","韩语","粤语","小语种","流行","摇滚","民谣","电子","舞曲","说唱","轻音乐","爵士","乡村","R&B/Soul","古典","民族","英伦","金属","朋克","蓝调","雷鬼","世界音乐","拉丁","另类/独立","NewAge","古风","后摇","BossaNova","清晨","夜晚","学习","工作","午休","下午茶","地铁","驾车","运动","旅行","散步","酒吧","怀旧","清新","浪漫","性感","伤感","治愈","放松","孤独","感动","兴奋","快乐","安静","思念","影视原声","ACG","校园","游戏","70后","80后","90后","网络歌曲","KTV","经典","翻唱","吉他","钢琴","器乐","儿童","榜单","00后"]
 
 
-var tabs = {
+const tabs = {
 	"mainTabs":[
 		// playlist 0 
 		{
@@ -557,26 +563,6 @@ var tabs = {
 					"text":"热门",
 					"containerInstance":new Container("artist",loadTopArtist,{})
 				},
-				{
-					"text":"欅坂46",
-					"containerInstance":new Container("album",loadArtistAlbum,{artistId:12009134})
-				},
-				{
-					"text":"乃木坂46",
-					"containerInstance":new Container("album",loadArtistAlbum,{artistId:20846})
-				},
-				{
-					"text":"AKB48",
-					"containerInstance":new Container("album",loadArtistAlbum,{artistId:18355})
-				},
-				{
-					"text":"西野カナ",
-					"containerInstance":new Container("album",loadArtistAlbum,{artistId:17313})
-				},
-				{
-					"text":"浜崎あゆみ",
-					"containerInstance":new Container("album",loadArtistAlbum,{artistId:16405})
-				}
 			],
 			"focus":0,
 		},
@@ -635,8 +621,8 @@ for (let i=0;i<mainTabs.length;i++){
 }
 
 function unfoucsTabs(dom){
-	var domTabs = dom.getElementsByTagName("li")
-	for(var i=0;i<domTabs.length;i++){
+	let domTabs = dom.getElementsByTagName("li")
+	for(let i=0;i<domTabs.length;i++){
 		domTabs[i].setAttribute("class","")
 	}
 }
@@ -649,19 +635,19 @@ function cleanDomChilds(dom){
 
 
 function inPlayList(songId){
-	for(var x=0;x<player.list.length;x++){
-		if(player.list[x]==songId)
-			return x
+	for(let i=0;i<player.list.length;i++){
+		if(player.list[i]==songId)
+			return i
 	}
 	return -1
 }
 
 
 function addToPlayList(songIds,cover=0){
-	var checked = []
-	for(var x=0;x<songIds.length;x++){
-		if (checkSongUrlStatus(songIds[x])>=0){
-			checked.push(songIds[x])
+	let checked = []
+	for(let i=0;i<songIds.length;i++){
+		if (checkSongUrlStatus(songIds[i])>=0){
+			checked.push(songIds[i])
 		}
 	}
 	if(checked.length==0){

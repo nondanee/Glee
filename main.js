@@ -54,47 +54,6 @@ function createWindow () {
 		// 与此同时，你应该删除相应的元素。
 		mainWindow = null
 	})
-
-	// mainWindow.webContents.session.on('will-download', (event, item, webContents) => {
-	// 	const totalBytes = item.getTotalBytes();
-
-	// 	if(downloadTask["used"] == "playing-notify"){
-	// 		var filePath = path.join(__dirname+"/cache",downloadTask["filename"]);
-	// 		var iconPath = filePath
-	// 		try{
-	// 			fs.openSync(filePath, 'r+')
-	// 			event.preventDefault()
-	// 			return
-	// 		}
-	// 		catch(e){
-	// 			console.log(e)
-	// 		}
-	// 	}
-	// 	else{
-	// 		event.preventDefault()
-	// 		return
-	// 	}
-	// 	item.setSavePath(filePath);
-
-	// 	item.on('updated', (event, state) => {
-	// 		if (state === 'interrupted') {
-	// 				console.log('Download is interrupted but can be resumed')
-	// 		} 
-	// 		else if (state === 'progressing') {
-	// 			if (item.isPaused()) {
-	// 				console.log('Download is paused')
-	// 			}
-	// 			else {
-	// 				console.log(`Received bytes: ${item.getReceivedBytes()}`)
-	// 			}
-	// 		}
-	// 	})
-	// 	item.once('done', (event, state) => {
-	// 		if (state === 'completed') {
-	// 			console.log('Download successfully')
-	// 		}
-	// 	})
-	// });
 	
 }
 // Electron 会在初始化后并准备

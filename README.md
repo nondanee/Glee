@@ -32,6 +32,57 @@ Description            | Keys
 上一曲                 | <kbd>Ctrl</kbd> <kbd>←</kbd>
 下一曲                 | <kbd>Ctrl</kbd> <kbd>→</kbd>
 
+## Personalize
+由于懒，而且没想法在界面上加信息录入怎么比较好看
+所以自己手动改吧
+用户id，关注的歌手id (怎么得到？在网易云网易版里搜一下，URL里的就是)
+都写在[js/user.js](./js/user.js)里
+```
+const userId = 38050391
+const favoriteArtists = [
+	{
+		"name":"欅坂46",
+		"id":12009134
+	},
+	{
+		"name":"乃木坂46",
+		"id":20846
+	},
+	{
+		"name":"AKB48",
+		"id":18355
+	},
+	{
+		"name":"西野カナ",
+		"id":17313
+	},
+	{
+		"name":"熊木杏里",
+		"id":16696
+	},
+]
+```
+~~有没有乃团饭欅坂饭求勾搭~~
+
+## Run&&Package
+
+### 下下来
+```
+git clone https://github.com/nondanee/Glee.git
+cd Glee/
+```
+### 将就用
+```
+npm install
+npm start
+```
+### 打个包
+```
+npm run package-win
+npm run package-mac
+```
+已经全局装上electron全家桶的大佬对不起了，再装一遍吧😂
+
 ## References
 - ~~[jariz/vibrant.js](https://github.com/jariz/vibrant.js)~~  
 感觉很有名，描述是"a javascript port of the awesome Palette class in the Android support library"。不过对比安卓上Phonograph的变色效果，总觉得不太理想，就把issue翻了个遍。按照描述自然感觉是从java的palette类翻译过来的，结果发现作者说是基于color-thief实现的，标题党立功了？另外作者有提到material-palette，用了下感觉确实比这个好

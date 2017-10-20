@@ -1,3 +1,5 @@
+'use strict'
+
 var albumInfo = {}
 var recipeInfo = {}
 var chartInfo = {}
@@ -26,18 +28,18 @@ function loadRecommandRecipe(containerInstance,params){
 
 	function dataArrive(responseText) {
 
-		var allRecipe = JSON.parse(responseText)
+		let allRecipe = JSON.parse(responseText)
 		allRecipe = allRecipe["playlists"]
-		for (var i=0;i<allRecipe.length;i++)
+		for (let i=0;i<allRecipe.length;i++)
 		{
-			var recipeId = allRecipe[i]["id"]
+			let recipeId = allRecipe[i]["id"]
 			if (!(recipeId in recipeInfo)){
-				var recipeName = allRecipe[i]["name"]
-				var coverUrl = allRecipe[i]["coverImgUrl"]
-				var playCount = allRecipe[i]["playCount"]
-				// var description = allRecipe[i]["description"]
-				// var creator = allRecipe[i]["creator"]["nickname"]
-				var oneRecipe = {"recipeName":recipeName,"playCount":playCount,"coverUrl":coverUrl}
+				let recipeName = allRecipe[i]["name"]
+				let coverUrl = allRecipe[i]["coverImgUrl"]
+				let playCount = allRecipe[i]["playCount"]
+				// let description = allRecipe[i]["description"]
+				// let creator = allRecipe[i]["creator"]["nickname"]
+				let oneRecipe = {"recipeName":recipeName,"playCount":playCount,"coverUrl":coverUrl}
 				recipeInfo[recipeId] = oneRecipe
 			}
 			containerInstance.add(recipeId)
@@ -59,16 +61,16 @@ function loadPersonalizedRecipe(containerInstance){
 
 	function dataArrive(responseText) {
 
-		var allRecipe = JSON.parse(responseText)
+		let allRecipe = JSON.parse(responseText)
 		allRecipe = allRecipe["result"]
-		for (var i=0;i<allRecipe.length;i++)
+		for (let i=0;i<allRecipe.length;i++)
 		{
-			var recipeId = allRecipe[i]["id"]
+			let recipeId = allRecipe[i]["id"]
 			if (!(recipeId in recipeInfo)){
-				var recipeName = allRecipe[i]["name"]
-				var coverUrl = allRecipe[i]["picUrl"]
-				var playCount = parseInt(allRecipe[i]["playCount"])
-				var oneRecipe = {"recipeName":recipeName,"playCount":playCount,"coverUrl":coverUrl}
+				let recipeName = allRecipe[i]["name"]
+				let coverUrl = allRecipe[i]["picUrl"]
+				let playCount = parseInt(allRecipe[i]["playCount"])
+				let oneRecipe = {"recipeName":recipeName,"playCount":playCount,"coverUrl":coverUrl}
 				recipeInfo[recipeId] = oneRecipe
 			}
 			containerInstance.add(recipeId)
@@ -95,18 +97,18 @@ function loadHighQualityRecipe(containerInstance,params){
 
 	function dataArrive(responseText) {
 
-		var allRecipe = JSON.parse(responseText)
+		let allRecipe = JSON.parse(responseText)
 		allRecipe = allRecipe["playlists"]
-		for (var i=0;i<allRecipe.length;i++)
+		for (let i=0;i<allRecipe.length;i++)
 		{
-			var recipeId = allRecipe[i]["id"]
+			let recipeId = allRecipe[i]["id"]
 			if (!(recipeId in recipeInfo)){
-				var recipeName = allRecipe[i]["name"]
-				var coverUrl = allRecipe[i]["coverImgUrl"]
-				var playCount = allRecipe[i]["playCount"]
-				// var description = allRecipe[i]["description"]
-				// var creator = allRecipe[i]["creator"]["nickname"]
-				var oneRecipe = {"recipeName":recipeName,"playCount":playCount,"coverUrl":coverUrl}
+				let recipeName = allRecipe[i]["name"]
+				let coverUrl = allRecipe[i]["coverImgUrl"]
+				let playCount = allRecipe[i]["playCount"]
+				// let description = allRecipe[i]["description"]
+				// let creator = allRecipe[i]["creator"]["nickname"]
+				let oneRecipe = {"recipeName":recipeName,"playCount":playCount,"coverUrl":coverUrl}
 				recipeInfo[recipeId] = oneRecipe
 			}
 			containerInstance.add(recipeId)
@@ -134,23 +136,23 @@ function loadUserRecipe(containerInstance,params){
 
 	function dataArrive(responseText) {
 
-		var allRecipe = JSON.parse(responseText)
+		let allRecipe = JSON.parse(responseText)
 		allRecipe = allRecipe["playlist"]
-		for (var i=0;i<allRecipe.length;i++)
+		for (let i=0;i<allRecipe.length;i++)
 		{
-			var creatorId = allRecipe[i]["creator"]["userId"]
+			let creatorId = allRecipe[i]["creator"]["userId"]
 			if(self==0&&creatorId==userId)
 				continue
 			else if(self==1&&creatorId!=userId)
 				continue
-			var recipeId = allRecipe[i]["id"]
+			let recipeId = allRecipe[i]["id"]
 			if (!(recipeId in recipeInfo)){
-				var recipeName = allRecipe[i]["name"]
-				var coverUrl = allRecipe[i]["coverImgUrl"]
-				var playCount = allRecipe[i]["playCount"]
-				var description = allRecipe[i]["description"]
-				var creator = allRecipe[i]["creator"]["nickname"]
-				var oneRecipe = {"recipeName":recipeName,"playCount":playCount,"coverUrl":coverUrl,"description":description,"creator":creator}
+				let recipeName = allRecipe[i]["name"]
+				let coverUrl = allRecipe[i]["coverImgUrl"]
+				let playCount = allRecipe[i]["playCount"]
+				let description = allRecipe[i]["description"]
+				let creator = allRecipe[i]["creator"]["nickname"]
+				let oneRecipe = {"recipeName":recipeName,"playCount":playCount,"coverUrl":coverUrl,"description":description,"creator":creator}
 				recipeInfo[recipeId] = oneRecipe
 			}
 			containerInstance.add(recipeId)			
@@ -176,22 +178,21 @@ function loadTopArtist(containerInstance,params){
 
 	function dataArrive(responseText) {
 
-		var allArtist = JSON.parse(responseText)
+		let allArtist = JSON.parse(responseText)
 		allArtist = allArtist["artists"]
-		for (var i=0;i<allArtist.length;i++)
+		for (let i=0;i<allArtist.length;i++)
 		{
-			var artistId = allArtist[i]["id"]
-			var artistName = allArtist[i]["name"]
-			var artistImage = allArtist[i]["img1v1Url"]
-			var musicSize = allArtist[i]["musicSize"]
+			let artistId = allArtist[i]["id"]
+			let artistName = allArtist[i]["name"]
+			let artistImage = allArtist[i]["img1v1Url"]
+			let musicSize = allArtist[i]["musicSize"]
+			let description = ""
 			if (allArtist[i]["trans"]!="")
-				var description = allArtist[i]["trans"]
+				description = allArtist[i]["trans"]
 			else if (allArtist[i]["alias"].length!=0)
-				var description = allArtist[i]["alias"][0]
-			else
-				var description = ""
+				description = allArtist[i]["alias"][0]
 			if (!(artistId in artistInfo)){
-				var oneArtist = {"artistName":artistName,"artistImage":artistImage,"musicSize":musicSize,"description":description}
+				let oneArtist = {"artistName":artistName,"artistImage":artistImage,"musicSize":musicSize,"description":description}
 				artistInfo[artistId] = oneArtist
 			}
 			else{
@@ -227,24 +228,24 @@ function loadArtistAlbum(containerInstance,params){
 
 	function dataArrive(responseText) {
 
-		var artistData = JSON.parse(responseText)
-		allAlbum = artistData["hotAlbums"]
-		for (var i=0;i<allAlbum.length;i++)
+		let artistData = JSON.parse(responseText)
+		let allAlbum = artistData["hotAlbums"]
+		for (let i=0;i<allAlbum.length;i++)
 		{
-			var albumId = allAlbum[i]["id"]
-			var artistId = allAlbum[i]["artist"]["id"]
-			var albumName = allAlbum[i]["name"]
-			var coverUrl = allAlbum[i]["picUrl"]
-			var publishDate = transformPublishDate(allAlbum[i]["publishTime"])
+			let albumId = allAlbum[i]["id"]
+			let artistId = allAlbum[i]["artist"]["id"]
+			let albumName = allAlbum[i]["name"]
+			let coverUrl = allAlbum[i]["picUrl"]
+			let publishDate = transformPublishDate(allAlbum[i]["publishTime"])
 			if (!(albumId in albumInfo)){
-				var oneAlbum = {"albumName":albumName,"publishDate":publishDate,"coverUrl":coverUrl,"artistId":artistId}
+				let oneAlbum = {"albumName":albumName,"publishDate":publishDate,"coverUrl":coverUrl,"artistId":artistId}
 				albumInfo[albumId] = oneAlbum
 			}
 			else if(!("publishDate" in albumInfo[albumId]))
 				albumInfo[albumId]["publishDate"] = publishDate
 			if (!(artistId in artistInfo)){
-				var artistName = allAlbum[i]["artist"]["name"]
-				var oneArtist = {"artistName":artistName}
+				let artistName = allAlbum[i]["artist"]["name"]
+				let oneArtist = {"artistName":artistName}
 				artistInfo[artistId] = oneArtist
 			}
 			containerInstance.add(albumId)
@@ -267,24 +268,24 @@ function loadHotAlbums(containerInstance){
 	webApiRequest("POST","/api/discovery/newAlbum",data,dataArrive)
 
 	function dataArrive(responseText) {
-		var albumData = JSON.parse(responseText)
-		allAlbum = albumData["albums"]
-		for (var i=0;i<allAlbum.length;i++)
+		let albumData = JSON.parse(responseText)
+		let allAlbum = albumData["albums"]
+		for (let i=0;i<allAlbum.length;i++)
 		{
-			var albumId = allAlbum[i]["id"]
-			var artistId = allAlbum[i]["artist"]["id"]
+			let albumId = allAlbum[i]["id"]
+			let artistId = allAlbum[i]["artist"]["id"]
+			let publishDate = transformPublishDate(allAlbum[i]["publishTime"])
 			if (!(albumId in albumInfo)){
-				var albumName = allAlbum[i]["name"]
-				var coverUrl = allAlbum[i]["picUrl"]
-				var publishDate = transformPublishDate(allAlbum[i]["publishTime"])
-				var oneAlbum = {"albumName":albumName,"publishDate":publishDate,"coverUrl":coverUrl,"artistId":artistId}
+				let albumName = allAlbum[i]["name"]
+				let coverUrl = allAlbum[i]["picUrl"]
+				let oneAlbum = {"albumName":albumName,"publishDate":publishDate,"coverUrl":coverUrl,"artistId":artistId}
 				albumInfo[albumId] = oneAlbum
 			}
 			else if(!("publishDate" in albumInfo[albumId]))
 				albumInfo[albumId]["publishDate"] = publishDate
 			if (!(artistId in artistInfo)){
-				var artistName = allAlbum[i]["artist"]["name"]
-				var oneArtist = {"artistName":artistName}
+				let artistName = allAlbum[i]["artist"]["name"]
+				let oneArtist = {"artistName":artistName}
 				artistInfo[artistId] = oneArtist
 			}
 			containerInstance.add(albumId)
@@ -316,24 +317,24 @@ function loadNewAlbums(containerInstance,params){
 
 	function dataArrive(responseText) {
 
-		var albumData = JSON.parse(responseText)
-		allAlbum = albumData["albums"]
-		for (var i=0;i<allAlbum.length;i++)
+		let albumData = JSON.parse(responseText)
+		let allAlbum = albumData["albums"]
+		for (let i=0;i<allAlbum.length;i++)
 		{
-			var albumId = allAlbum[i]["id"]
-			var artistId = allAlbum[i]["artist"]["id"]
+			let albumId = allAlbum[i]["id"]
+			let artistId = allAlbum[i]["artist"]["id"]
 			if (!(albumId in albumInfo)){
-				var albumName = allAlbum[i]["name"]
-				var coverUrl = allAlbum[i]["picUrl"]
-				var publishDate = transformPublishDate(allAlbum[i]["publishTime"])
-				var oneAlbum = {"albumName":albumName,"publishDate":publishDate,"coverUrl":coverUrl,"artistId":artistId}
+				let albumName = allAlbum[i]["name"]
+				let coverUrl = allAlbum[i]["picUrl"]
+				let publishDate = transformPublishDate(allAlbum[i]["publishTime"])
+				let oneAlbum = {"albumName":albumName,"publishDate":publishDate,"coverUrl":coverUrl,"artistId":artistId}
 				albumInfo[albumId] = oneAlbum
 			}
 			else if(!("publishDate" in albumInfo[albumId]))
 				albumInfo[albumId]["publishDate"] = publishDate
 			if (!(artistId in artistInfo)){
-				var artistName = allAlbum[i]["artist"]["name"]
-				var oneArtist = {"artistName":artistName}
+				let artistName = allAlbum[i]["artist"]["name"]
+				let oneArtist = {"artistName":artistName}
 				artistInfo[artistId] = oneArtist
 			}
 			containerInstance.add(albumId)
@@ -349,7 +350,7 @@ function loadNewAlbums(containerInstance,params){
 
 function loadTopList(containerInstance){
 
-	var xhr = new XMLHttpRequest()
+	let xhr = new XMLHttpRequest()
 
 	xhr.onreadystatechange=function()
 	{
@@ -357,18 +358,18 @@ function loadTopList(containerInstance){
 			if(xhr.status==200){
 
 				try{
-					var toplist = xhr.responseText.match(/(<div id="toplist"[^>]+?>[\s\S]+?)<div class="g-mn3">/)[0]
-					var domParser = new DOMParser();
-					var toplist = domParser.parseFromString(toplist,"text/html");
-					var allChart = toplist.getElementsByTagName("li")
-					for (var i=0;i<allChart.length;i++)
+					let toplist = xhr.responseText.match(/(<div id="toplist"[^>]+?>[\s\S]+?)<div class="g-mn3">/)[0]
+					let domParser = new DOMParser()
+					toplist = domParser.parseFromString(toplist,"text/html")
+					let allChart = toplist.getElementsByTagName("li")
+					for (let i=0;i<allChart.length;i++)
 					{
-						var chartId = allChart[i].getAttribute("data-res-id")
+						let chartId = allChart[i].getAttribute("data-res-id")
 						if (!(chartId in chartInfo)){
-							var chartName = allChart[i].getElementsByClassName("s-fc0")[0].innerHTML
-							var coverUrl = allChart[i].getElementsByTagName("img")[0].getAttribute("src").slice(0,-12)
-							var updateTime = allChart[i].getElementsByClassName("s-fc4")[0].innerHTML
-							var oneChart = {"chartName":chartName,"updateTime":updateTime,"coverUrl":coverUrl}
+							let chartName = allChart[i].getElementsByClassName("s-fc0")[0].innerHTML
+							let coverUrl = allChart[i].getElementsByTagName("img")[0].getAttribute("src").slice(0,-12)
+							let updateTime = allChart[i].getElementsByClassName("s-fc4")[0].innerHTML
+							let oneChart = {"chartName":chartName,"updateTime":updateTime,"coverUrl":coverUrl}
 							chartInfo[chartId] = oneChart
 						}
 						containerInstance.add(chartId)
@@ -392,41 +393,41 @@ function loadTopList(containerInstance){
 
 function loadChartSongs(chartId,callBack,callBackParams){
 
-	var xhr = new XMLHttpRequest()
+	let xhr = new XMLHttpRequest()
 
 	xhr.onreadystatechange=function()
 	{
 		if(xhr.readyState==4){
 			if(xhr.status==200){
 
-				var trackInfo = JSON.parse(xhr.responseText)
+				let trackInfo = JSON.parse(xhr.responseText)
 				trackInfo = trackInfo["result"]["tracks"]
-				var musicTrack = []
-				for (var i=0;i<trackInfo.length;i++)
+				let musicTrack = []
+				for (let i=0;i<trackInfo.length;i++)
 				{
-					var albumId = trackInfo[i]["album"]["id"]
-					var artistId = trackInfo[i]["artists"][0]["id"]
-					var songId = trackInfo[i]["id"]
+					let albumId = trackInfo[i]["album"]["id"]
+					let artistId = trackInfo[i]["artists"][0]["id"]
+					let songId = trackInfo[i]["id"]
 					musicTrack.push(songId)
 
 					if (!(albumId in albumInfo)){
-						var albumName = trackInfo[i]["album"]["name"]
-						var coverUrl = trackInfo[i]["album"]["picUrl"]
-						var oneAlbum = {"albumName":albumName,"artistId":artistId,"coverUrl":coverUrl}
+						let albumName = trackInfo[i]["album"]["name"]
+						let coverUrl = trackInfo[i]["album"]["picUrl"]
+						let oneAlbum = {"albumName":albumName,"artistId":artistId,"coverUrl":coverUrl}
 						albumInfo[albumId] = oneAlbum
 					}
 					if (!(songId in songInfo)){
-						var songName = trackInfo[i]["name"]
-						var duration = trackInfo[i]["duration"]
-						var status = trackInfo[i]["status"]
-						var fee = trackInfo[i]["fee"]
-						var expiration = new Date().getTime()
-						var oneSong = {"songName":songName,"albumId":albumId,"artistId":artistId,"duration":duration,"status":status,"fee":fee,"expiration":expiration}
+						let songName = trackInfo[i]["name"]
+						let duration = trackInfo[i]["duration"]
+						let status = trackInfo[i]["status"]
+						let fee = trackInfo[i]["fee"]
+						let expiration = new Date().getTime()
+						let oneSong = {"songName":songName,"albumId":albumId,"artistId":artistId,"duration":duration,"status":status,"fee":fee,"expiration":expiration}
 						songInfo[songId] = oneSong
 					}
 					if (!(artistId in artistInfo)){
-						var artistName = trackInfo[i]["artists"][0]["name"]
-						var oneArtist = {"artistName":artistName}
+						let artistName = trackInfo[i]["artists"][0]["name"]
+						let oneArtist = {"artistName":artistName}
 						artistInfo[artistId] = oneArtist
 					}
 				}
@@ -457,33 +458,32 @@ function loadArtistSongs(artistId,callBack,callBackParams){
 	webApiRequest("POST","/weapi/v1/artist/"+artistId,data,dataArrive)
 
 	function dataArrive(responseText) {
-		var artistData = JSON.parse(responseText)
-		var trackInfo = artistData["hotSongs"]
-		var musicTrack = []
-		for (var i=0;i<trackInfo.length;i++)
+		let artistData = JSON.parse(responseText)
+		let trackInfo = artistData["hotSongs"]
+		let musicTrack = []
+		for (let i=0;i<trackInfo.length;i++)
 		{
-			var songId = trackInfo[i]["id"]
-			var albumId = trackInfo[i]["al"]["id"]
+			let songId = trackInfo[i]["id"]
+			let albumId = trackInfo[i]["al"]["id"]
 			musicTrack.push(songId)
 
 			if (!(albumId in albumInfo)){
-				var albumName = trackInfo[i]["al"]["name"]
+				let albumName = trackInfo[i]["al"]["name"]
+				let picStr = trackInfo[i]["al"]["pic"]
 				if(trackInfo[i]["al"]["pic_str"]!=null)
-					var picStr = trackInfo[i]["al"]["pic_str"]
-				else
-					var picStr = trackInfo[i]["al"]["pic"]
-				var coverUrl = getCoverUrl(picStr)
-				var oneAlbum = {"albumName":albumName,"artistId":artistId,"coverUrl":coverUrl}
+					picStr = trackInfo[i]["al"]["pic_str"]					
+				let coverUrl = getCoverUrl(picStr)
+				let oneAlbum = {"albumName":albumName,"artistId":artistId,"coverUrl":coverUrl}
 				albumInfo[albumId] = oneAlbum
 			}
 
 			if (!(songId in songInfo)){
-				var songName = trackInfo[i]["name"]
-				var duration = trackInfo[i]["dt"]
-				var status = trackInfo[i]["privilege"]["st"]
-				var fee = trackInfo[i]["privilege"]["fee"]
-				var expiration = new Date().getTime()
-				var oneSong = {"songName":songName,"albumId":albumId,"artistId":artistId,"duration":duration,"status":status,"fee":fee,"expiration":expiration}
+				let songName = trackInfo[i]["name"]
+				let duration = trackInfo[i]["dt"]
+				let status = trackInfo[i]["privilege"]["st"]
+				let fee = trackInfo[i]["privilege"]["fee"]
+				let expiration = new Date().getTime()
+				let oneSong = {"songName":songName,"albumId":albumId,"artistId":artistId,"duration":duration,"status":status,"fee":fee,"expiration":expiration}
 				songInfo[songId] = oneSong
 			}
 		}
@@ -508,27 +508,28 @@ function loadAlbumSongs(albumId,callBack,callBackParams){
 	webApiRequest("POST","/weapi/v1/album/"+albumId,data,dataArrive)
 
 	function dataArrive(responseText) {
-		var albumData = JSON.parse(responseText)
-		var trackInfo = albumData["songs"]
-		var musicTrack = []
-		for (var i=0;i<trackInfo.length;i++)
+		let albumData = JSON.parse(responseText)
+		let trackInfo = albumData["songs"]
+		let musicTrack = []
+		console.log(albumData)
+		for (let i=0;i<trackInfo.length;i++)
 		{
-			var artistId = trackInfo[i]["ar"][0]["id"]
-			var songId = trackInfo[i]["id"]
+			let artistId = trackInfo[i]["ar"][0]["id"]
+			let songId = trackInfo[i]["id"]
 			musicTrack.push(songId)
 
 			if (!(songId in songInfo)){
-				var songName = trackInfo[i]["name"]
-				var duration = trackInfo[i]["dt"]
-				var status = trackInfo[i]["privilege"]["st"]
-				var fee = trackInfo[i]["privilege"]["fee"]
-				var expiration = new Date().getTime()
-				var oneSong = {"songName":songName,"albumId":albumId,"artistId":artistId,"duration":duration,"status":status,"fee":fee,"expiration":expiration}
+				let songName = trackInfo[i]["name"]
+				let duration = trackInfo[i]["dt"]
+				let status = trackInfo[i]["privilege"]["st"]
+				let fee = trackInfo[i]["privilege"]["fee"]
+				let expiration = new Date().getTime()
+				let oneSong = {"songName":songName,"albumId":albumId,"artistId":artistId,"duration":duration,"status":status,"fee":fee,"expiration":expiration}
 				songInfo[songId] = oneSong
 			}
 			if (!(artistId in artistInfo)){
-				var artistName = trackInfo[i]["ar"][0]["name"]
-				var oneArtist = {"artistName":artistName}
+				let artistName = trackInfo[i]["ar"][0]["name"]
+				let oneArtist = {"artistName":artistName}
 				artistInfo[artistId] = oneArtist
 			}
 		}
@@ -554,48 +555,48 @@ function loadRecipeSongs(recipeId,callBack,callBackParams){
 		"n": 1000,
 		"limit": 1000,
 		"csrf_token": ""
-	};
+	}
 
 	webApiRequest("POST","/weapi/v3/playlist/detail?csrf_token=",data,dataArrive)
 
 	function dataArrive(responseText) {
 
-		var recipeData = JSON.parse(responseText)
+		let recipeData = JSON.parse(responseText)
 		recipeInfo[recipeId]["description"] = recipeData["playlist"]["description"]
 		recipeInfo[recipeId]["creator"] = recipeData["playlist"]["creator"]["nickname"]
 
-		var musicTrack = []
-		var trackInfo = recipeData["playlist"]["tracks"]
-		var privileges = recipeData["privileges"]
+		let musicTrack = []
+		let trackInfo = recipeData["playlist"]["tracks"]
+		let privileges = recipeData["privileges"]
 
 		if(trackInfo.length!=privileges.length){console.log("error","tracks",trackInfo.length,"privileges",privileges.length)}//debug
-		for (var x=0;x<trackInfo.length;x++)
+		for (let i=0;i<trackInfo.length;i++)
 		{
-			var songId = trackInfo[x]["id"]
-			var songIdDup = privileges[x]["id"]
+			let songId = trackInfo[i]["id"]
+			let songIdDup = privileges[i]["id"]
 			if(songId!=songIdDup){console.log("error","songId",songId,"songIdDup",songIdDup)}//debug
-			var artistId = trackInfo[x]["ar"][0]["id"]
-			var albumId = trackInfo[x]["al"]["id"]
+			let artistId = trackInfo[i]["ar"][0]["id"]
+			let albumId = trackInfo[i]["al"]["id"]
 			musicTrack.push(songId)
 
 			if (!(albumId in albumInfo)){
-				var albumName = trackInfo[x]["al"]["name"]
-				var coverUrl = trackInfo[x]["al"]["picUrl"]
-				var oneAlbum = {"albumName":albumName,"artistId":artistId,"coverUrl":coverUrl}
+				let albumName = trackInfo[i]["al"]["name"]
+				let coverUrl = trackInfo[i]["al"]["picUrl"]
+				let oneAlbum = {"albumName":albumName,"artistId":artistId,"coverUrl":coverUrl}
 				albumInfo[albumId] = oneAlbum
 			}
 			if (!(artistId in artistInfo)){
-				var artistName = trackInfo[x]["ar"][0]["name"]
-				var oneArtist = {"artistName":artistName}
+				let artistName = trackInfo[i]["ar"][0]["name"]
+				let oneArtist = {"artistName":artistName}
 				artistInfo[artistId] = oneArtist
 			}
 			if (!(songId in songInfo)){
-				var songName = trackInfo[x]["name"]
-				var duration = trackInfo[x]["dt"]
-				var status = privileges[x]["st"]
-				var fee = privileges[x]["fee"]
-				var expiration = new Date().getTime()
-				var oneSong = {"songName":songName,"artistId":artistId,"albumId":albumId,"duration":duration,"status":status,"fee":fee,"expiration":expiration}
+				let songName = trackInfo[i]["name"]
+				let duration = trackInfo[i]["dt"]
+				let status = privileges[i]["st"]
+				let fee = privileges[i]["fee"]
+				let expiration = new Date().getTime()
+				let oneSong = {"songName":songName,"artistId":artistId,"albumId":albumId,"duration":duration,"status":status,"fee":fee,"expiration":expiration}
 				songInfo[songId] = oneSong
 			}
 		}
@@ -609,7 +610,7 @@ function loadRecipeSongs(recipeId,callBack,callBackParams){
 
 
 function checkSongUrlStatus(songId){
-	var now = new Date().getTime()
+	let now = new Date().getTime()
 	if (songInfo[songId]["status"] == -1||songInfo[songId]["status"] == -200)
 		return -2
 	else if(songInfo[songId]["fee"] == 1||songInfo[songId]["fee"] == 4||songInfo[songId]["fee"] == 16)// fee = 8 is ok
@@ -625,11 +626,11 @@ function getSongsInfo(songIds,callBack,callBackParams){
 	const c = []
 	const ids = []
 
-	for(var x=0;x<songIds.length;x++){
-		if (songIds[x] in songInfo)
+	for(let i=0;i<songIds.length;i++){
+		if (songIds[i] in songInfo)
 			continue
-		c.push({"id":songIds[x]})
-		ids.push(songIds[x])
+		c.push({"id":songIds[i]})
+		ids.push(songIds[i])
 	}
 
 	if (ids.length==0){return}
@@ -649,37 +650,36 @@ function getSongsInfo(songIds,callBack,callBackParams){
 	webApiRequest("POST","/weapi/v3/song/detail",data,dataArrive)
 
 	function dataArrive(responseText) {
-		var songData = JSON.parse(responseText)
-		privileges = songData["privileges"]
+		let songData = JSON.parse(responseText)
+		let privileges = songData["privileges"]
 		songData = songData["songs"]
-		for(var x=0;x<songData.length;x++){
+		for(let i=0;i<songData.length;i++){
 
-			var songId = songData[x]["id"]
-			var artistId = songData[x]["ar"][0]["id"]
-			var albumId = songData[x]["al"]["id"]
+			let songId = songData[i]["id"]
+			let artistId = songData[i]["ar"][0]["id"]
+			let albumId = songData[i]["al"]["id"]
 
 			if (!(albumId in albumInfo)){
-				if(songData[x]["al"]["pic_str"]!=null)
-					var picStr = songData[x]["al"]["pic_str"]
-				else
-					var picStr = songData[x]["al"]["pic"]
-				var coverUrl = getCoverUrl(picStr)
-				var albumName = songData[x]["al"]["name"]
-				var oneAlbum = {"albumName":albumName,"artistId":artistId,"coverUrl":coverUrl}
+				let picStr = songData[i]["al"]["pic"]
+				if(songData[i]["al"]["pic_str"]!=null)
+					picStr = songData[i]["al"]["pic_str"]
+				let coverUrl = getCoverUrl(picStr)
+				let albumName = songData[i]["al"]["name"]
+				let oneAlbum = {"albumName":albumName,"artistId":artistId,"coverUrl":coverUrl}
 				albumInfo[albumId] = oneAlbum
 			}
 			if (!(artistId in artistInfo)){
-				var artistName = songData[x]["ar"][0]["name"]
-				var oneArtist = {"artistName":artistName}
+				let artistName = songData[i]["ar"][0]["name"]
+				let oneArtist = {"artistName":artistName}
 				artistInfo[artistId] = oneArtist
 			}
 			if (!(songId in songInfo)){
-				var songName = songData[x]["name"]
-				var status = privileges[x]["st"]
-				var fee = privileges[x]["fee"]
-				var duration = songData[x]["dt"]
-				var expiration = new Date().getTime()
-				var oneSong = {"songName":songName,"artistId":artistId,"albumId":albumId,"duration":duration,"status":status,"fee":fee,"expiration":expiration}
+				let songName = songData[i]["name"]
+				let status = privileges[i]["st"]
+				let fee = privileges[i]["fee"]
+				let duration = songData[i]["dt"]
+				let expiration = new Date().getTime()
+				let oneSong = {"songName":songName,"artistId":artistId,"albumId":albumId,"duration":duration,"status":status,"fee":fee,"expiration":expiration}
 				songInfo[songId] = oneSong
 			}
 
@@ -699,20 +699,19 @@ function getSongUrl(songId,callBack,callBackParams){
 		// "br": 999000,
 		"br":320000,
 		"csrf_token": ""
-	};
+	}
 
 	webApiRequest("POST","/weapi/song/enhance/player/url?csrf_token=",data,dataArrive)
 
 	function dataArrive(responseText) {
-		var songData = JSON.parse(responseText)
-		for (var x=0;x<songData["data"].length;x++)
+		let songData = JSON.parse(responseText)
+		for (let i=0;i<songData["data"].length;i++)
 		{
-			var songId = songData["data"][x]["id"]
-			var fee = songData["data"][x]["fee"]
-			var songUrl = songData["data"][x]["url"]
-			var songUrl = songData["data"][x]["url"]
-			var expire = songData["data"][x]["expi"]
-			songInfo[songId]["fee"] = fee
+			let songId = songData["data"][i]["id"]
+			let songUrl = songData["data"][i]["url"]
+			let expire = songData["data"][i]["expi"]
+			// let fee = songData["data"][i]["fee"]
+			// songInfo[songId]["fee"] = fee
 			if (songUrl==null){
 				showDialog(20,"听不了额","好吧","哦",noOperation,null,noOperation,null)
 				return
@@ -729,25 +728,25 @@ function getSongUrl(songId,callBack,callBackParams){
 //参考 https://greasyfork.org/en/scripts/23222-网易云下载/code
 const crypto = require('crypto')
 function getCoverUrl(pic_str) {
-	var byte1 = '3go8&$8*3*3h0k(2)2'
-	var byte2 = pic_str + ''
-	var byte3 = []
-	for (var i = 0; i < byte2.length; i++) {
+	let byte1 = '3go8&$8*3*3h0k(2)2'
+	let byte2 = pic_str + ''
+	let byte3 = []
+	for (let i=0;i<byte2.length;i++) {
 		byte3[i] = byte2.charCodeAt(i) ^ byte1.charCodeAt(i % byte1.length)
 	}
 	byte3 = byte3.map(function(i) {
 		return String.fromCharCode(i)
 	}).join('')
-	var results = crypto.createHash('md5').update(byte3.toString()).digest('base64').replace(/\//g, '_').replace(/\+/g, '-')
-	var url = 'http://p2.music.126.net/' + results + '/' + byte2 + '.jpg'
+	let results = crypto.createHash('md5').update(byte3.toString()).digest('base64').replace(/\//g, '_').replace(/\+/g, '-')
+	let url = 'http://p2.music.126.net/' + results + '/' + byte2 + '.jpg'
 	return url
 }
 
 function transformPublishDate(millseconds){
-	var date = new Date(millseconds)
-	var year = date.getFullYear()
-	var month = date.getMonth() + 1
-	var day = date.getDate()
+	let date = new Date(millseconds)
+	let year = date.getFullYear()
+	let month = date.getMonth() + 1
+	let day = date.getDate()
 	day = (day < 10) ? "0"+day.toString() : day.toString()
 	return year + "." + month + "." + day
 }
@@ -817,17 +816,17 @@ function songDownload(songId){
 	const songDir = path.join(__dirname,"download")
 	const coverDir = path.join(__dirname,"cache")
 
-	var albumId = songInfo[songId]["albumId"]
-	var artistId = songInfo[songId]["artistId"]
+	let albumId = songInfo[songId]["albumId"]
+	let artistId = songInfo[songId]["artistId"]
 
-	var coverUrl = albumInfo[albumId]["coverUrl"]
-	var songName = songInfo[songId]["songName"]
-	var artistName = artistInfo[artistId]["artistName"]
-	var albumName = albumInfo[albumId]["albumName"]
-	var songUrl = songInfo[songId]["songUrl"]
-	var songFile = artistName + " - " + songName + ".mp3"
+	let coverUrl = albumInfo[albumId]["coverUrl"]
+	let songName = songInfo[songId]["songName"]
+	let artistName = artistInfo[artistId]["artistName"]
+	let albumName = albumInfo[albumId]["albumName"]
+	let songUrl = songInfo[songId]["songUrl"]
+	let songFile = artistName + " - " + songName + ".mp3"
+	let coverFile = albumId + ".jpg"
 
-	// songFile = songFile.replace(/[\\|\/|:|*|?|"|<|>|\|]/," ")
 	songFile = songFile.replace(":","：")
 	songFile = songFile.replace("*","＊")
 	songFile = songFile.replace("?","？")
@@ -837,29 +836,27 @@ function songDownload(songId){
 	songFile = songFile.replace("/","／")
 	songFile = songFile.replace("\\","＼")
 
-	var coverFile = albumId + ".jpg"
-
-	var songPath = path.join(songDir,songFile)
-	var coverPath = path.join(coverDir,coverFile)
+	let songPath = path.join(songDir,songFile)
+	let coverPath = path.join(coverDir,coverFile)
 
 	downloadMusic()
 
 	function downloadMusic(){
-		fs.mkdir(songDir, 0777, function(error){
-			var songStream = fs.createWriteStream(songPath)
+		fs.mkdir(songDir, "0777", function(error){
+			let songStream = fs.createWriteStream(songPath)
 			request(songUrl).pipe(songStream).on("close", downloadCover)
 		})
 	}
 
 	function downloadCover(){
-		fs.mkdir(coverDir, 0777, function(error){
-			var coverStream = fs.createWriteStream(coverPath)
+		fs.mkdir(coverDir, "0777", function(error){
+			let coverStream = fs.createWriteStream(coverPath)
 			request(coverUrl).pipe(coverStream).on("close", writeTag)
 		})
 	}
 
 	function writeTag(){
-		var tags = {
+		let tags = {
 			title: songName,
 			artist: artistName,
 			album: albumName,
@@ -867,18 +864,19 @@ function songDownload(songId){
 			image: coverPath
 		}
 		// nodeID3.removeTags(songPath)
-		// var success = nodeID3.write(tags, songPath)
+		// let success = nodeID3.write(tags, songPath)
 		nodeID3.write(tags,songPath, function(error){
 			if(!error){
 				let notification = new Notification(artistName + " " + songName, {
 					icon: coverUrl, 
 					body: "下载完成, 点击查看"
-				});
+				})
 				notification.onclick = function(){
 					shell.showItemInFolder(songPath)
 				}
+				btn.download.setAttribute("class","download")
 			}
 		})
-		btn.download.setAttribute("class","download")
+		
 	}
 }
