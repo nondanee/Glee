@@ -196,8 +196,8 @@ function showDetail(params){
 		}
 	}
 	else if (dataType=="chart"){
-		if (chartInfo[id]["musicTrack"] == null){
-			loadChartSongs(id,showDetail,params)
+		if (recipeInfo[id]["musicTrack"] == null){
+			loadRecipeSongs(id,showDetail,params)
 			return
 		}
 	}
@@ -233,10 +233,10 @@ function fillDetailDom(params){
 		var musicTrack = recipeInfo[id]["musicTrack"]
 	}
 	else if (dataType=="chart"){
-		var coverUrl = chartInfo[id]["coverUrl"] + sizeControl
-		var titleText = chartInfo[id]["chartName"]
-		var ownerText = chartInfo[id]["updateTime"]
-		var musicTrack = chartInfo[id]["musicTrack"]
+		var coverUrl = recipeInfo[id]["coverUrl"] + sizeControl
+		var titleText = recipeInfo[id]["recipeName"]
+		var ownerText = recipeInfo[id]["updateTime"]
+		var musicTrack = recipeInfo[id]["musicTrack"]
 	}
 	else if (dataType=="artist"){
 		var coverUrl = artistInfo[id]["artistImage"] + sizeControl
@@ -372,9 +372,9 @@ function newRecordDom(containerInstance,index,dataType){
 	}
 	else if (dataType=="chart"){
 		var recordClass = "chart"
-		var coverUrl = chartInfo[id]["coverUrl"]
-		var nameText = chartInfo[id]["chartName"]
-		var descriptionText = chartInfo[id]["updateTime"]
+		var coverUrl = recipeInfo[id]["coverUrl"]
+		var nameText = recipeInfo[id]["recipeName"]
+		var descriptionText = recipeInfo[id]["updateTime"]
 	}
 	else if (dataType=="artist"){
 		var recordClass = "artist"
@@ -440,11 +440,11 @@ function playRecord(params){
 		musicTrack = recipeInfo[id]["musicTrack"]
 	}
 	else if (dataType=="chart"){
-		if (chartInfo[id]["musicTrack"] == null){
-			loadChartSongs(id,playRecord,params)
+		if (recipeInfo[id]["musicTrack"] == null){
+			loadRecipeSongs(id,playRecord,params)
 			return
 		}
-		musicTrack = chartInfo[id]["musicTrack"]
+		musicTrack = recipeInfo[id]["musicTrack"]
 	}
 	else if (dataType=="album"){
 		if (albumInfo[id]["musicTrack"] == null){

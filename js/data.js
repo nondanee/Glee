@@ -2,7 +2,6 @@
 
 var albumInfo = {}
 var recipeInfo = {}
-var chartInfo = {}
 var artistInfo = {}
 var songInfo = {}
 
@@ -323,10 +322,10 @@ function loadNewAlbums(containerInstance,params){
 		{
 			let albumId = allAlbum[i]["id"]
 			let artistId = allAlbum[i]["artist"]["id"]
+			let publishDate = transformPublishDate(allAlbum[i]["publishTime"])
 			if (!(albumId in albumInfo)){
 				let albumName = allAlbum[i]["name"]
 				let coverUrl = allAlbum[i]["picUrl"]
-				let publishDate = transformPublishDate(allAlbum[i]["publishTime"])
 				let oneAlbum = {"albumName":albumName,"publishDate":publishDate,"coverUrl":coverUrl,"artistId":artistId}
 				albumInfo[albumId] = oneAlbum
 			}
@@ -364,15 +363,15 @@ function loadTopList(containerInstance){
 					let allChart = toplist.getElementsByTagName("li")
 					for (let i=0;i<allChart.length;i++)
 					{
-						let chartId = allChart[i].getAttribute("data-res-id")
-						if (!(chartId in chartInfo)){
+						let recipeId = allChart[i].getAttribute("data-res-id")
+						if (!(recipeId in recipeInfo)){
 							let chartName = allChart[i].getElementsByClassName("s-fc0")[0].innerHTML
 							let coverUrl = allChart[i].getElementsByTagName("img")[0].getAttribute("src").slice(0,-12)
 							let updateTime = allChart[i].getElementsByClassName("s-fc4")[0].innerHTML
-							let oneChart = {"chartName":chartName,"updateTime":updateTime,"coverUrl":coverUrl}
-							chartInfo[chartId] = oneChart
+							let oneChart = {"recipeName":chartName,"updateTime":updateTime,"coverUrl":coverUrl}
+							recipeInfo[recipeId] = oneChart
 						}
-						containerInstance.add(chartId)
+						containerInstance.add(recipeId)
 					}
 					containerInstance.refresh()
 					containerInstance.scrollStop()
@@ -386,61 +385,6 @@ function loadTopList(containerInstance){
 	}
 
 	xhr.open("GET","https://music.163.com/discover/toplist")
-	xhr.send()
-
-}
-
-
-function loadChartSongs(chartId,callBack,callBackParams){
-
-	let xhr = new XMLHttpRequest()
-
-	xhr.onreadystatechange=function()
-	{
-		if(xhr.readyState==4){
-			if(xhr.status==200){
-
-				let trackInfo = JSON.parse(xhr.responseText)
-				trackInfo = trackInfo["result"]["tracks"]
-				let musicTrack = []
-				for (let i=0;i<trackInfo.length;i++)
-				{
-					let albumId = trackInfo[i]["album"]["id"]
-					let artistId = trackInfo[i]["artists"][0]["id"]
-					let songId = trackInfo[i]["id"]
-					musicTrack.push(songId)
-
-					if (!(albumId in albumInfo)){
-						let albumName = trackInfo[i]["album"]["name"]
-						let coverUrl = trackInfo[i]["album"]["picUrl"]
-						let oneAlbum = {"albumName":albumName,"artistId":artistId,"coverUrl":coverUrl}
-						albumInfo[albumId] = oneAlbum
-					}
-					if (!(songId in songInfo)){
-						let songName = trackInfo[i]["name"]
-						let duration = trackInfo[i]["duration"]
-						let status = trackInfo[i]["status"]
-						let fee = trackInfo[i]["fee"]
-						let expiration = new Date().getTime()
-						let oneSong = {"songName":songName,"albumId":albumId,"artistId":artistId,"duration":duration,"status":status,"fee":fee,"expiration":expiration}
-						songInfo[songId] = oneSong
-					}
-					if (!(artistId in artistInfo)){
-						let artistName = trackInfo[i]["artists"][0]["name"]
-						let oneArtist = {"artistName":artistName}
-						artistInfo[artistId] = oneArtist
-					}
-				}
-				if (!("musicTrack" in chartInfo[chartId])){
-					chartInfo[chartId]["musicTrack"] = musicTrack
-				}
-				callBack(callBackParams)
-
-			}
-		}
-	}
-
-	xhr.open("GET","http://music.163.com/api/playlist/detail?id="+chartId)
 	xhr.send()
 
 }
@@ -480,10 +424,11 @@ function loadArtistSongs(artistId,callBack,callBackParams){
 			if (!(songId in songInfo)){
 				let songName = trackInfo[i]["name"]
 				let duration = trackInfo[i]["dt"]
+				let track = trackInfo[i]["no"]
 				let status = trackInfo[i]["privilege"]["st"]
 				let fee = trackInfo[i]["privilege"]["fee"]
 				let expiration = new Date().getTime()
-				let oneSong = {"songName":songName,"albumId":albumId,"artistId":artistId,"duration":duration,"status":status,"fee":fee,"expiration":expiration}
+				let oneSong = {"songName":songName,"albumId":albumId,"artistId":artistId,"duration":duration,"status":status,"fee":fee,"expiration":expiration,"track":track}
 				songInfo[songId] = oneSong
 			}
 		}
@@ -520,10 +465,11 @@ function loadAlbumSongs(albumId,callBack,callBackParams){
 			if (!(songId in songInfo)){
 				let songName = trackInfo[i]["name"]
 				let duration = trackInfo[i]["dt"]
+				let track = trackInfo[i]["no"]
 				let status = trackInfo[i]["privilege"]["st"]
 				let fee = trackInfo[i]["privilege"]["fee"]
 				let expiration = new Date().getTime()
-				let oneSong = {"songName":songName,"albumId":albumId,"artistId":artistId,"duration":duration,"status":status,"fee":fee,"expiration":expiration}
+				let oneSong = {"songName":songName,"albumId":albumId,"artistId":artistId,"duration":duration,"status":status,"fee":fee,"expiration":expiration,"track":track}
 				songInfo[songId] = oneSong
 			}
 			if (!(artistId in artistInfo)){
@@ -572,8 +518,6 @@ function loadRecipeSongs(recipeId,callBack,callBackParams){
 		for (let i=0;i<trackInfo.length;i++)
 		{
 			let songId = trackInfo[i]["id"]
-			let songIdDup = privileges[i]["id"]
-			if(songId!=songIdDup){console.log("error","songId",songId,"songIdDup",songIdDup)}//debug
 			let artistId = trackInfo[i]["ar"][0]["id"]
 			let albumId = trackInfo[i]["al"]["id"]
 			musicTrack.push(songId)
@@ -592,10 +536,11 @@ function loadRecipeSongs(recipeId,callBack,callBackParams){
 			if (!(songId in songInfo)){
 				let songName = trackInfo[i]["name"]
 				let duration = trackInfo[i]["dt"]
+				let track = trackInfo[i]["no"]
 				let status = privileges[i]["st"]
 				let fee = privileges[i]["fee"]
 				let expiration = new Date().getTime()
-				let oneSong = {"songName":songName,"artistId":artistId,"albumId":albumId,"duration":duration,"status":status,"fee":fee,"expiration":expiration}
+				let oneSong = {"songName":songName,"albumId":albumId,"artistId":artistId,"duration":duration,"status":status,"fee":fee,"expiration":expiration,"track":track}
 				songInfo[songId] = oneSong
 			}
 		}
@@ -674,11 +619,12 @@ function getSongsInfo(songIds,callBack,callBackParams){
 			}
 			if (!(songId in songInfo)){
 				let songName = songData[i]["name"]
+				let duration = songData[i]["dt"]
+				let track = songData[i]["no"]
 				let status = privileges[i]["st"]
 				let fee = privileges[i]["fee"]
-				let duration = songData[i]["dt"]
 				let expiration = new Date().getTime()
-				let oneSong = {"songName":songName,"artistId":artistId,"albumId":albumId,"duration":duration,"status":status,"fee":fee,"expiration":expiration}
+				let oneSong = {"songName":songName,"albumId":albumId,"artistId":artistId,"duration":duration,"status":status,"fee":fee,"expiration":expiration,"track":track}
 				songInfo[songId] = oneSong
 			}
 
@@ -823,6 +769,7 @@ function songDownload(songId){
 	let artistName = artistInfo[artistId]["artistName"]
 	let albumName = albumInfo[albumId]["albumName"]
 	let songUrl = songInfo[songId]["songUrl"]
+	let track = songInfo[songId]["track"]
 	let songFile = artistName + " - " + songName + ".mp3"
 	let coverFile = albumId + ".jpg"
 
@@ -859,14 +806,14 @@ function songDownload(songId){
 			title: songName,
 			artist: artistName,
 			album: albumName,
-			// composer: "",
-			image: coverPath
+			image: coverPath,
+			trackNumber: track
 		}
 		// nodeID3.removeTags(songPath)
 		// let success = nodeID3.write(tags, songPath)
 		nodeID3.write(tags,songPath, function(error){
 			if(!error){
-				let notification = new Notification(artistName + " " + songName, {
+				let notification = new Notification(artistName + " - " + songName, {
 					icon: coverUrl, 
 					body: "下载完成, 点击查看"
 				})

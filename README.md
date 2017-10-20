@@ -8,12 +8,12 @@ Built by Electron, Vanilla JS, Plain CSS
 
 
 ## Description
-- 基于Electron，~~Windows专属~~ (自己试了下在macOS上也还是可以看的=。=)
+- 基于Electron，~~Windows专属~~
 - 原生JS，手写CSS，啥框架都不会用
 - 界面抄袭巨硬家的Groove Music (还直接偷了iconfont用)
 - 数据来自网易云音乐API，搬了[Binaryify/NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi/blob/master/util/crypto.js)，[sqaiyan/netmusic-node](https://github.com/sqaiyan/netmusic-node/blob/master/crypto.js)的加密源码
 - 不能登录的，主要是不会写，还有邮箱登录API被封了对吧？
-- 因为不能登录所以就只算个播放器吧，像 [listen1/listen1](https://github.com/listen1/listen1)这样
+- 因为不能登录所以就只算个播放器吧，像[listen1/listen1](https://github.com/listen1/listen1)这样
 - API里不登录能用的大概都用上了
 - 等有空再加上搜索吧
 
@@ -25,7 +25,6 @@ Built by Electron, Vanilla JS, Plain CSS
 - 下载歌曲写入ID3 Tag (灵感来自[codezjx/netease-cloud-music-dl](https://github.com/codezjx/netease-cloud-music-dl))
 
 ## Keyboard shortcuts
-
 Description            | Keys
 -----------------------| -----------------------
 暂停/播放              | <kbd>Space</kbd>
@@ -33,55 +32,18 @@ Description            | Keys
 下一曲                 | <kbd>Ctrl</kbd> <kbd>→</kbd>
 
 ## Personalize
-由于懒，而且没想法在界面上加信息录入怎么比较好看  
-所以自己手动改吧  
-用户id，关注的歌手id (怎么得到？在网易云网易版里搜一下，URL里的就是)  
-都写在[js/user.js](./js/user.js)里  
-```
-const userId = 38050391
-const favoriteArtists = [
-	{
-		"name":"欅坂46",
-		"id":12009134
-	},
-	{
-		"name":"乃木坂46",
-		"id":20846
-	},
-	{
-		"name":"AKB48",
-		"id":18355
-	},
-	{
-		"name":"西野カナ",
-		"id":17313
-	},
-	{
-		"name":"熊木杏里",
-		"id":16696
-	},
-]
-```
-~~有没有乃团饭欅坂饭求勾搭~~
+由于懒，而且菜，还没想法怎么样在界面录入信息比较好看  
+暂时还是写死在[js/user.js](./js/user.js)的代码里，需要自己手动改  
+包括用户id，关注的歌手id (默认我是自己的)    
 
 ## Run&&Package
 
-### 下下来
 ```
-git clone https://github.com/nondanee/Glee.git
-cd Glee/
+$ npm install
+$ npm start
+$ npm run package-win
+$ npm run package-mac
 ```
-### 将就用
-```
-npm install
-npm start
-```
-### 打个包
-```
-npm run package-win
-npm run package-mac
-```
-已经全局装上electron全家桶的大佬对不起了，再装一遍吧😂
 
 ## References
 - ~~[jariz/vibrant.js](https://github.com/jariz/vibrant.js)~~  
