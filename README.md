@@ -4,7 +4,7 @@
 # Glee
 Built by Electron, Vanilla JS, Plain CSS  
 *The logo is a rebound of [Music Service Branding - G](https://dribbble.com/shots/1203920-Music-Service-Branding-G) by [Zack McBride](https://dribbble.com/zMcBride) in [Dribbble](https://dribbble.com/)*
-> 勉强算是 "目前最好的网易云音乐客户端 [trazyn/ieaseMusic](https://github.com/trazyn/ieaseMusic)" 的竞品  
+> 勉强算是 "目前最好的网易云音乐客户端 [trazyn/ieaseMusic](https://github.com/trazyn/ieaseMusic)" 的竞品
 
 
 ## Description
@@ -48,8 +48,7 @@ $ npm run package-linux
 
 > 初心是为Windows写的，用的也是Groove Music的样子，不过反正Electron跨平台，我说专属也没用  
 另外关于排版和显示效果，因为面向Windows，所以使用自带字体微软雅黑(不丑的啊)，布局也是按雅黑尺寸来偏移  
-在linux上和macOS上都不自带微软雅黑，想要较好的显示效果请自行下载安装字体(雅黑真的不丑啊)，非常抵触就当我没说  
-在这里提供[下载地址](https://drive.google.com/open?id=0B8K7gdEWY7snRE9LQU5wU0ltYTA)(Google Drive)，提取自自己的Windows 10系统文件夹  
+在linux上和macOS上都不自带微软雅黑，想要较好的显示效果请自行下载安装字体(雅黑真的不丑啊)，非常抵触就当我没说。在这里提供[下载地址](https://drive.google.com/open?id=0B8K7gdEWY7snRE9LQU5wU0ltYTA)(Google Drive)，提取自自己的Windows 10系统文件夹  
 
 ## References
 - ~~[jariz/vibrant.js](https://github.com/jariz/vibrant.js)~~  
