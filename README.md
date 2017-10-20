@@ -33,10 +33,10 @@ Description            | Keys
 下一曲                 | <kbd>Ctrl</kbd> <kbd>→</kbd>
 
 ## Personalize
-由于懒，而且没想法在界面上加信息录入怎么比较好看
-所以自己手动改吧
-用户id，关注的歌手id (怎么得到？在网易云网易版里搜一下，URL里的就是)
-都写在[js/user.js](./js/user.js)里
+由于懒，而且没想法在界面上加信息录入怎么比较好看  
+所以自己手动改吧  
+用户id，关注的歌手id (怎么得到？在网易云网易版里搜一下，URL里的就是)  
+都写在[js/user.js](./js/user.js)里  
 ```
 const userId = 38050391
 const favoriteArtists = [

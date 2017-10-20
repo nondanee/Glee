@@ -511,7 +511,6 @@ function loadAlbumSongs(albumId,callBack,callBackParams){
 		let albumData = JSON.parse(responseText)
 		let trackInfo = albumData["songs"]
 		let musicTrack = []
-		console.log(albumData)
 		for (let i=0;i<trackInfo.length;i++)
 		{
 			let artistId = trackInfo[i]["ar"][0]["id"]
