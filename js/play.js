@@ -342,7 +342,7 @@ function rebuildPlayList(){
 			let list = player.list
 			list.splice(x,1)
 			player.list = list
-			if(index==player.index&&player.paused==false)
+			if(x==player.index&&player.paused==false)
 				playSong()
 		}
 		entry.appendChild(song)
