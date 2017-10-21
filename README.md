@@ -4,7 +4,7 @@
 # Glee
 Built by Electron, Vanilla JS, Plain CSS  
 *The logo is a rebound of [Music Service Branding - G](https://dribbble.com/shots/1203920-Music-Service-Branding-G) by [Zack McBride](https://dribbble.com/zMcBride) in [Dribbble](https://dribbble.com/)*
-> 勉强算是 "目前最好的网易云音乐客户端 [trazyn/ieaseMusic](https://github.com/trazyn/ieaseMusic)" 的竞品  
+> 勉强算是 "目前最好的网易云音乐客户端 [trazyn/ieaseMusic](https://github.com/trazyn/ieaseMusic)" 的竞品
 
 
 ## Description
@@ -23,8 +23,8 @@ Built by Electron, Vanilla JS, Plain CSS
 - 启动时还原上次播放状态
 - 解锁网页端大部分变灰歌曲 (奇特姿势来自[JixunMoe/netease-cloud-music-api](https://github.com/JixunMoe/netease-cloud-music-api))
 - 下载歌曲写入ID3 Tag (灵感来自[codezjx/netease-cloud-music-dl](https://github.com/codezjx/netease-cloud-music-dl))
+- 快捷键支持
 
-## Keyboard shortcuts
 Description            | Keys
 -----------------------| -----------------------
 暂停/播放              | <kbd>Space</kbd>
@@ -36,7 +36,7 @@ Description            | Keys
 暂时还是写死在[js/user.js](./js/user.js)的代码里，需要自己手动改  
 包括用户id，关注的歌手id (默认我是自己的)    
 
-## Run&&Package
+## Run&Package
 
 ```
 $ npm install
@@ -45,11 +45,14 @@ $ npm run package-win
 $ npm run package-mac
 $ npm run package-linux
 ```
+*初心是为Windows写的，用的也是Groove Music的样子，不过反正Electron跨平台，我说专属也没用*  
 
-> 初心是为Windows写的，用的也是Groove Music的样子，不过反正Electron跨平台，我说专属也没用  
-另外关于排版和显示效果，因为面向Windows，所以使用自带字体微软雅黑(不丑的啊)，布局也是按雅黑尺寸来偏移  
-在linux上和macOS上都不自带微软雅黑，想要较好的显示效果请自行下载安装字体(雅黑真的不丑啊)，非常抵触就当我没说  
-在这里提供[下载地址](https://drive.google.com/open?id=0B8K7gdEWY7snRE9LQU5wU0ltYTA)(Google Drive)，提取自自己的Windows 10系统文件夹  
+## Release
+
+> 关于排版和显示效果，因为主要面向Windows，所以使用自带字体微软雅黑(不丑的啊)，布局也是按雅黑尺寸来偏移。而在linux上和macOS上都不自带微软雅黑，想要较好的显示效果请自行下载安装字体(雅黑真的不丑啊)，非常抵触就当我没说。在这里提供[下载地址](https://drive.google.com/open?id=0B8K7gdEWY7snRE9LQU5wU0ltYTA)(Google Drive)，提取自自己的Windows 10系统文件夹
+
+### [v0.3.0](https://github.com/nondanee/Glee/releases/tag/v0.3.0)
+有bug一定及时修复，不过最近可能不会再加什么东西了，对不起了，有什么想法建议欢迎提issue和pr
 
 ## References
 - ~~[jariz/vibrant.js](https://github.com/jariz/vibrant.js)~~  
@@ -69,6 +72,9 @@ emmm还用这个主要是取主色比较方便，虽然直接用主色会有可�
 - [electron-userland/electron-json-storage](https://github.com/electron-userland/electron-json-storage)  
 用来保存场景了，感觉这个有同步的才好啊，但却只有异步的。现在为了退出前保存设了一个flag，搞得一刷新就保存好退出了。。。调试巨麻烦，写代码的时候还是注释掉了
 
+## License
+MIT
+
 ## Preview
 > 因为自己用了[MacType](https://github.com/snowie2000/MacType)，所以和大家的显示效果可能有点不一样  
 
@@ -78,3 +84,4 @@ emmm还用这个主要是取主色比较方便，虽然直接用主色会有可�
 ![4](./screenshot/4.png)
 ![5](./screenshot/5.png)
 ![6](./screenshot/6.png)
+
