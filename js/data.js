@@ -23,7 +23,7 @@ function loadRecommandRecipe(containerInstance,params){
 		limit: 50
 	}
 
-	webApiRequest("POST","/weapi/playlist/list",data,dataArrive)
+	webApiRequest("/weapi/playlist/list",data,dataArrive)
 
 	function dataArrive(responseText) {
 
@@ -56,7 +56,7 @@ function loadPersonalizedRecipe(containerInstance){
 
 	const data = {}
 
-	webApiRequest("POST","/weapi/personalized/playlist",data,dataArrive)
+	webApiRequest("/weapi/personalized/playlist",data,dataArrive)
 
 	function dataArrive(responseText) {
 
@@ -92,7 +92,7 @@ function loadHighQualityRecipe(containerInstance,params){
 		csrf_token: ""
 	}
 
-	webApiRequest("POST","/weapi/playlist/highquality/list",data,dataArrive)
+	webApiRequest("/weapi/playlist/highquality/list",data,dataArrive)
 
 	function dataArrive(responseText) {
 
@@ -131,7 +131,7 @@ function loadUserRecipe(containerInstance,params){
 		csrf_token: ""
 	}
 
-	webApiRequest("POST","/weapi/user/playlist",data,dataArrive)
+	webApiRequest("/weapi/user/playlist",data,dataArrive)
 
 	function dataArrive(responseText) {
 
@@ -173,7 +173,7 @@ function loadTopArtist(containerInstance,params){
 		csrf_token: ""
 	}
 
-	webApiRequest("POST","/weapi/artist/top",data,dataArrive)
+	webApiRequest("/weapi/artist/top",data,dataArrive)
 
 	function dataArrive(responseText) {
 
@@ -185,11 +185,7 @@ function loadTopArtist(containerInstance,params){
 			let artistName = allArtist[i]["name"]
 			let artistImage = allArtist[i]["img1v1Url"]
 			let musicSize = allArtist[i]["musicSize"]
-			let description = ""
-			if (allArtist[i]["trans"]!="")
-				description = allArtist[i]["trans"]
-			else if (allArtist[i]["alias"].length!=0)
-				description = allArtist[i]["alias"][0]
+			let description = allArtist[i]["trans"] || allArtist[i]["alias"][0] || ""
 			if (!(artistId in artistInfo)){
 				let oneArtist = {"artistName":artistName,"artistImage":artistImage,"musicSize":musicSize,"description":description}
 				artistInfo[artistId] = oneArtist
@@ -223,7 +219,7 @@ function loadArtistAlbum(containerInstance,params){
 	}
 
 
-	webApiRequest("POST","/weapi/artist/albums/"+artistId,data,dataArrive)
+	webApiRequest("/weapi/artist/albums/"+artistId,data,dataArrive)
 
 	function dataArrive(responseText) {
 
@@ -233,17 +229,18 @@ function loadArtistAlbum(containerInstance,params){
 		{
 			let albumId = allAlbum[i]["id"]
 			let artistId = allAlbum[i]["artist"]["id"]
-			let albumName = allAlbum[i]["name"]
-			let coverUrl = allAlbum[i]["picUrl"]
+			let artistName = allAlbum[i]["artist"]["name"]
+			artistId = artistId == 0 ? artistName : artistId
 			let publishDate = transformPublishDate(allAlbum[i]["publishTime"])
 			if (!(albumId in albumInfo)){
+				let albumName = allAlbum[i]["name"]
+				let coverUrl = allAlbum[i]["picUrl"]
 				let oneAlbum = {"albumName":albumName,"publishDate":publishDate,"coverUrl":coverUrl,"artistId":artistId}
 				albumInfo[albumId] = oneAlbum
 			}
 			else if(!("publishDate" in albumInfo[albumId]))
 				albumInfo[albumId]["publishDate"] = publishDate
 			if (!(artistId in artistInfo)){
-				let artistName = allAlbum[i]["artist"]["name"]
 				let oneArtist = {"artistName":artistName}
 				artistInfo[artistId] = oneArtist
 			}
@@ -264,7 +261,7 @@ function loadHotAlbums(containerInstance){
 		"csrf_token": ""
 	}
 
-	webApiRequest("POST","/api/discovery/newAlbum",data,dataArrive)
+	webApiRequest("/api/discovery/newAlbum",data,dataArrive)
 
 	function dataArrive(responseText) {
 		let albumData = JSON.parse(responseText)
@@ -273,6 +270,8 @@ function loadHotAlbums(containerInstance){
 		{
 			let albumId = allAlbum[i]["id"]
 			let artistId = allAlbum[i]["artist"]["id"]
+			let artistName = allAlbum[i]["artist"]["name"]
+			artistId = artistId == 0 ? artistName : artistId
 			let publishDate = transformPublishDate(allAlbum[i]["publishTime"])
 			if (!(albumId in albumInfo)){
 				let albumName = allAlbum[i]["name"]
@@ -283,7 +282,6 @@ function loadHotAlbums(containerInstance){
 			else if(!("publishDate" in albumInfo[albumId]))
 				albumInfo[albumId]["publishDate"] = publishDate
 			if (!(artistId in artistInfo)){
-				let artistName = allAlbum[i]["artist"]["name"]
 				let oneArtist = {"artistName":artistName}
 				artistInfo[artistId] = oneArtist
 			}
@@ -312,7 +310,7 @@ function loadNewAlbums(containerInstance,params){
 		"csrf_token": ""
 	}
 
-	webApiRequest("POST","/weapi/album/new?csrf_token=",data,dataArrive)
+	webApiRequest("/weapi/album/new?csrf_token=",data,dataArrive)
 
 	function dataArrive(responseText) {
 
@@ -322,6 +320,8 @@ function loadNewAlbums(containerInstance,params){
 		{
 			let albumId = allAlbum[i]["id"]
 			let artistId = allAlbum[i]["artist"]["id"]
+			let artistName = allAlbum[i]["artist"]["name"]
+			artistId = artistId == 0 ? artistName : artistId
 			let publishDate = transformPublishDate(allAlbum[i]["publishTime"])
 			if (!(albumId in albumInfo)){
 				let albumName = allAlbum[i]["name"]
@@ -332,7 +332,6 @@ function loadNewAlbums(containerInstance,params){
 			else if(!("publishDate" in albumInfo[albumId]))
 				albumInfo[albumId]["publishDate"] = publishDate
 			if (!(artistId in artistInfo)){
-				let artistName = allAlbum[i]["artist"]["name"]
 				let oneArtist = {"artistName":artistName}
 				artistInfo[artistId] = oneArtist
 			}
@@ -399,7 +398,7 @@ function loadArtistSongs(artistId,callBack,callBackParams){
 		csrf_token: ""
 	}
 
-	webApiRequest("POST","/weapi/v1/artist/"+artistId,data,dataArrive)
+	webApiRequest("/weapi/v1/artist/"+artistId,data,dataArrive)
 
 	function dataArrive(responseText) {
 		let artistData = JSON.parse(responseText)
@@ -413,10 +412,8 @@ function loadArtistSongs(artistId,callBack,callBackParams){
 
 			if (!(albumId in albumInfo)){
 				let albumName = trackInfo[i]["al"]["name"]
-				let picStr = trackInfo[i]["al"]["pic"]
-				if(trackInfo[i]["al"]["pic_str"]!=null)
-					picStr = trackInfo[i]["al"]["pic_str"]					
-				let coverUrl = getCoverUrl(picStr)
+				let picStr = trackInfo[i]["al"]["pic_str"] || trackInfo[i]["al"]["pic"]	
+				let coverUrl = strToUrl(picStr) + '.jpg'
 				let oneAlbum = {"albumName":albumName,"artistId":artistId,"coverUrl":coverUrl}
 				albumInfo[albumId] = oneAlbum
 			}
@@ -450,7 +447,7 @@ function loadAlbumSongs(albumId,callBack,callBackParams){
 		csrf_token: ""
 	}
 
-	webApiRequest("POST","/weapi/v1/album/"+albumId,data,dataArrive)
+	webApiRequest("/weapi/v1/album/"+albumId,data,dataArrive)
 
 	function dataArrive(responseText) {
 		let albumData = JSON.parse(responseText)
@@ -458,8 +455,10 @@ function loadAlbumSongs(albumId,callBack,callBackParams){
 		let musicTrack = []
 		for (let i=0;i<trackInfo.length;i++)
 		{
-			let artistId = trackInfo[i]["ar"][0]["id"]
 			let songId = trackInfo[i]["id"]
+			let artistId = trackInfo[i]["ar"][0]["id"]
+			let artistName = trackInfo[i]["ar"][0]["name"]
+			artistId = artistId == 0 ? artistName : artistId
 			musicTrack.push(songId)
 
 			if (!(songId in songInfo)){
@@ -473,7 +472,6 @@ function loadAlbumSongs(albumId,callBack,callBackParams){
 				songInfo[songId] = oneSong
 			}
 			if (!(artistId in artistInfo)){
-				let artistName = trackInfo[i]["ar"][0]["name"]
 				let oneArtist = {"artistName":artistName}
 				artistInfo[artistId] = oneArtist
 			}
@@ -502,7 +500,7 @@ function loadRecipeSongs(recipeId,callBack,callBackParams){
 		"csrf_token": ""
 	}
 
-	webApiRequest("POST","/weapi/v3/playlist/detail?csrf_token=",data,dataArrive)
+	webApiRequest("/weapi/v3/playlist/detail?csrf_token=",data,dataArrive)
 
 	function dataArrive(responseText) {
 
@@ -519,6 +517,8 @@ function loadRecipeSongs(recipeId,callBack,callBackParams){
 		{
 			let songId = trackInfo[i]["id"]
 			let artistId = trackInfo[i]["ar"][0]["id"]
+			let artistName = trackInfo[i]["ar"][0]["name"]
+			artistId = artistId == 0 ? artistName : artistId
 			let albumId = trackInfo[i]["al"]["id"]
 			musicTrack.push(songId)
 
@@ -529,7 +529,6 @@ function loadRecipeSongs(recipeId,callBack,callBackParams){
 				albumInfo[albumId] = oneAlbum
 			}
 			if (!(artistId in artistInfo)){
-				let artistName = trackInfo[i]["ar"][0]["name"]
 				let oneArtist = {"artistName":artistName}
 				artistInfo[artistId] = oneArtist
 			}
@@ -555,14 +554,14 @@ function loadRecipeSongs(recipeId,callBack,callBackParams){
 
 function checkSongUrlStatus(songId){
 	let now = new Date().getTime()
-	if (songInfo[songId]["status"] == -1||songInfo[songId]["status"] == -200)
-		return -2
-	else if(songInfo[songId]["fee"] == 1||songInfo[songId]["fee"] == 4||songInfo[songId]["fee"] == 16)// fee = 8 is ok
-		return -1
-	else if(songInfo[songId]["songUrl"] == null||now>songInfo[songId]["expiration"])
-		return 0
-	else
+	if(songInfo[songId]["songUrl"] != null&&now<songInfo[songId]["expiration"])
 		return 1
+	else if (songInfo[songId]["status"] == -1||songInfo[songId]["status"] == -200)
+		return -2
+	else if(songInfo[songId]["fee"] == 1||songInfo[songId]["fee"] == 4||songInfo[songId]["fee"] == 16)//try old api
+		return -1
+	else//fee = 8 is ok
+		return 0
 }
 
 function getSongsInfo(songIds,callBack,callBackParams){
@@ -591,7 +590,7 @@ function getSongsInfo(songIds,callBack,callBackParams){
 	// 	csrf_token: ""
 	// }
 
-	webApiRequest("POST","/weapi/v3/song/detail",data,dataArrive)
+	webApiRequest("/weapi/v3/song/detail",data,dataArrive)
 
 	function dataArrive(responseText) {
 		let songData = JSON.parse(responseText)
@@ -601,19 +600,18 @@ function getSongsInfo(songIds,callBack,callBackParams){
 
 			let songId = songData[i]["id"]
 			let artistId = songData[i]["ar"][0]["id"]
+			let artistName = songData[i]["ar"][0]["name"]
+			artistId = artistId == 0 ? artistName : artistId
 			let albumId = songData[i]["al"]["id"]
 
 			if (!(albumId in albumInfo)){
-				let picStr = songData[i]["al"]["pic"]
-				if(songData[i]["al"]["pic_str"]!=null)
-					picStr = songData[i]["al"]["pic_str"]
-				let coverUrl = getCoverUrl(picStr)
+				let picStr = songData[i]["al"]["pic_str"] || songData[i]["al"]["pic"]
+				let coverUrl = strToUrl(picStr) + '.jpg'
 				let albumName = songData[i]["al"]["name"]
 				let oneAlbum = {"albumName":albumName,"artistId":artistId,"coverUrl":coverUrl}
 				albumInfo[albumId] = oneAlbum
 			}
 			if (!(artistId in artistInfo)){
-				let artistName = songData[i]["ar"][0]["name"]
 				let oneArtist = {"artistName":artistName}
 				artistInfo[artistId] = oneArtist
 			}
@@ -622,12 +620,11 @@ function getSongsInfo(songIds,callBack,callBackParams){
 				let duration = songData[i]["dt"]
 				let track = songData[i]["no"]
 				let status = privileges[i]["st"]
-				let fee = privileges[i]["fee"]
+				let fee = songData[i]["fee"]//more credible than privileges[i]["fee"]
 				let expiration = new Date().getTime()
 				let oneSong = {"songName":songName,"albumId":albumId,"artistId":artistId,"duration":duration,"status":status,"fee":fee,"expiration":expiration,"track":track}
 				songInfo[songId] = oneSong
 			}
-
 			
 		}		
 		callBack(callBackParams)
@@ -646,7 +643,7 @@ function getSongUrl(songId,callBack,callBackParams){
 		"csrf_token": ""
 	}
 
-	webApiRequest("POST","/weapi/song/enhance/player/url?csrf_token=",data,dataArrive)
+	webApiRequest("/weapi/song/enhance/player/url?csrf_token=",data,dataArrive)
 
 	function dataArrive(responseText) {
 		let songData = JSON.parse(responseText)
@@ -669,12 +666,70 @@ function getSongUrl(songId,callBack,callBackParams){
 
 }
 
+//参考 https://greasyfork.org/en/scripts/23222-网易云下载/code
+function trySongUrl(songId,callBack,callBackParams){//付费歌曲
+
+	if (!(songId in songInfo)){return}
+	if (checkSongUrlStatus(songId)!=-1){return}
+
+	const keyword = songInfo[songId]["songName"] + "-" + artistInfo[songInfo[songId]["artistId"]]["artistName"]
+
+	const data = {
+		s: keyword,
+		limit: 1,
+		type: 1,
+		offset: 0,
+	};
+
+	webApiRequest("/weapi/search/pc",data,dataArrive)
+
+	function dataArrive(responseText) {
+		let result = JSON.parse(responseText)
+		let songUrl
+		if (result["result"]["songs"] && result["result"]["songs"][0]["id"] == songId) {
+			let song = result.result.songs[0]
+			let music = song["hMusic"] || song["mMusic"] || song["lMusic"] || song["bMusic"]
+			let dfsId_str = music.dfsId_str || music.dfsId
+			if (music && dfsId_str != 0)
+				songUrl = strToUrl(dfsId_str) + '.mp3'
+			else if (!song.mp3Url.endsWith("==/0.mp3"))
+				songUrl = song.mp3Url
+		}
+		if(songUrl){
+			songInfo[songId]["songUrl"] = songUrl
+			songInfo[songId]["expiration"] = new Date().getTime() + 24*60*60*1000
+			callBack(callBackParams)
+		}
+		else{
+			// showDialog(20,"是真的听不了","好吧","哦",noOperation,null,noOperation,null)
+			reallyCantPlay(songId)
+			callBack(callBackParams)
+		}
+	}
+}
+
+function reallyCantPlay(songId){
+	songInfo[songId]["status"] = -1
+	let index = inPlayList(songId)
+	let list = player.list
+	list.splice(index,1)
+	player.list = list
+	player.index = index //avoid overflow
+	let entries = document.getElementsByClassName("entry")
+	for(let i=0;i<entries.length;i++){
+		if(entries[i].getAttribute("songId")==songId){
+			entries[i].setAttribute("class","entry unable")
+			if(entries[i].ondblclick!=null)
+				entries[i].ondblclick=null
+		}
+	}
+}
 
 //参考 https://greasyfork.org/en/scripts/23222-网易云下载/code
 const crypto = require('crypto')
-function getCoverUrl(pic_str) {
+function strToUrl(str) {
 	let byte1 = '3go8&$8*3*3h0k(2)2'
-	let byte2 = pic_str + ''
+	let byte2 = str + ''
 	let byte3 = []
 	for (let i=0;i<byte2.length;i++) {
 		byte3[i] = byte2.charCodeAt(i) ^ byte1.charCodeAt(i % byte1.length)
@@ -683,7 +738,7 @@ function getCoverUrl(pic_str) {
 		return String.fromCharCode(i)
 	}).join('')
 	let results = crypto.createHash('md5').update(byte3.toString()).digest('base64').replace(/\//g, '_').replace(/\+/g, '-')
-	let url = 'http://p2.music.126.net/' + results + '/' + byte2 + '.jpg'
+	let url = 'http://p2.music.126.net/' + results + '/' + byte2
 	return url
 }
 
@@ -697,17 +752,18 @@ function transformPublishDate(millseconds){
 }
 
 
-const maxRetry = 300
+const maxRetry = 15
 var retry = 0
 
 const request = require('request')
+// const request = require('request').defaults({'proxy':'http://127.0.0.1:1080'})
 
-function webApiRequest(method="POST",path,data,callBack) {
+function webApiRequest(path,data,callBack) {
 
 	const cryptoreq = Encrypt(data)
 	request({
-		url: 'http://music.163.com/' + path,
-		method: method,
+		url: 'http://music.163.com' + path,
+		method: "POST",
 		// headers: {
 		// 	'Accept': '*/*',
 		// 	'Accept-Language': 'zh-CN,zh;q=0.8,gl;q=0.6,zh-TW;q=0.4',
@@ -732,14 +788,14 @@ function webApiRequest(method="POST",path,data,callBack) {
 	},function(error, response, body){
 		if (error){
 			console.log("request",error)
-			webApiRequest(method,path,data,callBack)
+			webApiRequest(path,data,callBack)
 			return
 		}
 		else if(body==""){
 			retry = retry + 1
 			console.log("retry-request",retry)
 			if(retry > maxRetry){return}
-			webApiRequest(method,path,data,callBack)
+			webApiRequest(path,data,callBack)
 			return
 		}
 		else{

@@ -1,4 +1,5 @@
-const BrowserWindow = require('electron').remote.BrowserWindow
+const {BrowserWindow} = require('electron').remote
+// const BrowserWindow = require('electron').remote.BrowserWindow
 const Encrypt = require('./js/crypto.js')
 const storage = require('electron-json-storage')
 
@@ -69,7 +70,7 @@ function Container(dataType,loadMoreFunc,loadMoreFuncParams) {
 	this.refresh = function() {
 		var records = document.querySelectorAll("container>."+this.dataType)
 		var details = document.querySelectorAll("container>.detail")
-		while(Math.floor(this.items.length/4)+1!=details.length){
+		while(Math.floor(this.items.length/4)+1>details.length){//no dead cycle but also will bugs
 			var detail = newDetailDom()
 			container.appendChild(detail)
 			var details = document.querySelectorAll("container>.detail")
@@ -103,10 +104,21 @@ function Container(dataType,loadMoreFunc,loadMoreFuncParams) {
 		}
 	}
 	this.reload = function(){
+		for(let i=0;i<this.items.length;i++){
+			if(dataType=="recipe"||dataType=="chart")
+				delete recipeInfo[this.items[i]]
+			else if(dataType=="album")
+				delete albumInfo[this.items[i]]
+			else if(dataType=="artist")
+				delete artistInfo[this.items[i]]
+		}
 		this.items = []
 		this.more = 1
 		this.extend = null
-		loadMoreFunc(this,loadMoreFuncParams)
+		this.scroll = 0
+		cleanDomChilds(container)
+		this.loadMoreFunc(this,this.loadMoreFuncParams)
+		setScrollLoad(this.loadMoreFunc,this,this.loadMoreFuncParams)
 	}
 	this.getOffset = function(){
 		return this.items.length
@@ -278,17 +290,19 @@ function fillDetailDom(params){
 			// var albumName = albumInfo[songInfo[songId]["albumId"]]["albumName"]
 			var entry = document.createElement('div')
 			entry.setAttribute("songId",songId)
-			
+			entry.style.color = "rgb(" + textColor + ")"
 			// var button = document.createElement('button')
 			// button.style.color = "rgb(" + textColor + ")"
-			if (checkSongUrlStatus(songId)>=0){
-				entry.setAttribute("class","entry")
+			if (checkSongUrlStatus(songId)>=-1){
+				if(songId==player.list[player.index])
+					entry.setAttribute("class","entry playing")
+				else
+					entry.setAttribute("class","entry")
 				// button.setAttribute("class","play")
 				// entry.appendChild(button)
 				entry.ondblclick = function(){
 					var songId = this.getAttribute("songId")
-					// var musicTrack = this.parentNode.getAttribute("list").split(',')
-					addToPlayList(musicTrack,1)// can direct read!
+					addToPlayList(musicTrack,1)
 					player.index = inPlayList(songId)
 					playSong()
 				}
@@ -608,6 +622,13 @@ for (let i=0;i<mainTabs.length;i++){
 				// console.log("recover",subTabFocusNow)
 				subTabFocusNow["containerInstance"].recover()		
 			}
+			subTab.oncontextmenu = function(){
+				if (mainTabFocusNow["focus"] == j){
+					var subTabFocusNow = mainTabFocusNow["subTabs"][j]
+					// console.log("reload",subTabFocusNow)
+					subTabFocusNow["containerInstance"].reload()
+				}
+			}
 			subtab.appendChild(subTab)
 			if(j!=mainTabFocusNow["subTabs"].length-1)
 				subtab.appendChild(separator)
@@ -646,7 +667,7 @@ function inPlayList(songId){
 function addToPlayList(songIds,cover=0){
 	let checked = []
 	for(let i=0;i<songIds.length;i++){
-		if (checkSongUrlStatus(songIds[i])>=0){
+		if (checkSongUrlStatus(songIds[i])>=-1){
 			checked.push(songIds[i])
 		}
 	}

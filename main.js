@@ -2,6 +2,7 @@ const {app, BrowserWindow, session, ipcMain} = require('electron')
 const path = require('path')
 const url = require('url')
 const fs = require('fs')
+// app.commandLine.appendSwitch('proxy-server', '127.0.0.1:1080')
 
 // 保持一个对于 window 对象的全局引用，如果你不这样做，
 // 当 JavaScript 对象被垃圾回收， window 会被自动地关闭

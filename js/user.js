@@ -20,4 +20,8 @@ const favoriteArtists = [
 		"name":"熊木杏里",
 		"id":16696
 	},
+	{
+		"name":"Taylor Swift",
+		"id":44266
+	}
 ]

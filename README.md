@@ -22,6 +22,7 @@ Built by Electron, Vanilla JS, Plain CSS
 - 播放条随专辑封面变色
 - 启动时还原上次播放状态
 - 解锁网页端大部分变灰歌曲 (奇特姿势来自[JixunMoe/netease-cloud-music-api](https://github.com/JixunMoe/netease-cloud-music-api))
+- 解锁小部分收费歌曲 (奇特姿势来自[dinjia/userscript](https://github.com/dinjia/userscript))
 - 下载歌曲写入ID3 Tag (灵感来自[codezjx/netease-cloud-music-dl](https://github.com/codezjx/netease-cloud-music-dl))
 - 快捷键支持
 

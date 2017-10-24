@@ -121,16 +121,23 @@ Object.defineProperty(player,"index",{
 			this._index = value
 		}
 		
-		var entries = playlist.getElementsByClassName("entry")
-		if(entries.length!=player.list.length)
-			return // create now
-		for(var x=0;x<entries.length;x++){
-			if(player.index!=x)
-				entries[x].setAttribute("class","entry")
-			else
-				entries[x].setAttribute("class","entry playing")
+		// var entries = playlist.getElementsByClassName("entry")
+		// if(entries.length!=player.list.length)
+		// 	return // create now
+		// for(var x=0;x<entries.length;x++){
+		// 	if(player.index!=x)
+		// 		entries[x].setAttribute("class","entry")
+		// 	else
+		// 		entries[x].setAttribute("class","entry playing")
+		// }
+		let songId = this._list[this._index]
+		let entries = document.getElementsByClassName("entry")
+		for(let i=0;i<entries.length;i++){
+			if(entries[i].getAttribute("songId")==songId)
+				entries[i].setAttribute("class","entry playing")
+			else if(entries[i].getAttribute("class")=="entry playing")
+				entries[i].setAttribute("class","entry")
 		}
-		//sync playlist
 	}
 });
 Object.defineProperty(player,"random",{
@@ -228,13 +235,6 @@ player.audio.addEventListener('ended',function(){
 		playSong()
 	}
 },false);
-player.audio.addEventListener('canplaythrough',function(){
-	let totalTime = timeline.getElementsByClassName("time total")[0]
-	totalTime.innerHTML = secondReadable(this.duration)
-	if (!("duration" in songInfo[player.list[player.index]])){
-		songInfo[player.list[player.index]]["duration"] = this.duration*1000
-	}
-},false);
 player.audio.addEventListener('timeupdate',function(){
 	let playedTime = timeline.getElementsByClassName("time played")[0]
 	let playedFiller = progressbar.getElementsByClassName("filler played")[0]
@@ -326,9 +326,9 @@ function rebuildPlayList(){
 		var albumName = albumInfo[songInfo[songId]["albumId"]]["albumName"]
 		var entry = document.createElement('div')
 		entry.setAttribute("class","entry")
+		entry.setAttribute("songId",songId)
 		var song = document.createElement('a')
 		song.setAttribute("class","song")
-		song.setAttribute("songId",songId)
 		song.innerHTML = songName
 		var play = document.createElement('button')
 		play.setAttribute("class","play")
@@ -375,14 +375,18 @@ function playSong(params){
 
 	if(typeof(params) == "undefined"){
 		var playNow = 1
-		var songId = player.list[player.index]
+		// var songId = player.list[player.index]
 	}
 	else{
 		var playNow = params.playNow ? 1 : 0
-		var songId = params.songId ? params.songId : player.list[player.index]
+		// var songId = params.songId ? params.songId : player.list[player.index]
 	}
 
-	params = {"playNow":playNow,"songId":songId}
+	// params = {"playNow":playNow,"songId":songId}
+
+	params = {"playNow":playNow}
+
+	var songId = player.list[player.index]
 
 	if (!(songId in songInfo)){
 		getSongsInfo([songId],playSong,params)
@@ -390,13 +394,18 @@ function playSong(params){
 	}
 
 	var playStatus = checkSongUrlStatus(songId)
+
 	if (playStatus==0){
 		getSongUrl(songId,playSong,params)
-		return;
+		return
 	}
-	else if(playStatus<0){
+	else if (playStatus==-1){
+		trySongUrl(songId,playSong,params)
+		return
+	}
+	else if(playStatus==-2){
 		showDialog(20,"听不了额","好吧","哦",noOperation,null,noOperation,null)
-		return;
+		return
 	}
 
 	var songName = songInfo[songId]["songName"]
