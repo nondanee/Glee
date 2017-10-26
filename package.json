@@ -14,9 +14,9 @@
   },
   "scripts": {
     "start": "./node_modules/.bin/electron .",
-    "package-win": "./node_modules/.bin/electron-packager . --platform=win32 --arch=x64 --version=1.7.9 --icon=./resource/glee.ico --out=dist/ --overwrite=true --ignore=cache/ --ignore=download/ --ignore=dist/ --ignore=screenshot/ --prune=true",
-    "package-mac": "./node_modules/.bin/electron-packager . --platform=darwin --arch=all --version=1.7.9 --icon=./resource/glee.icns --out=dist/ --overwrite=true --ignore=cache/ --ignore=download/ --ignore=dist/ --ignore=screenshot/ --prune=true",
-    "package-linux": "./node_modules/.bin/electron-packager . --platform=linux --arch=x64 --version=1.7.9 --icon=./resource/glee.png --out=dist/ --overwrite=true --ignore=cache/ --ignore=download/ --ignore=dist/ --ignore=screenshot/ --prune=true"
+    "package-win": "./node_modules/.bin/electron-packager . --platform=win32 --arch=x64 --version=1.7.9 --icon=./resource/glee.ico --out=dist/ --overwrite=true --ignore=cache/ --ignore=dist/ --ignore=screenshot/ --prune=true",
+    "package-mac": "./node_modules/.bin/electron-packager . --platform=darwin --arch=all --version=1.7.9 --icon=./resource/glee.icns --out=dist/ --overwrite=true --ignore=cache/ --ignore=dist/ --ignore=screenshot/ --prune=true",
+    "package-linux": "./node_modules/.bin/electron-packager . --platform=linux --arch=x64 --version=1.7.9 --icon=./resource/glee.png --out=dist/ --overwrite=true --ignore=cache/ --ignore=dist/ --ignore=screenshot/ --prune=true"
   },
   "devDependencies": {
     "electron": "^1.7.9",

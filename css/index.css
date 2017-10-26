@@ -11,7 +11,7 @@ body{
 	display: flex;
 	background-position: 0 0;
 	background-repeat: no-repeat;
-	font-family: "Microsoft Yahei";
+	font-family: "Microsoft YaHei";
 	-webkit-user-select: none;
 	overflow: hidden;
 }
@@ -117,12 +117,13 @@ button{
 	background-color: #000000;
 }
 #close::before{
-	width: 10px;
 	-webkit-transform:rotate(45deg);
 }
 #close::after{
-	width: 10px;
 	-webkit-transform:rotate(-45deg);
+}
+#close::before,#close::after{
+	width: 10px;
 }
 #minimize::after{
 	width: 5px;

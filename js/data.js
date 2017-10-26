@@ -1,9 +1,9 @@
 'use strict'
 
-var albumInfo = {}
-var recipeInfo = {}
-var artistInfo = {}
-var songInfo = {}
+let albumInfo = {}
+let recipeInfo = {}
+let artistInfo = {}
+let songInfo = {}
 
 
 function loadRecommandRecipe(containerInstance,params){
@@ -753,7 +753,7 @@ function transformPublishDate(millseconds){
 
 
 const maxRetry = 15
-var retry = 0
+let retry = 0
 
 const request = require('request')
 // const request = require('request').defaults({'proxy':'http://127.0.0.1:1080'})
@@ -806,7 +806,6 @@ function webApiRequest(path,data,callBack) {
 }
 
 
-// const os = require('os')
 const path = require('path')
 const fs = require('fs')
 const nodeID3 = require('node-id3')
@@ -814,7 +813,7 @@ const shell = require('electron').shell
 
 function songDownload(songId){
 
-	const songDir = path.join(__dirname,"download")
+	const songDir = path.join(remote.app.getPath("music"),"Glee")
 	const coverDir = path.join(__dirname,"cache")
 
 	let albumId = songInfo[songId]["albumId"]
@@ -866,19 +865,29 @@ function songDownload(songId){
 			trackNumber: track
 		}
 		// nodeID3.removeTags(songPath)
-		// let success = nodeID3.write(tags, songPath)
 		nodeID3.write(tags,songPath, function(error){
 			if(!error){
-				let notification = new Notification(artistName + " - " + songName, {
-					icon: coverUrl, 
-					body: "下载完成, 点击查看"
-				})
-				notification.onclick = function(){
-					shell.showItemInFolder(songPath)
-				}
-				btn.download.setAttribute("class","download")
+				deleteCover()
 			}
 		})
-		
+	}
+
+	function deleteCover(){
+		fs.unlink(coverPath, function(error){
+			if(!error){
+				allDone()
+			}
+		})
+	}
+
+	function allDone(){
+		btn.download.setAttribute("class","download")
+		let notification = new Notification(artistName + " - " + songName, {
+			icon: coverUrl, 
+			body: "下载完成, 点击查看"
+		})
+		notification.onclick = function(){
+			shell.showItemInFolder(songPath)
+		}
 	}
 }

@@ -1,9 +1,9 @@
-const {BrowserWindow} = require('electron').remote
+const {remote} = require('electron')
 // const BrowserWindow = require('electron').remote.BrowserWindow
 const Encrypt = require('./js/crypto.js')
 const storage = require('electron-json-storage')
 
-var current_window = BrowserWindow.getFocusedWindow()
+var current_window = remote.BrowserWindow.getFocusedWindow()
 var loading = 0
 
 document.getElementById('minimize').onclick = function(){
@@ -20,15 +20,12 @@ document.getElementById('close').onclick = function(){
 
 
 // store
-var storeScene = false
 window.onbeforeunload = function(event){
-	if(storeScene==0){
-		event.returnValue = false
-		storage.set('player', { "list": player.list,"index":player.index,"random":player.random,"cycle":player.cycle }, function(error) {
-			current_window.close()
-			storeScene = true
-		})
-	}
+	event.returnValue = false
+	storage.set('player', { "list": player.list,"index":player.index,"random":player.random,"cycle":player.cycle }, function(error) {
+		window.onbeforeunload = null
+		current_window.close()
+	})
 }
 
 // restore

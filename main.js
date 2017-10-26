@@ -12,8 +12,6 @@ let mac = process.platform === 'darwin'
 let taskbarIcon = path.join(__dirname, '/resource/glee.png')
 let dockIcon = path.join(__dirname, '/resource/dock.png')
 
-var downloadTask = {}
-
 // Modify the user agent for all requests to the following urls.
 function createWindow () {
 	// 去掉默认菜单栏。
