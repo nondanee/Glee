@@ -309,7 +309,8 @@ function fillDetailDom(params){
 			}
 			var index = document.createElement('a')
 			index.setAttribute("class","index")
-			index.innerHTML = x+1
+			index.setAttribute("text",x+1)
+			// index.innerHTML = x+1
 			
 			var song = document.createElement('a')
 			song.setAttribute("class","song")

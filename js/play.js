@@ -1,4 +1,5 @@
 const playBar = document.getElementById("playbar")
+const mediainfo = document.getElementById("mediainfo")
 const timeline = document.getElementById("timeline")
 const progressbar = document.getElementById("progressbar")
 const playlist = document.getElementById("playlist")
@@ -9,13 +10,12 @@ const btn = {
 	next:document.getElementById("controller").children[2],
 	random:document.getElementById("controller").children[3],
 	cycle:document.getElementById("controller").children[4],
-	extend:playBar.getElementsByClassName("cover")[0],
 	fold:playBar.getElementsByClassName("fold")[0],
 	list:document.getElementById("extra").getElementsByClassName("list")[0],
 	download:document.getElementById("extra").getElementsByClassName("download")[0]
 }
 
-btn.extend.onclick = function(){
+mediainfo.onclick = function(){
 	playBar.setAttribute("class","extend")
 }
 btn.fold.onclick = function(){
@@ -329,7 +329,9 @@ function rebuildPlayList(){
 		entry.setAttribute("songId",songId)
 		var song = document.createElement('a')
 		song.setAttribute("class","song")
-		song.innerHTML = songName
+		var name = document.createElement('a')
+		name.setAttribute("class","name")
+		name.innerHTML = songName
 		var play = document.createElement('button')
 		play.setAttribute("class","play")
 		play.onclick = function (){
@@ -345,11 +347,10 @@ function rebuildPlayList(){
 			if(x==player.index&&player.paused==false)
 				playSong()
 		}
+		song.appendChild(name)
+		song.appendChild(play)
+		song.appendChild(remove)
 		entry.appendChild(song)
-		entry.appendChild(play)
-		entry.appendChild(remove)
-		var related = document.createElement('span')
-		related.setAttribute("class","related")
 		var artist = document.createElement('a')
 		artist.setAttribute("class","artist")
 		artist.innerHTML = artistName
@@ -359,12 +360,11 @@ function rebuildPlayList(){
 		var duration = document.createElement('a')
 		duration.setAttribute("class","duration")
 		duration.innerHTML = songDuration
-		related.appendChild(artist)
-		related.appendChild(album)
-		related.appendChild(duration)
-		entry.appendChild(related)
+		entry.appendChild(artist)
+		entry.appendChild(album)
+		entry.appendChild(duration)
 		if (x==player.index)
-		entry.setAttribute("class","entry playing")
+			entry.setAttribute("class","entry playing")
 		playlist.appendChild(entry)
 	}
 }
@@ -420,9 +420,9 @@ function playSong(params){
 	img.height = 480
 	img.setAttribute("src",coverUrl)
 
-	let song = playBar.getElementsByClassName("song")[0]
-	let artist = playBar.getElementsByClassName("related")[0].getElementsByClassName("artist")[0]
-	let album = playBar.getElementsByClassName("related")[0].getElementsByClassName("album")[0]
+	let song = mediainfo.getElementsByClassName("song")[0]
+	let artist = mediainfo.getElementsByClassName("related")[0].getElementsByClassName("artist")[0]
+	let album = mediainfo.getElementsByClassName("related")[0].getElementsByClassName("album")[0]
 	let totalTime = timeline.getElementsByClassName("time total")[0]
 	
 	song.innerHTML = songName
