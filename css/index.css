@@ -132,7 +132,7 @@ button{
 
 container{
 	height: calc(100% - 70px);
-	width: 100%;
+	width: 1080px;
 	margin-top: 70px;
 	padding-bottom: 64px;
 	overflow: auto;
@@ -177,6 +177,7 @@ container>.artist
 .chart>.cover,
 .artist>.cover
 {
+	width: 240px;
 	display: block;
 	position: relative;
 	background-size: cover;
@@ -189,18 +190,13 @@ container>.artist
 	border-radius: 1px;
 	box-shadow: 0 0 1px 0 rgba(0,0,0,0.2);
 }
-.cover,
-.name,
-.description
-{
-	width: 240px;
-}
 
 .recipe>.name,
 .album>.name,
 .chart>.name,
 .artist>.name
 {
+	width: 240px;
 	display: block;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -218,6 +214,7 @@ container>.artist
 .chart>.description,
 .artist>.description
 {
+	width: 240px;
 	display: block;
 	color: #b0b5b8;
 	text-align:center;
@@ -430,10 +427,14 @@ container>.detail::before{
 {
 	position: absolute;
 	display: inline-block;
-	text-overflow: ellipsis;
-	white-space: nowrap;
 	overflow: hidden;
 	color: #000000;
+}
+.detail>.track>.entry>.song,
+.detail>.track>.entry>.artist
+{
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 .detail>.track>.entry.playing>.index,
 .detail>.track>.entry.playing>.song,
@@ -473,8 +474,19 @@ container>.detail::before{
 	height: 50px;
 	line-height: 50px;
 	top: 0;left: 0;
-	font-size: 12px;
 	opacity: 0.54;
+}
+.detail>.track>.entry>.index:after{
+	content: attr(text);
+	font-size: 12px;
+}
+.detail>.track>.entry.playing .index{
+	opacity: 0.8;
+}
+.detail>.track>.entry.playing .index::after{
+	content: "\e93d";
+	font-family: "groove style";
+	font-size: 14px;
 }
 .detail>.track>.entry>.song,
 .detail>.track>.entry>.artist{
