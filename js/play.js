@@ -421,13 +421,19 @@ function playSong(params){
 	img.setAttribute("src",coverUrl)
 
 	let song = mediainfo.getElementsByClassName("song")[0]
-	let artist = mediainfo.getElementsByClassName("related")[0].getElementsByClassName("artist")[0]
-	let album = mediainfo.getElementsByClassName("related")[0].getElementsByClassName("album")[0]
+	let related = mediainfo.getElementsByClassName("related")[0]
+	// let artist = mediainfo.getElementsByClassName("related")[0].getElementsByClassName("artist")[0]
+	// let album = mediainfo.getElementsByClassName("related")[0].getElementsByClassName("album")[0]
 	let totalTime = timeline.getElementsByClassName("time total")[0]
 	
-	song.innerHTML = songName
-	artist.innerHTML = artistName
-	album.innerHTML = albumName
+	// song.innerHTML = songName
+	// artist.innerHTML = artistName
+	// album.innerHTML = albumName
+
+	song.setAttribute("name",songName)
+	related.setAttribute("artist",artistName)
+	related.setAttribute("album",albumName)
+
 
 	if ("duration" in songInfo[songId]){
 		totalTime.innerHTML = secondReadable(songInfo[songId]["duration"]/1000)

@@ -475,18 +475,18 @@ container>.detail::before{
 	line-height: 50px;
 	top: 0;left: 0;
 	opacity: 0.54;
+	font-size: 12px;
 }
 .detail>.track>.entry>.index:after{
 	content: attr(text);
-	font-size: 12px;
 }
 .detail>.track>.entry.playing .index{
 	opacity: 0.8;
+	font-size: 14px;
 }
 .detail>.track>.entry.playing .index::after{
 	content: "\e93d";
 	font-family: "groove style";
-	font-size: 14px;
 }
 .detail>.track>.entry>.song,
 .detail>.track>.entry>.artist{

@@ -36,7 +36,7 @@
 	content: "\e70e";
 	font-family: "groove style";
 	color: rgba(255,255,255,0.9);
-	background-color: rgba(0,0,0,0.18);
+	background-color: rgba(0,0,0,0.1);
 	text-align: center;
 	line-height: 64px;
 	width: 64px;
@@ -65,12 +65,13 @@
 	left: 0px;bottom: 0px;
 	z-index: 0;
 }
-#mediainfo>.song,
-#mediainfo>.related
-{
+#mediainfo>.song,#mediainfo>.related{
 	color: #ffffff;
 	left: 64px;
+	max-width: 210px;
 	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 	z-index: 2;
 }
 #mediainfo>.song{
@@ -82,34 +83,12 @@
 	font-size: 14px;
 	opacity: 0.7;
 }
-#mediainfo>.related>.artist,
-#mediainfo>.related>.album
-{
-	display: inline-block;
-	vertical-align: bottom;
+#mediainfo>.song::before{
+	content: attr(name);
 }
-#mediainfo>.related>.album::before{
-	content: "•";
-	margin: 6px;
+#mediainfo>.related::before{
+	content: attr(artist);
 }
-#mediainfo>.song,
-#mediainfo>.related>.artist
-{
-	max-width: 210px;
-}
-#mediainfo>.related>.album{
-	opacity: 0;
-	visibility: hidden;
-	-webkit-transition: opacity 0.36s cubic-bezier(0.37, -0.11, 0.14, 0.85);
-}
-#mediainfo>.song,
-#mediainfo>.related>.artist,
-#mediainfo>.related>.album
-{
-	text-overflow: ellipsis;
-	overflow: hidden;
-}
-
 #playbar #timeline{
 	bottom: 0px;
 	left: 300px;
@@ -309,7 +288,6 @@ button.download.ing{
 #playbar .bgblur,
 #playbar .bgblur::after,
 #playbar .drag,
-#playbar #mediainfo>.related>.album,
 #playbar #extra,
 #playbar #playlist
 {
@@ -324,8 +302,7 @@ button.download.ing{
 }
 #playbar.extend .bgblur,
 #playbar.extend .drag,
-#playbar.extend #extra,
-#playbar.extend #mediainfo>.related>.album
+#playbar.extend #extra
 {
 	opacity: 1;
 	visibility: visible;
@@ -358,12 +335,9 @@ button.download.ing{
 	left: 126px;
 	max-width: calc(100% - 126px);
 }
-#playbar.extend #mediainfo>.related>.artist,
-#playbar.extend #mediainfo>.related>.album
-{
-	max-width: 100%;
+#playbar.extend #mediainfo>.related::after{
+	content: " • " attr(album);
 }
-
 #playbar.extend #timeline{
 	bottom: 72px;
 	left: 24px;
@@ -438,7 +412,7 @@ button.download.ing{
 }
 #playlist .entry .song{
 	display: flex;
-	width: calc((100% - 40px) * 0.4);
+	width: calc((100% - 36px) * 0.4);
 	padding-right: 18px;
 	box-sizing: border-box;
 	overflow: hidden;
@@ -448,12 +422,12 @@ button.download.ing{
 	max-width: 100%;
 }
 #playlist .entry .artist,.entry .album{
-	width: calc((100% - 40px) * 0.3);
+	width: calc((100% - 36px) * 0.3);
 	padding-right: 18px;
 	box-sizing: border-box;
 }
 #playlist .duration{
-	width: 40px;
+	width: 36px;
 	text-align: right;
 }
 #playlist .entry button{
