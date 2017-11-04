@@ -16,10 +16,10 @@ const btn = {
 }
 
 mediainfo.onclick = function(){
-	playBar.setAttribute("class","extend")
+	playBar.className = "extend"
 }
 btn.fold.onclick = function(){
-	playBar.setAttribute("class","")
+	playBar.className = ""
 }
 btn.list.onclick = function(){
 	if (playBar.getAttribute("class")!="extend list"){
@@ -35,7 +35,7 @@ btn.list.onclick = function(){
 btn.download.onclick = function(){
 	var songId = player.list[player.index]
 	songDownload(songId)
-	this.setAttribute("class","download ing")
+	this.className = "download ing"
 }
 
 
@@ -134,9 +134,10 @@ Object.defineProperty(player,"index",{
 		let entries = document.getElementsByClassName("entry")
 		for(let i=0;i<entries.length;i++){
 			if(entries[i].getAttribute("songId")==songId)
-				entries[i].setAttribute("class","entry playing")
-			else if(entries[i].getAttribute("class")=="entry playing")
-				entries[i].setAttribute("class","entry")
+				entries[i].className = "entry playing"
+			else if(entries[i].className == "entry playing")
+				entries[i].className = "entry"
+				// removeClass(entries[i],"playing")
 		}
 	}
 });
@@ -150,11 +151,11 @@ Object.defineProperty(player,"random",{
 		this._random = value
 		if (this._random==0){
 			btn.random.setAttribute("title","循环播放:关闭")
-			btn.random.setAttribute("class","random off")
+			btn.random.className = "random off"
 		}
 		else if(this._random==1){
 			btn.random.setAttribute("title","循环播放:打开")
-			btn.random.setAttribute("class","random on")
+			btn.random.className = "random on"
 		}
 	}
 });
@@ -168,15 +169,15 @@ Object.defineProperty(player,"cycle",{
 		this._cycle = value
 		if (this._cycle==0){
 			btn.cycle.setAttribute("title","重复播放:关闭")
-			btn.cycle.setAttribute("class","cycle off")
+			btn.cycle.className = "cycle off"
 		}
 		else if(this._cycle==1){
 			btn.cycle.setAttribute("title","重复播放:全部")
-			btn.cycle.setAttribute("class","cycle all")
+			btn.cycle.className = "cycle all"
 		}
 		else if(this._cycle==2){
 			btn.cycle.setAttribute("title","重复播放:单曲")
-			btn.cycle.setAttribute("class","cycle single")
+			btn.cycle.className = "cycle single"
 		}
 	}
 });
@@ -203,10 +204,10 @@ btn.random.onclick = function(){
 
 
 player.audio.addEventListener('play',function(){
-	btn.play.setAttribute("class","pause")
+	btn.play.className = "pause"
 },false);
 player.audio.addEventListener('pause',function(){
-	btn.play.setAttribute("class","play")
+	btn.play.className = "play"
 },false);
 player.audio.addEventListener('ended',function(){
 	if(player.cycle==2){//single cycle priority
@@ -325,46 +326,64 @@ function rebuildPlayList(){
 		var artistName = artistInfo[songInfo[songId]["artistId"]]["artistName"]
 		var albumName = albumInfo[songInfo[songId]["albumId"]]["albumName"]
 		var entry = document.createElement('div')
-		entry.setAttribute("class","entry")
+		entry.className = "entry"
 		entry.setAttribute("songId",songId)
+		
+
+		var back = document.createElement('div')
+		back.className = "back"
+		back.onclick = function (){
+			player.index = x
+			playSong()
+		}
+		entry.appendChild(back)
+
+		var front = document.createElement('div')
+		front.className = "front"
+
 		var song = document.createElement('a')
-		song.setAttribute("class","song")
+		song.className = "song"
 		var name = document.createElement('a')
-		name.setAttribute("class","name")
+		name.className = "name"
 		name.innerHTML = songName
 		var play = document.createElement('button')
-		play.setAttribute("class","play")
-		play.onclick = function (){
+		play.className = "play"
+		play.onclick = function (event){
 			player.index = x
 			playSong()
 		}
 		var remove = document.createElement('button')
-		remove.setAttribute("class","remove")
-		remove.onclick = function (){
+		remove.className = "remove"
+		remove.onclick = function (event){
 			let list = player.list
 			list.splice(x,1)
 			player.list = list
-			if(x==player.index&&player.paused==false)
+			if(x==player.index&&player.paused==false){
+				player.index = x
 				playSong()
+			}
 		}
 		song.appendChild(name)
 		song.appendChild(play)
 		song.appendChild(remove)
-		entry.appendChild(song)
+		
+		front.appendChild(song)
 		var artist = document.createElement('a')
-		artist.setAttribute("class","artist")
+		artist.className = "artist"
 		artist.innerHTML = artistName
 		var album = document.createElement('a')
-		album.setAttribute("class","album")
+		album.className = "album"
 		album.innerHTML = albumName
 		var duration = document.createElement('a')
-		duration.setAttribute("class","duration")
+		duration.className = "duration"
 		duration.innerHTML = songDuration
-		entry.appendChild(artist)
-		entry.appendChild(album)
-		entry.appendChild(duration)
+		front.appendChild(artist)
+		front.appendChild(album)
+		front.appendChild(duration)
+		entry.appendChild(front)
+
 		if (x==player.index)
-			entry.setAttribute("class","entry playing")
+			entry.className = "entry playing"
 		playlist.appendChild(entry)
 	}
 }
@@ -524,7 +543,7 @@ function playSong(params){
 					var rgbColor = accentColors.lightMuted.toString().slice(5,-4)
 				}
 
-				let cover = playBar.getElementsByClassName("cover")[0]
+				let cover = mediainfo.getElementsByClassName("cover")[0]
 				let bgBlur = playBar.getElementsByClassName("bgblur")[0]
 
 				cover.style.backgroundImage = "url("+coverUrl+")"
@@ -557,3 +576,35 @@ document.addEventListener("keydown", function(e) {
 
 
 
+function addClass(dom, className) {
+	let allClass = getAllClass(dom)
+	let classIndex = hasClass(allClass, className)
+	if (classIndex == -1){
+		allClass.push(className)
+		dom.className = toClassName(allClass)
+	}
+}
+function removeClass(dom, className) {
+	let allClass = getAllClass(dom)
+	let classIndex = hasClass(allClass, className)
+	if (classIndex != -1){
+		allClass.splice(classIndex,1)
+		dom.className = toClassName(allClass)
+	}
+}
+function getAllClass(dom){
+	let allClass = dom.className
+	return allClass.split(/\s+/)
+}
+function hasClass(allClass, className){
+	for(let i in allClass) {
+		if(allClass[i] == className){
+			return i
+		}
+	}
+	return -1
+}
+function toClassName(allClass){
+	let className = allClass.toString()
+	return className.replace(/,/g," ")
+}
