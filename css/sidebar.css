@@ -1,33 +1,67 @@
-sidebar{
-	display: inline-block;
-	width: 260px;
-	height: 100%;
-	position: relative;
+#sidebar{
 	-webkit-app-region: drag;
+	/*position: relative;*/
+	display: flex;
+	flex-direction:column;
+	width: 48px;
+	height: 100%;
+	box-sizing: border-box;
+	padding-bottom: 72px;
 	background-color: rgb(245,245,245);
 }
-nav{
-	position: absolute;
-	top: 10px;
-	width: 100%;
+#sidebar>.filler{
+	flex-grow: 1;
+	pointer-events: none;
 }
-.cell{
+#sidebar>button{
+	flex-grow: 0;
 	-webkit-app-region: no-drag;
+	position: relative;
 	height: 48px;
+	width: 48px;
 	line-height: 48px;
-	font-size: 16px;
-	padding-left: 24px;
-	color: #535353;
+	font-size: 1em;
+	color: #000000;
 	cursor: pointer;
-	-webkit-transition:all 0.08s linear;
+	box-sizing: border-box;
 }
-.cell.active{
-	border-left: 4px solid #535353;
-	padding-left: 20px;
+#sidebar>button.active::before{
+	content: "";
+	position: absolute;
+	left: 0;
+	height: 100%;width: 4px;
+	background-color: #484848;
 }
-.cell:hover{
+#sidebar>button:hover{
 	background-color: rgba(0,0,0,0.08);
 }
-.cell:active{
+#sidebar>button:active{
 	background-color: rgba(0,0,0,0.12);
+}
+#sidebar>button::after{
+	font-family: "groove style";
+}
+button.back::after{
+	content: "\e72b";
+}
+button.search::after{
+	content: "\e721";
+}
+button.explore::after{
+	content: "\e942";
+}
+button.mine::after{
+	content: "\e940";
+}
+button.playlist::after{
+	content: "\e90b";
+}
+button.album:after{
+	content:"\e93c";
+}
+button.artist::after{
+	content: "\e77b";
+}
+button.setting::after{
+	content:"\e713";
 }

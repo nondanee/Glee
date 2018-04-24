@@ -4,28 +4,32 @@
 	<meta charset="utf-8">
 	<title>Glee</title>
 	<link rel="stylesheet" type="text/css" href="css/index.css" />
-	<!-- <link rel="stylesheet" type="text/css" href="css/sidebar.css" /> -->
+	<link rel="stylesheet" type="text/css" href="css/sidebar.css" />
 	<link rel="stylesheet" type="text/css" href="css/playbar.css" />
 </head>
 <style type="text/css"></style>
 <body>
 <div id="titlebar">
 	<div id="maintab">
-		<li>PLAYLIST</li><li>ALBUM</li><li>ARTIST</li>
+		<li>PLAYLIST</li><li>ALBUM</li><li>ARTIST</li><li>SEARCH</li>
+		<!-- <li>歌单</li><li>专辑</li><li>歌手</li><li>搜索</li> -->
 	</div>
 	<div id="subtab">
 	</div>
 	<button id="minimize"></button>
 	<button id="close"></button>
 </div>
-<!-- <sidebar>
-	<nav>
-		<div class="cell">Explore</div>
-		<div class="cell">Release</div>
-		<div class="cell">Toplist</div>
-		<div class="cell active">Artists</div>
-	</nav>
-</sidebar> -->
+<div id="sidebar">
+	<button class="back"></button>
+	<button class="search"></button>
+	<button class="explore"></button>
+	<button class="mine"></button>
+	<button class="playlist"></button>
+	<button class="album"></button>
+	<button class="artist"></button>
+	<div class="filler"></div>
+	<button class="setting"></button>
+</div>
 <container></container>
 <div id="playbar">
 	<div class="bgblur"></div>
@@ -51,6 +55,7 @@
 	<div id="extra">
 		<button class="list"></button>
 		<button class="download"></button>
+		<button class="fullscreen"></button>
 	</div>
 	<div id="playlist">
 	</div>

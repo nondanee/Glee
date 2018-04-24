@@ -20,12 +20,12 @@ function createWindow () {
 	mainWindow = new BrowserWindow({
 		width: 1080,
 		height: 820,
-		resizable: false,
+		// resizable: false,
 		// minWidth: 1080,
 		// minHeight: 820,
 		frame: false,
 		// webPreferences: {
-		//	 experimentalFeatures: true
+		// 	 experimentalFeatures: true
 		// },
 		// transparent: true
 		title: "Glee",

@@ -4,9 +4,17 @@ const favoriteArtists = [
 		"name":"欅坂46",
 		"id":12009134
 	},
+	// {
+	// 	"name":"乃木坂46",
+	// 	"id":20846
+	// },
 	{
-		"name":"乃木坂46",
-		"id":20846
+		"name":"周杰伦",
+		"id":6452
+	},
+	{
+		"name":"Ed Sheeran",
+		"id":33184
 	},
 	{
 		"name":"AKB48",

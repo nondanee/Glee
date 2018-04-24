@@ -41,9 +41,9 @@ button{
 	display: block;
 	position: fixed;
 	top: 0px;
-	left: 0px;
+	left: 48px;
 	height: 80px;
-	width: 100%;
+	width: calc(100% - 48px);
 	padding: 9px 24px 0 24px;
 	box-sizing: border-box;
 	background-color: #ffffff;
@@ -132,9 +132,8 @@ button{
 
 container{
 	height: calc(100% - 70px);
-	width: 1080px;
 	margin-top: 70px;
-	padding-bottom: 64px;
+	padding: 0 8px 64px 8px;
 	overflow: auto;
 	box-sizing: border-box;
 	display: inline-block;
@@ -151,10 +150,13 @@ container>.chart,
 container>.artist
 {
 	display: inline-block;
-	margin: 16px 0;
-	/*margin-right: 24px;*/
-	margin-left: 24px;
-	width: 240px;
+	vertical-align: top;
+	margin: 0 4px 16px 4px;
+	width: 168px;
+	height: 233px;
+	box-sizing: border-box;
+	padding: 5px;
+	
 	/*flex-grow: 1;*/
 	/*vertical-align: top;*/
 
@@ -177,101 +179,118 @@ container>.artist
 .chart>.cover,
 .artist>.cover
 {
-	width: 240px;
-	display: block;
+	display: flex;
+	justify-content: center;
 	position: relative;
+	text-align: center;
+	height: 158px;
+	width: 158px;
+	z-index: -1;
+}
+
+.recipe>.cover::before,
+.album>.cover::before,
+.chart>.cover::before,
+.artist>.cover::before,
+.recipe>.cover::after,
+.album>.cover::after,
+.chart>.cover::after,
+.artist>.cover::after
+{
+	content: "";
+	position: absolute;
+	background-image: inherit;
 	background-size: cover;
 	background-position: center;
-	text-align: center;
-	cursor: pointer;
-	overflow: hidden;
-	height: 240px;
-	width: 240px;
-	border-radius: 1px;
-	box-shadow: 0 0 1px 0 rgba(0,0,0,0.2);
-}
-
-.recipe>.name,
-.album>.name,
-.chart>.name,
-.artist>.name
-{
-	width: 240px;
-	display: block;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	overflow: hidden;
-	color: #171819;
-	font-size: 13px;
-	text-align:center;
-	margin-top: 32px;
-	/*margin-top: 8px;*/
-	/*font-weight: bold;*/
-}
-
-.recipe>.description,
-.album>.description,
-.chart>.description,
-.artist>.description
-{
-	width: 240px;
-	display: block;
-	color: #b0b5b8;
-	text-align:center;
-	margin-top: 6px;
-	font-size: 12px;
-	line-height: 16px;
-	/*margin-top: 5px;*/
-	/*font-size: 13px;*/
-}
-.recipe>.description::before,
-.album>.description::before,
-.chart>.description::before,
-.artist>.description::before
-{
-	font-family: "groove style";
-	margin-right: 3px;
-	vertical-align: bottom;
-}
-.recipe>.description::before{
-	content: "\e7f6";
-}
-.album>.description::before{
-	content: "\e719";
-}
-.chart>.description::before{
-	content: "\e895";
-}
-.artist>.description::before{
-	content: "\e940";
-}
-
-
-.recipe .operation,
-.album .operation,
-.chart .operation,
-.artist .operation
-{
-	display: block;
-	position: absolute;
+	background-repeat: no-repeat;
 	width: 100%;
-	height: 16px;
-	bottom: 0;
-	line-height: 0;
+	height: 100%;
+	top: 0;
+	left: 0;
+}
+.recipe>.cover::before,
+.album>.cover::before,
+.chart>.cover::before,
+.artist>.cover::before{
+	width: 94%;
+	height: 94%;
+	left: 3%;
+	top: 10%;
+	filter: blur(12px);
 	opacity: 0;
-	visibility: hidden;
-	text-align:center;
+	transition: opacity 80ms linear;
 }
-.operation button{
-	display: inline-block;
+
+.recipe:hover>.cover::before,
+.album:hover>.cover::before,
+.chart:hover>.cover::before,
+.artist:hover>.cover::before{
+	opacity: 1;
+}
+
+.recipe:hover button,
+.album:hover button,
+.chart:hover button,
+.artist:hover button{
+	visibility: visible;
+	opacity: 1;
+}
+
+.cover button{
+	position: relative;
 	font-family: "groove style";
+	font-size: 20px;
+	line-height: 48px;
+	width: 48px;
+	height: 48px;
+	color: white;
+	margin: auto 4px;
+	border-radius: 50%;
+	background: inherit;
+	z-index: 1;
+	overflow: hidden;
+	transition: all 80ms linear;
+	visibility: hidden;
+	opacity: 0;
 	cursor: pointer;
-	margin: 1px 2px;
-	font-size: 14px;
-	color: #b0b5b8;
 }
-.operation button:hover{
-	color: #171819;
+.cover button:hover{
+	width: 54px;
+	height: 54px;
+	margin: auto 1px;
+}
+.cover button:active{
+	width: 48px;
+	height: 48px;
+	margin: auto 4px;
+}
+.cover button::before{
+	content: "";
+	position: absolute;
+	width: 158px;
+	height:158px;
+	z-index: -1;
+	background: inherit;
+	transition: all 80ms linear;
+	filter: blur(15px) brightness(0.8);
+}
+button.play:hover::before{
+	left: -24px;
+	top: -52px;	
+}
+button.add:hover::before{
+	left: -80px;
+	top: -52px;
+}
+button.play::before,
+button.play:active::before{
+	left: -27px;
+	top: -55px;
+}
+button.add::before,
+button.add:active::before{
+	left: -83px;
+	top: -55px;
 }
 button.play::after{
 	content: "\e768";
@@ -279,30 +298,41 @@ button.play::after{
 button.add::after{
 	content: "\e710";
 }
-button.keep::after{
-	content: "\e734";
-}
-button.detail::after{
-	content: "\e700";
-}
 
 
-container>.recipe:hover .operation,
-container>.album:hover .operation,
-container>.chart:hover .operation,
-container>.artist:hover .operation
+.recipe>.name,
+.album>.name,
+.chart>.name,
+.artist>.name
 {
-	opacity: 1;
-	visibility: visible;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	overflow: hidden;
+	color: #000000;
+	margin-top: 7px;
+	font-weight: bold;
+	font-size: 14px;
+	cursor: default;
 }
 
-container>.recipe:hover .description,
-container>.album:hover .description,
-container>.chart:hover .description,
-container>.artist:hover .description
+.recipe>.description,
+.album>.description,
+.chart>.description,
+.artist>.description
 {
-	opacity: 0;
-	visibility: hidden;
+	display: inline-block;
+	line-height: 16px;
+	color: #666666;
+	margin-top: 3px;
+	font-size: 13px;
+	cursor: pointer;
+}
+.recipe>.description:hover,
+.album>.description:hover,
+.chart>.description:hover,
+.artist>.description:hover{
+	color: #858585;
 }
 
 

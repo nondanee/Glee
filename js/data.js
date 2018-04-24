@@ -388,6 +388,132 @@ function loadTopList(containerInstance){
 
 }
 
+function SearchAll(containerInstance,params){
+
+	if (loading == 1){console.log("loading");return;}
+	else{loading = 1}
+
+	const keywords = params.keywords
+	const type = params.type
+
+	const offset = containerInstance.getOffset()
+	const limit = 30
+	// 搜索单曲(1)，歌手(100)，专辑(10)，歌单(1000)，用户(1002)
+	const data = {
+		csrf_token: "",
+		s: keywords,
+		limit,
+		type,
+		offset
+	}
+	/*if(type==1){
+		webApiRequest("/weapi/search/get",data,dataArrive)
+	}
+	else*/ if(type==10){
+		webApiRequest("/weapi/search/get",data,albumDataArrive)
+	}
+	else if(type==100){
+		webApiRequest("/weapi/search/get",data,artistDataArrive)
+	}
+	else if(type==1000){
+		webApiRequest("/weapi/search/get",data,recipeDataArrive)
+	}
+
+	function albumDataArrive(responseText) {
+		try{
+			let searchResult = JSON.parse(responseText)
+			let allAlbum = searchResult["result"]["albums"]
+			for (let i=0;i<allAlbum.length;i++)
+			{
+				let albumId = allAlbum[i]["id"]
+				let artistId = allAlbum[i]["artist"]["id"]
+				let artistName = allAlbum[i]["artist"]["name"]
+				artistId = artistId == 0 ? artistName : artistId
+				let publishDate = transformPublishDate(allAlbum[i]["publishTime"])
+				if (!(albumId in albumInfo)){
+					let albumName = allAlbum[i]["name"]
+					let coverUrl = allAlbum[i]["picUrl"]
+					let oneAlbum = {"albumName":albumName,"publishDate":publishDate,"coverUrl":coverUrl,"artistId":artistId}
+					albumInfo[albumId] = oneAlbum
+				}
+				else if(!("publishDate" in albumInfo[albumId]))
+					albumInfo[albumId]["publishDate"] = publishDate
+				if (!(artistId in artistInfo)){
+					let oneArtist = {"artistName":artistName}
+					artistInfo[artistId] = oneArtist
+				}
+				containerInstance.add(albumId)
+			}
+			containerInstance.refresh()
+		}catch(e){
+			console.log(e)
+			containerInstance.scrollStop()
+			loading = 0
+		}
+		loading = 0
+	}
+
+	function recipeDataArrive(responseText) {
+		try{
+			let searchResult = JSON.parse(responseText)
+			let allRecipe = searchResult["result"]["playlists"]
+			for (let i=0;i<allRecipe.length;i++)
+			{
+				let recipeId = allRecipe[i]["id"]
+				if (!(recipeId in recipeInfo)){
+					let recipeName = allRecipe[i]["name"]
+					let coverUrl = allRecipe[i]["coverImgUrl"]
+					let playCount = allRecipe[i]["playCount"]
+					let description = allRecipe[i]["description"]
+					let creator = allRecipe[i]["creator"]["nickname"]
+					let oneRecipe = {"recipeName":recipeName,"playCount":playCount,"coverUrl":coverUrl,"description":description,"creator":creator}
+					recipeInfo[recipeId] = oneRecipe
+				}
+				containerInstance.add(recipeId)			
+			}
+			containerInstance.refresh()
+		}catch(e){
+			console.log(e)
+			containerInstance.scrollStop()
+			loading = 0
+		}
+		loading = 0
+	}
+
+	function artistDataArrive(responseText) {
+		try{
+			let searchResult = JSON.parse(responseText)
+			console.log(searchResult)
+			let allArtist = searchResult["result"]["artists"]
+			for (let i=0;i<allArtist.length;i++)
+			{
+				let artistId = allArtist[i]["id"]
+				let artistName = allArtist[i]["name"]
+				let artistImage = allArtist[i]["img1v1Url"]
+				let albumSize = allArtist[i]["albumSize"]
+				let description = allArtist[i]["trans"] || allArtist[i]["alias"][0] || ""
+				if (!(artistId in artistInfo)){
+					let oneArtist = {"artistName":artistName,"artistImage":artistImage,"albumSize":albumSize,"description":description}
+					artistInfo[artistId] = oneArtist
+				}
+				else{
+					artistInfo[artistId]["artistImage"] = artistImage
+					artistInfo[artistId]["albumSize"] = albumSize
+					artistInfo[artistId]["description"] = description
+				}
+				containerInstance.add(artistId)
+			}
+			containerInstance.refresh()
+		}catch(e){
+			console.log(e)
+			containerInstance.scrollStop()
+			loading = 0
+		}
+		loading = 0
+	}
+
+}
+
 function loadArtistSongs(artistId,callBack,callBackParams){
 
 	if (artistInfo[artistId]["musicTrack"] != null){
@@ -637,16 +763,17 @@ function getSongUrl(songId,callBack,callBackParams){
 	if (checkSongUrlStatus(songId)!=0){return}
 
 	const data = {
-		"ids": [songId],
+		"ids": JSON.stringify([songId]),
 		// "br": 999000,
-		"br":320000,
-		"csrf_token": ""
+		"br": "320000",
+		// "csrf_token": ""
 	}
 
 	webApiRequest("/weapi/song/enhance/player/url?csrf_token=",data,dataArrive)
 
 	function dataArrive(responseText) {
 		let songData = JSON.parse(responseText)
+		console.log(songData)
 		for (let i=0;i<songData["data"].length;i++)
 		{
 			let songId = songData["data"][i]["id"]
@@ -777,9 +904,10 @@ function webApiRequest(path,data,callBack) {
 			'Origin': 'http://music.163.com',
 			'X-Real-IP': '118.88.88.88',
 			'Accept-Language': 'q=0.8,zh-CN;q=0.6,zh;q=0.2',
+			// 'Accept-Encoding': 'deflate',
 			'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
 			'Referer': 'http://music.163.com/',
-			'Cookie': 'os=uwp;'
+			// 'Cookie': 'os=uwp;'
 		},
 		form:{
 			params: cryptoreq.params,
@@ -814,7 +942,8 @@ const shell = require('electron').shell
 function songDownload(songId){
 
 	const songDir = path.join(remote.app.getPath("music"),"Glee")
-	const coverDir = path.join(__dirname,"cache")
+	const coverDir = path.join(remote.app.getPath("temp"),"Glee")
+	// const coverDir = path.join(__dirname,"cache")
 
 	let albumId = songInfo[songId]["albumId"]
 	let artistId = songInfo[songId]["artistId"]

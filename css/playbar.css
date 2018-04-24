@@ -27,25 +27,34 @@
 	bottom: 0;
 	left: 0;
 	height: 64px;
-	width: 282px;
+	width: 320px;
 	overflow: hidden;
 	cursor: pointer;
 	-webkit-app-region: no-drag;
 }
 #playbar #mediainfo:hover::before{
-	content: "\e70e";
-	font-family: "groove style";
-	color: rgba(255,255,255,0.9);
+	content: "";
 	background-color: rgba(0,0,0,0.1);
-	text-align: center;
-	line-height: 64px;
-	width: 64px;
-	height: 64px;
-	padding-right: calc(100% - 64px);
+	width: 100%;
+	height: 100%;
 	position: absolute;
 	z-index: 1;
 }
-#playbar.extend #mediainfo:hover::before{
+#playbar #mediainfo:hover>.cover::before{
+	content: "\e70e";
+	text-align: center;
+	line-height: 48px;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	font-family: "groove style";
+	color: #ffffff;
+	background-color: rgba(0,0,0,0.3);
+}
+
+
+#playbar.extend #mediainfo:hover::before,
+#playbar.extend #mediainfo:hover>.cover::before{
 	content: none;
 }
 
@@ -83,17 +92,17 @@
 	font-size: 14px;
 	opacity: 0.7;
 }
-#mediainfo>.song::before{
+#mediainfo>.song::after{
 	content: attr(name);
 }
-#mediainfo>.related::before{
+#mediainfo>.related::after{
 	content: attr(artist);
 }
 #playbar #timeline{
 	bottom: 0px;
-	left: 300px;
+	left: 340px;
 	height: 64px;
-	width: calc(100% - 300px - 270px);
+	width: calc(100% - 340px - 270px);
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -112,26 +121,23 @@
 	flex-basis: auto;
 	flex-grow: 1;
 	cursor: pointer;
-	overflow: hidden;
-	white-space: nowrap;
+	display: flex;
 }
 #progressbar .filler{
-	position: relative;
-	display: inline-block;
 	margin: 17px 0;
-	height: 2px;	
+	height: 2px;
 }
 #progressbar .filler.played{
 	background-color: rgba(255,255,255,1);
 	-webkit-transition:width 0.08s linear;
 }
 #progressbar .filler.unplayed{
-	width: 100%;
+	flex-grow: 1;
 	background-color: rgba(255,255,255,0.4);
 }
 #progressbar .cursor{
-	position: relative;
-	display: inline-block;
+	flex-grow: 0;
+	flex-shrink: 0;
 	margin: 9px 0px 9px 0px;
 	width: 18px;
 	height: 18px;
@@ -159,7 +165,7 @@
 #playbar #extra{
 	bottom: 24px;
 	height: 64px;
-	width: 96px;
+	width: 144px;
 	right: 10px;
 	display: flex;
 }
@@ -203,6 +209,12 @@ button.cycle.single::after{
 }
 button.list::after{
 	content: "\e93f";
+}
+button.fullscreen::after{
+	content: "\e740";
+}
+button.fullscreen.on::after{
+	content: "\e73f";
 }
 button.download::after{
 	content: "\e896";
@@ -249,7 +261,7 @@ button.download.ing{
     padding: 50px;
     margin: -50px;
 	overflow: hidden;
-	-webkit-filter: blur(20px);
+	filter: blur(20px);
 	background-position: top;
 	background-size: cover;
 	z-index: -1;
@@ -336,7 +348,7 @@ button.download.ing{
 	max-width: calc(100% - 126px);
 }
 #playbar.extend #mediainfo>.related::after{
-	content: " • " attr(album);
+	content: attr(artist) " • " attr(album);
 }
 #playbar.extend #timeline{
 	bottom: 72px;
@@ -358,25 +370,36 @@ button.download.ing{
 	opacity: 1;
 	visibility: visible;
 }
-#playbar.list #mediainfo,
+/*#playbar.list #mediainfo,
 #playbar.list #timeline,
 #playbar.list #controller,
 #playbar.list #extra
 {
 	transform: translateY(-540px);
+}*/
+
+#playbar.list #mediainfo{
+	bottom: calc(130px + 100% - 280px);
 }
-
-
-
+#playbar.list #timeline{
+	bottom: calc(72px + 100% - 280px);
+}
+#playbar.list #controller{
+	bottom: calc(24px + 100% - 280px);
+}
+#playbar.list #extra{
+	bottom: calc(24px + 100% - 280px); 
+}
 #playbar.list #playlist{
 	opacity: 1;
 	visibility: visible;
 	transform: translateY(0px);
 }
+
 #playbar #playlist{
 	bottom: 0px;
-	transform: translateY(540px);/*cause button unfoucs*/
-	height: 540px;
+	transform: translateY(100%);
+	height: calc(100% - 280px);
 	padding:0 24px;
 	width: 100%;
 	box-sizing: border-box;
@@ -393,6 +416,9 @@ button.download.ing{
 	font-weight: 200;
 	border-bottom: 1px solid rgba(255,255,255,0.05);
 	cursor: default;
+}
+#playlist>.entry:last-child{
+	border-bottom-width: 0;
 }
 
 #playlist .entry .back{

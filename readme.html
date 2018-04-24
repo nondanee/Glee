@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.rawgit.com/nondanee/6d208b246dac87c05fa1c339c0b94daa/raw/7b784bbd9efe0fc4a22e8f7c0222c635c18f5c8c/gfm.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container new-discussion-timeline experiment-repo-nav">
+        <div id="readme" class="readme boxed-group clearfix announce instapaper_body md">
+        <h3><svg aria-hidden="true" class="octicon octicon-book" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M3 5h4v1H3V5zm0 3h4V7H3v1zm0 2h4V9H3v1zm11-5h-4v1h4V5zm0 2h-4v1h4V7zm0 2h-4v1h4V9zm2-6v9c0 .55-.45 1-1 1H9.5l-1 1-1-1H2c-.55 0-1-.45-1-1V3c0-.55.45-1 1-1h5.5l1 1 1-1H15c.55 0 1 .45 1 1zm-8 .5L7.5 3H2v9h6V3.5zm7-.5H9.5l-.5.5V12h6V3z"/></svg> README.md</h3>
+        <article class="markdown-body entry-content" itemprop="text">
+            <p><img src="resource/dock.png" alt="logo" width="144" height="144" align="right" /></p>
+
+<h1 id="toc_0">Glee</h1>
+
+<p>Built by Electron, Vanilla JS, Plain CSS<br/><br/>
+<em>The logo is a rebound of <a href="https://dribbble.com/shots/1203920-Music-Service-Branding-G">Music Service Branding - G</a> by <a href="https://dribbble.com/zMcBride">Zack McBride</a> in <a href="https://dribbble.com/">Dribbble</a></em></p>
+
+<blockquote>
+<p>勉强算是 &quot;目前最好的网易云音乐客户端 <a href="https://github.com/trazyn/ieaseMusic">trazyn/ieaseMusic</a>&quot; 的竞品</p>
+</blockquote>
+
+<h2 id="toc_1">Description</h2>
+
+<ul>
+<li>基于Electron，~~Windows专属~~</li>
+<li>原生JS，手写CSS，啥框架都不会用</li>
+<li>界面抄袭巨硬家的Groove Music (还直接偷了iconfont用)</li>
+<li>数据来自网易云音乐API，搬了<a href="https://github.com/Binaryify/NeteaseCloudMusicApi/blob/master/util/crypto.js">Binaryify/NeteaseCloudMusicApi</a>，<a href="https://github.com/sqaiyan/netmusic-node/blob/master/crypto.js">sqaiyan/netmusic-node</a>的加密源码</li>
+<li>不能登录的，主要是不会写，还有邮箱登录API被封了对吧？</li>
+<li>因为不能登录所以就只算个播放器吧，像<a href="https://github.com/listen1/listen1">listen1/listen1</a>这样</li>
+<li>API里不登录能用的大概都用上了</li>
+<li>等有空再加上搜索吧</li>
+</ul>
+
+<h2 id="toc_2">Feature</h2>
+
+<ul>
+<li>好看</li>
+<li>播放条随专辑封面变色</li>
+<li>启动时还原上次播放状态</li>
+<li>解锁网页端大部分变灰歌曲 (奇特姿势来自<a href="https://github.com/JixunMoe/netease-cloud-music-api">JixunMoe/netease-cloud-music-api</a>)</li>
+<li>解锁小部分收费歌曲 (奇特姿势来自<a href="https://github.com/dinjia/userscript">dinjia/userscript</a>)</li>
+<li>下载歌曲写入ID3 Tag (灵感来自<a href="https://github.com/codezjx/netease-cloud-music-dl">codezjx/netease-cloud-music-dl</a>)</li>
+<li>快捷键支持</li>
+</ul>
+
+<table><thead>
+<tr>
+<th>Description</th>
+<th>Keys</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>暂停/播放</td>
+<td><kbd>Space</kbd></td>
+</tr>
+<tr>
+<td>上一曲</td>
+<td><kbd>Ctrl</kbd> <kbd>←</kbd></td>
+</tr>
+<tr>
+<td>下一曲</td>
+<td><kbd>Ctrl</kbd> <kbd>→</kbd></td>
+</tr>
+</tbody></table>
+
+<h2 id="toc_3">Personalize</h2>
+
+<p>由于懒，而且菜，还没想法怎么样在界面录入信息比较好看<br/><br/>
+暂时还是写死在<a href="./js/user.js">js/user.js</a>的代码里，需要自己手动改<br/><br/>
+包括用户id，关注的歌手id (默认我是自己的)    </p>
+
+<h2 id="toc_4">Run&amp;Package</h2>
+
+<pre><code>$ npm install
+$ npm start
+$ npm run package-win
+$ npm run package-mac
+$ npm run package-linux
+</code></pre>
+
+<blockquote>
+<p>关于排版和显示效果，因为初心是为Windows写的，用的也是Groove Music的样子，所以使用Windows自带字体微软雅黑，按雅黑尺寸来排版布局。而在linux上和macOS上都不自带微软雅黑，想要较好的显示效果请自行下载安装字体，这里提供<a href="https://drive.google.com/open?id=0B8K7gdEWY7snRE9LQU5wU0ltYTA">下载地址</a>(Google Drive)，提取自自己的Windows 10系统文件夹。</p>
+</blockquote>
+
+<h2 id="toc_5">References</h2>
+
+<ul>
+<li>~~<a href="https://github.com/jariz/vibrant.js">jariz/vibrant.js</a>~~<br/>
+感觉很有名，描述是&quot;a javascript port of the awesome Palette class in the Android support library&quot;。不过对比安卓上Phonograph的变色效果，总觉得不太理想，就把issue翻了个遍。按照描述自然感觉是从java的palette类翻译过来的，结果发现作者说是基于color-thief实现的，标题党立功了？另外作者有提到material-palette，用了下感觉确实比这个好</li>
+<li>~~<a href="https://github.com/chengyin/albumcolors">chengyin/albumcolors</a>~~<br/>
+本来展开详情想实现iTunes12.3的样式，就找了个这个库。当然还有别的node包，比如<a href="https://github.com/arcanis/colibrijs">arcanis/colibrijs</a>，但是node不能读dom，感觉重复请求比较浪费就都没有node包。不过这都不是事儿，自己偷懒实现了简版的发现实在太难看了(封面质量层次不齐，当然也有可能是我的问题)，于是换了iTunes12.9的展开样式，就用不到这个了。还有作者都没有控制canvas的大小，图片太大会卡，一开始还不知道怎么取个色就阻塞了呢？？？</li>
+<li>~~<a href="https://github.com/briangonzalez/rgbaster.js">briangonzalez/rgbaster.js</a>~~<br/>
+最初的起点，百度搜到的，试过跟vibrant.js差不多效果，(emmm其实是从它的issue里知道vibrant.js的)，取多色色板时比较废，弃了弃了</li>
+<li><a href="https://github.com/marijnvdwerf/material-palette">marijnvdwerf/material-palette</a><br/>
+描述是&quot;colour extraction library，based on the Palette support library&quot;，作者说用js翻译了绝大部分palette库的java代码，感觉就非常有诚意了。然而跟Phonograph还是有些差距(翻过<a href="https://github.com/kabouzeid/Phonograph/blob/master/app/src/main/java/com/kabouzeid/gramophone/util/PhonographColorUtil.java">Phonograph的源码</a>，好像就是直接用了palette类？并没有其它优化算法？这么简单？好羡慕！)，有时还是蜜汁取色，不过相比之下效果还可以，也有可能是心里作用吧</li>
+<li><a href="https://github.com/lokesh/color-thief/">lokesh/color-thief</a><br/>
+emmm还用这个主要是取主色比较方便，虽然直接用主色会有可读性问题，不过用的地方不是特别重要，只求效果</li>
+<li><a href="https://github.com/Binaryify/NeteaseCloudMusicApi">Binaryify/NeteaseCloudMusicApi</a> , <a href="https://github.com/sqaiyan/netmusic-node">sqaiyan/netmusic-node</a><br/>
+能扒到网易云API真是给这些大佬跪了，自己试过在source里跟踪调试，非常头大，原地爆炸，也可能是我太菜的缘故。。。话说有些接口没说type参数可以取哪些啊，好吧我不该要求这么高的</li>
+<li><a href="https://github.com/Zazama/node-id3">Zazama/node-id3</a><br/>
+写ID3 tag用，好像最近是才出的包，看到npm上相关的好多好多，反正它是google搜到的第一个，也懒着挑了。最开始用的时候还只有同步的模式，我想怎么放歌的时候会卡一下，现在更新后有异步调用了，完美</li>
+<li><a href="https://github.com/electron-userland/electron-json-storage">electron-userland/electron-json-storage</a><br/>
+用来保存场景了，感觉这个有同步的才好啊，但却只有异步的。现在为了退出前保存设了一个flag，搞得一刷新就保存好退出了。。。调试巨麻烦，写代码的时候还是注释掉了</li>
+</ul>
+
+<h2 id="toc_6">License</h2>
+
+<p>MIT</p>
+
+<h2 id="toc_7">Preview</h2>
+
+<blockquote>
+<p>因为自己用了<a href="https://github.com/snowie2000/MacType">MacType</a>，所以和大家的显示效果可能有点不一样  </p>
+</blockquote>
+
+<p><img src="./screenshot/1.png" alt="1"/><br/>
+<img src="./screenshot/2.png" alt="2"/><br/>
+<img src="./screenshot/3.png" alt="3"/><br/>
+<img src="./screenshot/4.png" alt="4"/><br/>
+<img src="./screenshot/5.png" alt="5"/><br/>
+<img src="./screenshot/6.png" alt="6"/></p>
+
+        </article>
+        </div>
+    </div>
+</body>
+</html>

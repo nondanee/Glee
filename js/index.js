@@ -3,7 +3,7 @@ const {remote} = require('electron')
 const Encrypt = require('./js/crypto.js')
 const storage = require('electron-json-storage')
 
-var current_window = remote.BrowserWindow.getFocusedWindow()
+const current_window = remote.BrowserWindow.getFocusedWindow()
 var loading = 0
 
 document.getElementById('minimize').onclick = function(){
@@ -11,6 +11,7 @@ document.getElementById('minimize').onclick = function(){
 }
 document.getElementById('close').onclick = function(){
 	current_window.close()
+	// remote.app.exit()
 }
 // document.getElementById('maximize').onclick = function(){
 // 	current_window.isMaximized() ?
@@ -67,11 +68,11 @@ function Container(dataType,loadMoreFunc,loadMoreFuncParams) {
 	this.refresh = function() {
 		var records = document.querySelectorAll("container>."+this.dataType)
 		var details = document.querySelectorAll("container>.detail")
-		while(Math.floor(this.items.length/4)+1>details.length){//no dead cycle but also will bugs
-			var detail = newDetailDom()
-			container.appendChild(detail)
-			var details = document.querySelectorAll("container>.detail")
-		}
+		// while(Math.floor(this.items.length/4)+1>details.length){
+		// 	var detail = newDetailDom()
+		// 	container.appendChild(detail)
+		// 	details = document.querySelectorAll("container>.detail")
+		// }
 		for (var x=records.length;x<this.items.length;x++){
 			var detailIndex = Math.floor(x/4)
 			var recipe = newRecordDom(this,x,dataType)
@@ -156,7 +157,7 @@ function Container(dataType,loadMoreFunc,loadMoreFuncParams) {
 		else if (pointIndex==3)
 			point.setAttribute("class","point fourth")
 
-		showDetail({detailDom:targetDom,id:id,dataType:this.dataType})
+		// showDetail({detailDom:targetDom,id:id,dataType:this.dataType})
 	}
 	this.hide = function(){
 		this.scroll = container.scrollTop
@@ -254,14 +255,12 @@ function fillDetailDom(params){
 		var musicTrack = artistInfo[id]["musicTrack"]
 	}
 
+	// getExceptedColor(coverUrl,function(textColor){
 
-	var img = document.createElement('img')
-	img.setAttribute("src",coverUrl)
+	let image = new Image()
+	image.src = coverUrl
 
-	// albumColors = new AlbumColors(coverUrl)
-	// albumColors.getColors(function(colors) 
-
-	img.onload = function() {
+	image.onload = function() {
 
 		var colorThief = new ColorThief()
 		var textColor = colorThief.getColor(this).toString()
@@ -340,6 +339,7 @@ function fillDetailDom(params){
 		detailDom.style.height = heightafter+"px"
 
 	}
+	// })
 
 }
 
@@ -380,7 +380,8 @@ function newRecordDom(containerInstance,index,dataType){
 		var recordClass = "album"
 		var coverUrl = albumInfo[id]["coverUrl"]
 		var nameText = albumInfo[id]["albumName"]
-		var descriptionText = albumInfo[id]["publishDate"]
+		// var descriptionText = albumInfo[id]["publishDate"]
+		var descriptionText = artistInfo[albumInfo[id]["artistId"]]["artistName"]
 	}
 	else if (dataType=="chart"){
 		var recordClass = "chart"
@@ -399,9 +400,11 @@ function newRecordDom(containerInstance,index,dataType){
 	record.setAttribute("class",recordClass)
 	var cover = document.createElement('div')
 	cover.setAttribute("class","cover")
-	cover.style.backgroundImage = "url("+coverUrl+"?param=240y240)"
-	cover.onclick = function(){
-		containerInstance.extendControl(index)
+	cover.style.backgroundImage = "url("+coverUrl+"?param=158y158)"
+	cover.onclick = function(event){
+		// containerInstance.extendControl(index)
+		event.stopPropagation()
+		// containerInstance.play(index)
 	}
 	var name = document.createElement('div')
 	name.setAttribute("class","name")
@@ -409,30 +412,32 @@ function newRecordDom(containerInstance,index,dataType){
 	var description = document.createElement('div')
 	description.setAttribute("class","description")
 	description.innerHTML = descriptionText
-	var operation = document.createElement('div')
-	operation.setAttribute("class","operation")
+	// var operation = document.createElement('div')
+	// operation.setAttribute("class","operation")
 	var play = document.createElement('button')
-	play.setAttribute("class","play")
+	play.className = "play"
 	play.onclick = function(){
 		containerInstance.play(index)
 	}
 	var add = document.createElement('button')
-	add.setAttribute("class","add")
-	add.onclick = function(){
-
+	add.className = "add"
+	add.onclick = function(event){
+		event.stopPropagation()
 	}
-	var detail = document.createElement('button')
-	detail.setAttribute("class","detail")
-	detail.onclick = function(){
-		containerInstance.extendControl(index)
-	}
-	operation.appendChild(play)
-	operation.appendChild(add)
-	operation.appendChild(detail)
+	// var detail = document.createElement('button')
+	// detail.setAttribute("class","detail")
+	// detail.onclick = function(){
+	// 	containerInstance.extendControl(index)
+	// }
+	// operation.appendChild(play)
+	// operation.appendChild(add)
+	// operation.appendChild(detail)
 	record.appendChild(cover)
+	cover.appendChild(play)
+	cover.appendChild(add)
 	record.appendChild(name)
 	record.appendChild(description)
-	record.appendChild(operation)
+	// record.appendChild(operation)
 	return record
 }
 
@@ -574,6 +579,32 @@ const tabs = {
 				{
 					"text":"热门",
 					"containerInstance":new Container("artist",loadTopArtist,{})
+				},
+			],
+			"focus":0,
+		},
+		//search
+		{
+			"subTabs":[
+				// {
+				// 	"text":"搜索建议",
+				// 	"containerInstance":new Container("recipe",SearchAll,{keywords:"海阔天空",type:1000})
+				// },
+				// {
+				// 	"text":"单曲",
+				// 	"containerInstance":new Container("recipe",SearchAll,{keywords:"海阔天空",type:1000})
+				// },
+				{
+					"text":"歌手",
+					"containerInstance":new Container("artist",SearchAll,{keywords:"海阔天空",type:100})
+				},
+				{
+					"text":"专辑",
+					"containerInstance":new Container("album",SearchAll,{keywords:"海阔天空",type:10})
+				},
+				{
+					"text":"歌单",
+					"containerInstance":new Container("recipe",SearchAll,{keywords:"海阔天空",type:1000})
 				},
 			],
 			"focus":0,

@@ -46,14 +46,7 @@ $ npm run package-win
 $ npm run package-mac
 $ npm run package-linux
 ```
-*初心是为Windows写的，用的也是Groove Music的样子，不过反正Electron跨平台，我说专属也没用*  
-
-## Release
-
-> 关于排版和显示效果，因为主要面向Windows，所以使用自带字体微软雅黑(不丑的啊)，布局也是按雅黑尺寸来偏移。而在linux上和macOS上都不自带微软雅黑，想要较好的显示效果请自行下载安装字体(雅黑真的不丑啊)，非常抵触就当我没说。在这里提供[下载地址](https://drive.google.com/open?id=0B8K7gdEWY7snRE9LQU5wU0ltYTA)(Google Drive)，提取自自己的Windows 10系统文件夹
-
-### [v0.3.0](https://github.com/nondanee/Glee/releases/tag/v0.3.0)
-有bug一定及时修复，不过最近可能不会再加什么东西了，对不起了，有什么想法建议欢迎提issue和pr
+> 关于排版和显示效果，因为初心是为Windows写的，用的也是Groove Music的样子，所以使用Windows自带字体微软雅黑，按雅黑尺寸来排版布局。而在linux上和macOS上都不自带微软雅黑，想要较好的显示效果请自行下载安装字体，这里提供[下载地址](https://drive.google.com/open?id=0B8K7gdEWY7snRE9LQU5wU0ltYTA)(Google Drive)，提取自自己的Windows 10系统文件夹。
 
 ## References
 - ~~[jariz/vibrant.js](https://github.com/jariz/vibrant.js)~~  
