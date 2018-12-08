@@ -55,7 +55,7 @@ const createWindow = () => {
 		slashes: true
 	}))
 
-	swca.SetWindowCompositionAttribute(mainWindow, swca.AccentState.ACCENT_ENABLE_FLUENT, 0xFFFFFF)
+	if(process.platform === 'win32') swca.SetWindowCompositionAttribute(mainWindow, swca.AccentState.ACCENT_ENABLE_FLUENT, 0xFFFFFF)
 
 	// mainWindow.webContents.openDevTools()
 
