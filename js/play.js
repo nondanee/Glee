@@ -13,8 +13,9 @@ const player = (() => {
 	}
 
 	const recover = () => {
+		control.add(JSON.parse(localStorage.getItem('list') || '[]'), false)
 		index = parseInt(localStorage.getItem('index'))
-		control.add(JSON.parse(localStorage.getItem('list') || '[]'), true, false)
+		control.play(false)
 		if(localStorage.getItem('random') == 'true') button.random.click()
 		Array.apply(null, {length: parseInt(localStorage.getItem('cycle')) || 0}).forEach(_ => button.cycle.click())		
 	}
@@ -132,13 +133,13 @@ const player = (() => {
 			sync('list')
 			sync('index')
 		},
-		add: (part, cover = true, immediate = true) => {
+		add: (part, cover = true) => {
 			if(cover) control.reset()
 			part = part.filter(item => item.state)
 			let length = list.length
 			list = list.concat(part)
 			element.playList.appendChild(build(length))
-			if(cover) control.play(immediate)
+			if(cover) control.play()
 			sync('list')
 		},
 		remove: postition => {
@@ -177,8 +178,9 @@ const player = (() => {
 				audio.src = song.url
 				if(immediate) audio.play()
 
-				let cover = song.cover + '?param=158y158'
+				let cover = song.cover + '?param=360y360'
 				pickColor(cover).then(color => {
+					// let hslColor = color.getHsl()
 					let hslColor = colorConverter.rgbToHsl(color)
 					hslColor[1] = hslColor[1] > 0.8 ? 0.8 : hslColor[1]
 					hslColor[2] = hslColor[2] > 0.6 ? 0.6 : hslColor[2]

@@ -26,7 +26,6 @@
     "electron-rebuild": "^1.8.2"
   },
   "dependencies": {
-    "big-integer": "^1.6.40",
     "electron": "^3.0.10",
     "node-id3": "^0.1.7",
     "windows-swca": "^1.1.1"

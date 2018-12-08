@@ -485,34 +485,3 @@ function unfoucsTabs(dom){
 		domTabs[i].setAttribute("class","")
 	}
 }
-
-
-
-function inPlayList(songId){
-	for(let i=0;i<player.list.length;i++){
-		if(player.list[i]==songId)
-			return i
-	}
-	return -1
-}
-
-
-function addToPlayList(songIds,cover=0){
-	let checked = []
-	for(let i=0;i<songIds.length;i++){
-		if (checkSongUrlStatus(songIds[i])>=-1){
-			checked.push(songIds[i])
-		}
-	}
-	if(checked.length==0){
-		return false
-	}
-	else if(cover==1){
-		player.list = checked
-		player.index = 0
-	}
-	else if(cover==0){
-		player.list = player.list.concat(checked)
-	}
-	return true
-}
