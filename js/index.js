@@ -1,46 +1,12 @@
 const {remote} = require('electron')
-// const BrowserWindow = require('electron').remote.BrowserWindow
-// const storage = require('electron-json-storage')
+const currentWindow = remote.BrowserWindow.getFocusedWindow()
 
-const current_window = remote.BrowserWindow.getFocusedWindow()
-
-// document.getElementById('minimize').onclick = function(){
-// 	current_window.minimize()
-// }
-// document.getElementById('close').onclick = function(){
-// 	current_window.close()
-// 	// remote.app.exit()
-// }
-// document.getElementById('maximize').onclick = function(){
-// 	current_window.isMaximized() ?
-// 	current_window.restore() :
-// 	current_window.maximize();
-// }
-
-
-// store
-// window.onbeforeunload = function(event){
-// 	event.returnValue = false
-// 	storage.set('player', { "list": player.list,"index":player.index,"random":player.random,"cycle":player.cycle }, function(error) {
-// 		window.onbeforeunload = null
-// 		current_window.close()
-// 	})
-// }
-
-// restore
-// storage.get('player', function(error, reserve) {
-// 	if (error) throw error
-// 	if ("list" in reserve&&"index" in reserve&&"random" in reserve&&"cycle" in reserve){
-// 		player.list = reserve.list
-// 		player.index = reserve.index
-// 		player.random = reserve.random
-// 		player.cycle = reserve.cycle
-// 		if(player.list.length!=0){
-// 			playSong({playNow:0})
-// 		}
-// 	}
-// })
-
+document.getElementsByClassName('minimize')[0].onclick = () => {
+	currentWindow.minimize()
+}
+document.getElementsByClassName('close')[0].onclick = () => {
+	currentWindow.close()
+}
 
 const container = document.getElementsByTagName("container")[0]
 const maintab = document.getElementById("maintab")
@@ -49,48 +15,20 @@ const mainTabs = maintab.getElementsByTagName("li")
 
 let reachBottom = () => {}
 let loading = false
-
 container.onscroll = () => {
 	if (container.scrollHeight - 640 < container.scrollTop + container.offsetHeight) {
 		reachBottom()
 	}
 }
 
-
 const Container = (interface, parameter) => {
-	// this.items = []
-	// this.loadMoreFunc = loadMoreFunc
-	// this.loadMoreFuncParams = loadMoreFuncParams
-	// this.more = 1
-	// this.scroll = 0
-	// this.extend = null
-	// this.dataType = dataType
-	// this.add = function(value) {
-	// 	for (var x=0;x<this.items.length;x++){
-	// 		if(this.items[x]==value)
-	// 			return
-	// 	}
-	// 	this.items.push(value)
-	// }
-	// this.refresh = function() {
-	// 	var records = document.querySelectorAll("container>."+this.dataType)
-	// 	var details = document.querySelectorAll("container>.detail")
-	// 	// while(Math.floor(this.items.length/4)+1>details.length){
-	// 	// 	var detail = newDetailDom()
-	// 	// 	container.appendChild(detail)
-	// 	// 	details = document.querySelectorAll("container>.detail")
-	// 	// }
-	// 	for (var x=records.length;x<this.items.length;x++){
-	// 		var detailIndex = Math.floor(x/4)
-	// 		var recipe = newRecordDom(this,x,dataType)
-	// 		container.insertBefore(recipe,details[detailIndex])
-	// 	}
-	// }
 
 	let source = null
-	let data = []
+	let data = null
+	let scrollTop = 0
 
 	const init = () => {
+		data = []
 		source = interface.apply(this, parameter || [])
 	}
 
@@ -118,11 +56,11 @@ const Container = (interface, parameter) => {
 
 			cover.appendChild(createElement('button', 'play')).onclick = event => {
 				event.stopPropagation()
-				track[item.type](item.id).then(songs => console.log(songs))
+				track[item.type](item.id).then(songs => player.add(songs))
 			}
 			cover.appendChild(createElement('button', 'add')).onclick = event => {
 				event.stopPropagation()
-				console.log('add', item.type, item.id)
+				track[item.type](item.id).then(songs => player.add(songs, false))
 			}
 		})
 		return fragemnt
@@ -134,16 +72,19 @@ const Container = (interface, parameter) => {
 		recover: () => {
 			reachBottom = () => {}
 			container.appendChild(render(data))
+			container.scrollTop = scrollTop
 			reachBottom = more
 			if(!data.length) more()
 		},
 		reload: () => {
 			reachBottom = () => {}
+			container.innerHTML = ''
 			init()
 			reachBottom = more
 			more()
 		},
 		hide: () => {
+			scrollTop = container.scrollTop
 			container.innerHTML = ''
 		}
 	}
@@ -497,7 +438,7 @@ for (let i=0;i<mainTabs.length;i++){
 		var subTabFocusBefore = mainTabFocusBefore["subTabs"][subTabFocusBeforeIndex]
 		subTabFocusBefore["containerInstance"].hide()
 		// console.log("hide",subTabFocusBefore)
-		subtab.innerHTML
+		subtab.innerHTML = ''
 
 		for(let j = 0;j<mainTabFocusNow["subTabs"].length;j++){
 			var subTab = document.createElement('li')

@@ -1,4 +1,4 @@
-(function (){
+(() => {
 	const sideBar = createElement('div','sidebar')
 	const backButton = sideBar.appendChild(createElement('button','back'))
 	const searchButton = sideBar.appendChild(createElement('button','search'))

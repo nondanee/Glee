@@ -38,10 +38,14 @@ button{
 	outline: 0;
 	cursor: pointer;
 	background-color: rgba(0,0,0,0);
+	color: inherit;
 }
 
 button.play::after{
 	content: "\e768";
+}
+button.remove::after{
+	content: "\e711";
 }
 button.add::after{
 	content: "\e710";
