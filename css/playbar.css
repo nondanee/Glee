@@ -5,11 +5,12 @@
 	bottom: 0;left: 0;
 	height: 64px;
 	width: 100%;
-	background-color: rgba(32,32,32,0.97);
+	overflow: hidden;
+	background-color: rgba(0,0,0,0.5);
 	z-index: 10;
 	/*transform&drag cause button unfocus*/
+	backdrop-filter: blur(20px);
 	-webkit-app-region: no-drag;
-	/*backdrop-filter: blur(18px);*/
 }
 
 #playbar #mediainfo,
@@ -129,7 +130,8 @@
 }
 #progressbar .filler.played{
 	background-color: rgba(255,255,255,1);
-	-webkit-transition:width 0.08s linear;
+	-webkit-transition: width 20ms linear;
+	flex-grow: 0;
 }
 #progressbar .filler.unplayed{
 	flex-grow: 1;
@@ -258,23 +260,16 @@ button.download.ing{
 #playbar .bgblur{
 	width: 100%;
 	height: 100%;
-    padding: 50px;
-    margin: -50px;
-	overflow: hidden;
+	padding: 50px;
+	top: -50px;
+	left: -50px;
+	/*margin: -50px;*/
 	filter: blur(20px);
 	background-position: top;
 	background-size: cover;
 	z-index: -1;
 }
-#playbar .bgblur::after{
-	content: " ";
-	width:	100%;
-	height: 100%;
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	background-color: rgba(0,0,0,0.6);
-}
+
 #playbar.extend .drag{
 	top: 0;left: 0;
 	width: 100%;
@@ -298,7 +293,6 @@ button.download.ing{
 
 
 #playbar .bgblur,
-#playbar .bgblur::after,
 #playbar .drag,
 #playbar #extra,
 #playbar #playlist
@@ -366,9 +360,8 @@ button.download.ing{
 }
 
 
-#playbar.list .bgblur::after{
-	opacity: 1;
-	visibility: visible;
+#playbar.list .bgblur{
+	filter: blur(20px) brightness(0.4);
 }
 /*#playbar.list #mediainfo,
 #playbar.list #timeline,
@@ -501,7 +494,7 @@ button.download.ing{
 	visibility: visible;
 }
 #playlist .entry:hover .song .name{
-	max-width: calc(100% - 2 * 48px)
+	max-width: calc(100% - 2 * 48px - 16px)
 }
 #playlist .entry button:hover{
 	background-color: rgba(255,255,255,0.08);

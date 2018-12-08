@@ -14,18 +14,22 @@
   },
   "scripts": {
     "start": "./node_modules/.bin/electron .",
-    "package-win": "./node_modules/.bin/electron-packager . --platform=win32 --arch=x64 --version=1.7.9 --icon=./resource/glee.ico --out=dist/ --overwrite=true --ignore=dist/ --ignore=screenshot/ --prune=true",
-    "package-mac": "./node_modules/.bin/electron-packager . --platform=darwin --arch=all --version=1.7.9 --icon=./resource/glee.icns --out=dist/ --overwrite=true --ignore=dist/ --ignore=screenshot/ --prune=true",
-    "package-linux": "./node_modules/.bin/electron-packager . --platform=linux --arch=x64 --version=1.7.9 --icon=./resource/glee.png --out=dist/ --overwrite=true --ignore=dist/ --ignore=screenshot/ --prune=true"
+    "package-win": "./node_modules/.bin/electron-packager . --platform=win32 --arch=x64 --version=3.0.10 --icon=./resource/glee.ico --out=dist/ --overwrite=true --ignore=dist/ --ignore=screenshot/ --prune=true",
+    "package-mac": "./node_modules/.bin/electron-packager . --platform=darwin --arch=all --version=3.0.10 --icon=./resource/glee.icns --out=dist/ --overwrite=true --ignore=dist/ --ignore=screenshot/ --prune=true",
+    "package-linux": "./node_modules/.bin/electron-packager . --platform=linux --arch=x64 --version=3.0.10 --icon=./resource/glee.png --out=dist/ --overwrite=true --ignore=dist/ --ignore=screenshot/ --prune=true"
+  },
+  "build": {
+    "appId": "com.nondanee.glee"
   },
   "devDependencies": {
-    "electron": "^1.7.9",
-    "electron-packager": "^9.0.0"
+    "electron-packager": "^9.0.0",
+    "electron-rebuild": "^1.8.2"
   },
   "dependencies": {
-    "big-integer": "^1.6.25",
-    "electron-json-storage": "^3.1.1",
-    "node-id3": "^0.1.0",
-    "request": "^2.83.0"
+    "big-integer": "^1.6.40",
+    "electron": "^3.0.10",
+    "node-id3": "^0.1.7",
+    "request": "^2.83.0",
+    "windows-swca": "^1.1.1"
   }
 }

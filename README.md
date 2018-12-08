@@ -41,6 +41,7 @@ Description            | Keys
 
 ```
 $ npm install
+$ .\node_modules\.bin\electron-rebuild.cmd
 $ npm start
 $ npm run package-win
 $ npm run package-mac

@@ -1,44 +1,44 @@
-#sidebar{
+.filler{
+	flex-grow: 1;
+	pointer-events: none;
+}
+.sidebar{
 	-webkit-app-region: drag;
-	/*position: relative;*/
-	display: flex;
-	flex-direction:column;
 	width: 48px;
 	height: 100%;
 	box-sizing: border-box;
 	padding-bottom: 72px;
-	background-color: rgb(245,245,245);
+	background-color: rgba(255,255,255,0.6);
+	display: flex;
+	flex: none;
+	flex-direction: column;
 }
-#sidebar>.filler{
-	flex-grow: 1;
-	pointer-events: none;
-}
-#sidebar>button{
-	flex-grow: 0;
-	-webkit-app-region: no-drag;
+.sidebar button{
 	position: relative;
-	height: 48px;
+	-webkit-app-region: no-drag;
 	width: 48px;
+	height: 48px;
 	line-height: 48px;
 	font-size: 1em;
 	color: #000000;
 	cursor: pointer;
-	box-sizing: border-box;
+	flex-grow: 0;
+	flex-shrink: 0;
 }
-#sidebar>button.active::before{
+.sidebar button.active::before{
 	content: "";
 	position: absolute;
 	left: 0;
 	height: 100%;width: 4px;
 	background-color: #484848;
 }
-#sidebar>button:hover{
+.sidebar button:hover{
 	background-color: rgba(0,0,0,0.08);
 }
-#sidebar>button:active{
+.sidebar button:active{
 	background-color: rgba(0,0,0,0.12);
 }
-#sidebar>button::after{
+.sidebar button::after{
 	font-family: "groove style";
 }
 button.back::after{

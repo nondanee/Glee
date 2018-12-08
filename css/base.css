@@ -1,0 +1,55 @@
+@font-face {
+	font-family: 'groove style';
+	src: url('./groove.ttf') format('truetype');
+}
+
+html,body{
+	margin: 0;
+	width: 100%;
+	height: 100%;
+}
+body{
+	display: flex;
+	font-family: 'Microsoft YaHei';
+	-webkit-user-select: none;
+	overflow: hidden;
+}
+
+::-webkit-scrollbar{  
+	width: 0px;
+	height: 0px;
+}
+::-webkit-scrollbar-track {
+	background-color: rgba(0,0,0,0);
+}
+::-webkit-scrollbar-thumb {
+	background-color: rgba(0,0,0,0.2);
+}
+::-webkit-scrollbar-thumb:hover{
+	background-color: rgba(0,0,0,0.3);
+}
+
+button{
+	-webkit-app-region: no-drag;
+	display: block;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	cursor: pointer;
+	background-color: rgba(0,0,0,0);
+}
+
+button.play::after{
+	content: "\e768";
+}
+button.add::after{
+	content: "\e710";
+}
+
+button.close::after{
+	content: '\e711';
+}
+button.minimize::after{
+	content: '\e738';
+}
