@@ -1,7 +1,3 @@
-.filler{
-	flex-grow: 1;
-	pointer-events: none;
-}
 .sidebar{
 	-webkit-app-region: drag;
 	width: 48px;
@@ -40,28 +36,4 @@
 }
 .sidebar button::after{
 	font-family: "groove style";
-}
-button.back::after{
-	content: "\e72b";
-}
-button.search::after{
-	content: "\e721";
-}
-button.explore::after{
-	content: "\e942";
-}
-button.mine::after{
-	content: "\e940";
-}
-button.playlist::after{
-	content: "\e90b";
-}
-button.album:after{
-	content:"\e93c";
-}
-button.artist::after{
-	content: "\e77b";
-}
-button.setting::after{
-	content:"\e713";
 }

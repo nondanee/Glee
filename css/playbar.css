@@ -16,7 +16,6 @@
 .playbar .mediainfo,
 .playbar .timeline,
 .playbar .controller,
-.playbar .extra,
 .playbar .playlist,
 .playbar .blur,
 .playbar .drag
@@ -163,67 +162,27 @@
 	height: 64px;
 	width: 240px;
 	display: flex;
+	overflow: hidden;
 }
-.playbar .extra{
-	bottom: 24px;
-	height: 64px;
-	width: 144px;
-	right: 10px;
-	display: flex;
-}
-.controller button,.extra button{
+.controller button{
 	font-family: "groove style";
-	width: 36px;height: 36px;
-	margin: auto;
+	width: 36px; height: 36px;
+	flex: none;
+	margin: auto 6px;
 	border-radius: 50%;
 	color: rgba(255,255,255,1);
 	font-size: 20px;
 	cursor: pointer;
-	-webkit-transition:all 0.08s linear;
+	-webkit-transition: all 0.08s linear;
 }
-.controller button:hover,.extra button:hover{
+.controller button:hover{
 	color: rgba(255,255,255,0.4);
 }
-.controller button:active,.extra button:active{
+.controller button:active{
 	color: rgba(255,255,255,1);
 	background-color: rgba(0,0,0,0.2);
 }
-button.previous::after{
-	content: "\e892";
-}
-button.play::after{
-	content: "\e768";
-}
-button.pause::after{
-	content: "\e769";
-}
-button.next::after{
-	content: "\e893";
-}
-button.random::after{
-	content: "\e8b1";
-}
-button.cycle::after{
-	content: "\e8ee";
-}
-button.cycle.single::after{
-	content: "\e8ed";
-}
-button.list::after{
-	content: "\e93f";
-}
-button.fullscreen::after{
-	content: "\e740";
-}
-button.fullscreen.on::after{
-	content: "\e73f";
-}
-button.download::after{
-	content: "\e896";
-}
-button.fold::after{
-	content: "\e70d";
-}
+
 button.random.on,button.cycle.all,button.cycle.single{
 	background-color: rgba(255,255,255,0.2);
 }
@@ -249,7 +208,6 @@ button.download.ing{
 .playbar .mediainfo>.related,
 .playbar .timeline,
 .playbar .controller,
-.playbar .extra,
 .playbar .blur
 {
 	-webkit-transition: all 0.36s cubic-bezier(0.37, -0.11, 0.14, 0.85);
@@ -293,7 +251,6 @@ button.download.ing{
 
 .playbar .blur,
 .playbar .drag,
-.playbar .extra,
 .playbar .playlist
 {
 	opacity: 0;
@@ -306,8 +263,7 @@ button.download.ing{
 	height: 100%;
 }
 .playbar.extend .blur,
-.playbar.extend .drag,
-.playbar.extend .extra
+.playbar.extend .drag
 {
 	opacity: 1;
 	visibility: visible;
@@ -351,10 +307,9 @@ button.download.ing{
 .playbar.extend .controller{
 	bottom: 24px;
 	left: 10px;
+	width: calc(100% - 20px);
 }
-.playbar.extend .controller button:active,
-.playbar.extend .extra button:active
-{
+.playbar.extend .controller button:active{
 	background-color: rgba(255,255,255,0.12);
 }
 
@@ -378,9 +333,6 @@ button.download.ing{
 }
 .playbar.list .controller{
 	bottom: calc(24px + 100% - 280px);
-}
-.playbar.list .extra{
-	bottom: calc(24px + 100% - 280px); 
 }
 .playbar.list .playlist{
 	opacity: 1;

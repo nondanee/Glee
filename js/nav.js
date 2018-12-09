@@ -3,7 +3,7 @@
 	const backButton = sideBar.appendChild(createElement('button','back'))
 	const searchButton = sideBar.appendChild(createElement('button','search'))
 	const exploreButton = sideBar.appendChild(createElement('button','explore'))
-	const mineButton = sideBar.appendChild(createElement('button','mine'))
+	const userButton = sideBar.appendChild(createElement('button','user'))
 	const playlistButton = sideBar.appendChild(createElement('button','playlist'))
 	const albumButton = sideBar.appendChild(createElement('button','album'))
 	const artistButton = sideBar.appendChild(createElement('button','artist'))

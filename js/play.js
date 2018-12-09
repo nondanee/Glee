@@ -17,7 +17,7 @@ const player = (() => {
 		index = parseInt(localStorage.getItem('index'))
 		control.play(false)
 		if(localStorage.getItem('random') == 'true') button.random.click()
-		Array.apply(null, {length: parseInt(localStorage.getItem('cycle')) || 0}).forEach(_ => button.cycle.click())		
+		Array.apply(null, {length: parseInt(localStorage.getItem('cycle')) || 0}).forEach(() => button.cycle.click())		
 	}
 
 	const element = {
@@ -43,7 +43,6 @@ const player = (() => {
 		},
 
 		controller: createElement('div', 'controller'),
-		extra: createElement('div', 'extra'),
 		drag: createElement('div', 'drag'),
 
 	}
@@ -342,12 +341,12 @@ const player = (() => {
 
 	init = () => {
 		Array.from(['cover', 'name' ,'related']).forEach(key => element.mediaInfo.appendChild(element[key]))
-		Array.from(['previous', 'play', 'next', 'random', 'cycle']).forEach(key => element.controller.appendChild(button[key]))
 		Array.from([element.filler.played, element.cursor, element.filler.unplayed]).forEach(item => element.progressBar.appendChild(item))
 		Array.from([element.time.played, element.progressBar, element.time.total]).forEach(item => element.timeLine.appendChild(item))
-		Array.from(['list', 'download', 'fullscreen']).forEach(key => element.extra.appendChild(button[key]))
+		Array.from(['previous', 'play', 'next', 'random', 'cycle', 'list', 'download', 'fullscreen']).forEach(key => element.controller.appendChild(button[key]))
 		Array.from(['fold']).forEach(key => element.drag.appendChild(button[key]))
-		Array.from([element.blur, element.mediaInfo, element.timeLine, element.controller, element.extra, element.playList, element.drag]).forEach(item => element.playBar.appendChild(item))
+		Array.from([element.blur, element.mediaInfo, element.timeLine, element.controller, element.playList, element.drag]).forEach(item => element.playBar.appendChild(item))
+		element.controller.insertBefore(createElement('div', 'filler'), element.controller.children[5])
 		document.body.appendChild(element.playBar)
 		recover()
 	}

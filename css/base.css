@@ -2,6 +2,21 @@
 	font-family: 'groove style';
 	src: url('./groove.ttf') format('truetype');
 }
+@font-face{
+	font-family: 'Noble Scarlet';
+	src: url('./msyhl.ttc') format('truetype');
+	font-weight: 200
+}
+@font-face{
+	font-family: 'Noble Scarlet';
+	src: url('./msyh.ttc') format('truetype');
+	font-weight: 400
+}
+@font-face{
+	font-family: 'Noble Scarlet';
+	src: url('./msyhbd.ttc') format('truetype');
+	font-weight: 600
+}
 
 html,body{
 	margin: 0;
@@ -10,7 +25,7 @@ html,body{
 }
 body{
 	display: flex;
-	font-family: 'Microsoft YaHei';
+	font-family: 'Noble Scarlet';
 	-webkit-user-select: none;
 	overflow: hidden;
 }
@@ -29,6 +44,11 @@ body{
 	background-color: rgba(0,0,0,0.3);
 }
 
+.filler{
+	flex: auto;
+	pointer-events: none;
+}
+
 button{
 	-webkit-app-region: no-drag;
 	display: block;
@@ -42,13 +62,46 @@ button{
 }
 
 button.play::after{
-	content: "\e768";
+	content: '\e768';
+}
+button.pause::after{
+	content: '\e769';
 }
 button.remove::after{
-	content: "\e711";
+	content: '\e711';
 }
 button.add::after{
-	content: "\e710";
+	content: '\e710';
+}
+button.previous::after{
+	content: '\e892';
+}
+button.next::after{
+	content: '\e893';
+}
+button.random::after{
+	content: '\e8b1';
+}
+button.cycle::after{
+	content: '\e8ee';
+}
+button.cycle.single::after{
+	content: '\e8ed';
+}
+button.list::after{
+	content: '\e93f';
+}
+button.fullscreen::after{
+	content: '\e740';
+}
+button.fullscreen.on::after{
+	content: '\e73f';
+}
+button.download::after{
+	content: '\e896';
+}
+button.fold::after{
+	content: '\e70d';
 }
 
 button.close::after{
@@ -56,4 +109,28 @@ button.close::after{
 }
 button.minimize::after{
 	content: '\e738';
+}
+button.back::after{
+	content: "\e72b";
+}
+button.search::after{
+	content: "\e721";
+}
+button.explore::after{
+	content: "\e942";
+}
+button.user::after{
+	content: "\e940";
+}
+button.playlist::after{
+	content: "\e90b";
+}
+button.album:after{
+	content:"\e93c";
+}
+button.artist::after{
+	content: "\e77b";
+}
+button.setting::after{
+	content:"\e713";
 }
