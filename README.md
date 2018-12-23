@@ -36,9 +36,9 @@ $ npm run package-win
 ```
 
 ## Preview
-![1](https://user-images.githubusercontent.com/26399680/49687594-1e527800-fb40-11e8-9c2c-1f3259b8d3f9.png)
-![2](https://user-images.githubusercontent.com/26399680/49687643-f283c200-fb40-11e8-87b7-a3bf962195ad.png)
-![3](https://user-images.githubusercontent.com/26399680/49687657-370f5d80-fb41-11e8-90fa-038d59952d81.png)
+![image](https://user-images.githubusercontent.com/26399680/50385320-be96c800-070e-11e9-87e3-82d631bd3b29.png)
+![image](https://user-images.githubusercontent.com/26399680/50385326-d79f7900-070e-11e9-95da-0d5a905e4979.png)
+![image](https://user-images.githubusercontent.com/26399680/50385365-6a401800-070f-11e9-8030-210633dbf41e.png)
 
 ## License
 MIT

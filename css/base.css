@@ -61,17 +61,18 @@ button{
 	color: inherit;
 }
 
+button.add::after{
+	content: '\e710';
+}
+button.remove::after{
+	content: '\e711';
+}
+
 button.play::after{
 	content: '\e768';
 }
 button.pause::after{
 	content: '\e769';
-}
-button.remove::after{
-	content: '\e711';
-}
-button.add::after{
-	content: '\e710';
 }
 button.previous::after{
 	content: '\e892';
@@ -111,26 +112,26 @@ button.minimize::after{
 	content: '\e738';
 }
 button.back::after{
-	content: "\e72b";
+	content: '\e72b';
 }
 button.search::after{
-	content: "\e721";
+	content: '\e721';
 }
 button.explore::after{
-	content: "\e942";
+	content: '\e942';
 }
 button.user::after{
-	content: "\e940";
+	content: '\e940';
 }
 button.playlist::after{
-	content: "\e90b";
+	content: '\e90b';
 }
 button.album:after{
-	content:"\e93c";
+	content:'\e93c';
 }
 button.artist::after{
-	content: "\e77b";
+	content: '\e77b';
 }
 button.setting::after{
-	content:"\e713";
+	content:'\e713';
 }

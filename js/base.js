@@ -18,7 +18,7 @@ const numberFormatter = number => {
 	if (number / 100000 >= 1)
 		return parseInt(number / 10000) + '万'
 	else
-		return number
+		return parseInt(number)
 }
 
 const secondFormatter = value => {

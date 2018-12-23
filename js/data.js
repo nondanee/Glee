@@ -51,7 +51,7 @@ const display = {
 			return{
 				next: () => {
 					if(!more) return Promise.resolve([])
-                    return apiRequest('user/playlist', query)
+					return apiRequest('user/playlist', query)
 					.then(data => data.playlist.filter(playlist => !(playlist.creator.userId === id ^ self)))
 					.then(data => {
 						more = data.length === size
@@ -85,8 +85,8 @@ const display = {
 		recommend: (size = 10) => {
 			let more = true
 			const query = {
-                limit: size,
-                offset: 0
+				limit: size,
+				offset: 0
 			}
 		
 			return{
@@ -95,7 +95,7 @@ const display = {
 					return apiRequest('personalized/playlist', query)
 					.then(data => data.result)
 					.then(data => {
-                        more = false
+						more = false
 						return data.map(extractor.playlist)
 					})
 				}
@@ -134,7 +134,7 @@ const display = {
 					return apiRequest('toplist', query)
 					.then(data => data.list)
 					.then(data => {
-                        more = false
+						more = false
 						return data.map(extractor.playlist)
 					})
 				}
