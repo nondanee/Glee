@@ -1,4 +1,5 @@
 const crypto = require('crypto')
+const parse = require('url').parse
 const iv = Buffer.from('0102030405060708')
 const presetKey = Buffer.from('0CoJUm6Qyw8W8jud')
 const eapiKey = Buffer.from('e82ckenh8dichen8')
@@ -23,27 +24,39 @@ const rsaEncrypt = (buffer, key) => {
 
 module.exports = {
 	encrypt: {
-		weapi: object => {
+		weapi: (url, object) => {
+			url = parse(url)
 			const text = JSON.stringify(object)
 			const secretKey = crypto.randomBytes(16).map(n => (base62.charAt(n % 62).charCodeAt()))
 			return {
-				params: aesEncrypt(Buffer.from(aesEncrypt(Buffer.from(text), 'CBC', presetKey, iv).toString('base64')), 'CBC', secretKey, iv).toString('base64'),
-				encSecKey: rsaEncrypt(secretKey.reverse(), publicKey).toString('hex')
+				url: url.href.replace(/\w*api/, 'weapi'),
+				body: {
+					params: aesEncrypt(Buffer.from(aesEncrypt(Buffer.from(text), 'CBC', presetKey, iv).toString('base64')), 'CBC', secretKey, iv).toString('base64'),
+					encSecKey: rsaEncrypt(secretKey.reverse(), publicKey).toString('hex')
+				}
 			}
 		},
-		linuxapi: object => {
-			const text = JSON.stringify(object)
+		linuxapi: (url, object) => {
+			url = parse(url)
+			const text = JSON.stringify({method: 'POST', url: url.href, params: object})
 			return {
-				eparams: aesEncrypt(Buffer.from(text), 'ECB', linuxapiKey, '').toString('hex').toUpperCase()
+				url: url.resolve('/api/linux/forward'),
+				body: {
+					eparams: aesEncrypt(Buffer.from(text), 'ECB', linuxapiKey, '').toString('hex').toUpperCase()
+				}
 			}
 		},
-		eapi: (path, object) => {
-			const text = JSON.stringify(object)
-			const message = `nobody${path}use${text}md5forencrypt`
+		eapi: (url, object) => {
+			url = parse(url)
+			const text = JSON.stringify(Object.assign(object, {e_r: 'false'}))
+			const message = `nobody${url.path}use${text}md5forencrypt`
 			const digest = crypto.createHash('md5').update(message).digest('hex')
-			const data = `${path}-36cd479b6b5-${text}-36cd479b6b5-${digest}`
+			const data = `${url.path}-36cd479b6b5-${text}-36cd479b6b5-${digest}`
 			return {
-				params: aesEncrypt(Buffer.from(data), 'ECB', eapiKey, '').toString('hex').toUpperCase()
+				url: url.href.replace(/\w*api/, 'eapi'),
+				body: {
+					params: aesEncrypt(Buffer.from(data), 'ECB', eapiKey, '').toString('hex').toUpperCase()
+				}
 			}
 		}
 	},

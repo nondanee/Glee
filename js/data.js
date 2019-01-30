@@ -265,10 +265,9 @@ const track = {
 		.then(data => data.data[0].url ? data.data[0] : Promise.reject())
 }
 
-
+const random = space => crypto.randomBytes(1)[0] % space
 const apiRequest = (path, data) => new Promise((resolve, reject) => {
-	data = netease.encrypt.weapi(data || {})
-	data = Object.keys(data).map(key => (key + '=' + encodeURIComponent(data[key]))).join('&')
+	const query = netease.encrypt.weapi(`https://music.163.com/api/${path}`, data || {})
 	
 	const xhr = new XMLHttpRequest()
 	xhr.onreadystatechange = () => {
@@ -277,17 +276,20 @@ const apiRequest = (path, data) => new Promise((resolve, reject) => {
 		}
 	}
 
-	xhr.open('POST', `http://music.163.com/weapi/${path}`)
-	xhr.setRequestHeader('X-Real-IP', '118.88.88.88')
+	xhr.open('POST', query.url)
+	xhr.setRequestHeader('X-Real-IP', `119.29.${random(256)}.${random(256)}`)
 	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-	xhr.send(data)
+	xhr.send(Object.keys(query.body).map(key => (key + '=' + encodeURIComponent(query.body[key]))).join('&'))
 })
 
+const cookie = {
+	'_ntes_nuid': crypto.randomBytes(16).toString('hex'),
+}
 
-const cookie = {url: 'http://music.163.com', name: '_ntes_nuid', value: crypto.randomBytes(16).toString('hex')}
-require('electron').remote.session.defaultSession.cookies.set(cookie, (error) => {
+Object.keys(cookie).map(key => ({url: 'http://music.163.com', name: key, value: cookie[key]}))
+.forEach(item => require('electron').remote.session.defaultSession.cookies.set(item, (error) => {
 	if (error) console.error(error)
-})
+}))
 
 require('electron').remote.session.defaultSession.cookies.get({url: 'http://music.163.com'}, (error, cookies) => {
 	const keys = cookies.map(cookie => {cookie.name})
