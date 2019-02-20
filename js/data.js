@@ -267,7 +267,8 @@ const track = {
 
 const random = space => crypto.randomBytes(1)[0] % space
 const apiRequest = (path, data) => new Promise((resolve, reject) => {
-	const query = netease.encrypt.weapi(`https://music.163.com/api/${path}`, data || {})
+	data.header = {os: 'pc'}
+	const query = netease.encrypt.eapi(`https://music.163.com/api/${path}`, data || {})
 	
 	const xhr = new XMLHttpRequest()
 	xhr.onreadystatechange = () => {
