@@ -60,3 +60,5 @@ typings/
 # Packaged Electron Apps
 dist/
 
+# Not sensitive to package version
+package-lock.json

@@ -13,21 +13,22 @@
     "url": "https://github.com/nondanee/Glee.git"
   },
   "scripts": {
-    "start": "./node_modules/.bin/electron .",
-    "package-win": "./node_modules/.bin/electron-packager . --platform=win32 --arch=x64 --version=3.0.10 --icon=./resource/glee.ico --out=dist/ --overwrite=true --ignore=dist/ --prune=true",
-    "package-mac": "./node_modules/.bin/electron-packager . --platform=darwin --arch=all --version=3.0.10 --icon=./resource/glee.icns --out=dist/ --overwrite=true --ignore=dist/ --prune=true",
-    "package-linux": "./node_modules/.bin/electron-packager . --platform=linux --arch=x64 --version=3.0.10 --icon=./resource/glee.png --out=dist/ --overwrite=true --ignore=dist/ --prune=true"
+    "postinstall": "electron-rebuild",
+    "start": "electron .",
+    "package-win": "electron-packager . --platform=win32 --arch=x64 --version=3.1.9 --icon=./resource/glee.ico --out=dist/ --overwrite=true --ignore=dist/ --prune=true",
+    "package-mac": "electron-packager . --platform=darwin --arch=all --version=3.1.9 --icon=./resource/glee.icns --out=dist/ --overwrite=true --ignore=dist/ --prune=true",
+    "package-linux": "electron-packager . --platform=linux --arch=x64 --version=3.1.9 --icon=./resource/glee.png --out=dist/ --overwrite=true --ignore=dist/ --prune=true"
   },
   "build": {
     "appId": "com.nondanee.glee"
   },
   "devDependencies": {
-    "electron-packager": "^9.0.0",
-    "electron-rebuild": "^1.8.2"
+    "electron-packager": "^9.1.0",
+    "electron-rebuild": "^1.8.4"
   },
   "dependencies": {
-    "electron": "^3.0.10",
+    "electron": "^3.1.9",
     "node-id3": "^0.1.7",
-    "windows-swca": "^1.1.1"
+    "windows-swca": "^2.0.2"
   }
 }
