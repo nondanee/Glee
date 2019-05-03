@@ -12,11 +12,11 @@ Built by Electron, Vanilla JS, Plain CSS
 - 因为发现 Electron 的 UWP acrylic 背景实现而重写了之前几百行辣鸡 JS 代码
 - 留着一些辣鸡代码没改 (tab 部分) 因为之后这些逻辑用不到了先撑一下
 - 其实主要是因为写详情界面太累了所以一直鸽
-- 依旧没有后端，弃用 request，请求改成 AJAX 方便调试 (改了 electron 的请求头)
+- 依旧没有后端，弃用 request，请求改成 AJAX 方便调试 (改了 Electron 的请求头)
 - 改用 localStorage 代替 electron-json-storage
-- 改用了 color-thief 代替 material-palette，应该会准一点，启用了 backdrop-filter (可能依旧有 bug)
+- 改用 color-thief 代替 material-palette，应该会准一点，启用了 backdrop-filter (可能依旧有 bug)
 - 预留了 linuxapi 和 eapi，之后会换，登录和搜索都会有的
-- 默认开了CDN重定向因为目前人在海外
+- 默认开了 CDN 重定向因为目前人在海外
 - 用了 Native Node Modules 可能安装需要开发环境？不太懂
 
 ## Acrylic
@@ -27,10 +27,9 @@ Built by Electron, Vanilla JS, Plain CSS
 - [23phy/electron-acrylic](https://github.com/23phy/electron-acrylic)
 - [sylveon/windows-swca](https://github.com/sylveon/windows-swca)
 
-## Run&Package
+## Run & Package
 ```
 $ npm install
-$ .\node_modules\.bin\electron-rebuild.cmd 
 $ npm start
 $ npm run package-win
 ```
