@@ -15,19 +15,19 @@
   "scripts": {
     "postinstall": "electron-rebuild",
     "start": "electron .",
-    "package-win": "electron-packager . --platform=win32 --arch=x64 --version=3.1.9 --icon=./resource/glee.ico --out=dist/ --overwrite=true --ignore=dist/ --prune=true",
-    "package-mac": "electron-packager . --platform=darwin --arch=all --version=3.1.9 --icon=./resource/glee.icns --out=dist/ --overwrite=true --ignore=dist/ --prune=true",
-    "package-linux": "electron-packager . --platform=linux --arch=x64 --version=3.1.9 --icon=./resource/glee.png --out=dist/ --overwrite=true --ignore=dist/ --prune=true"
+    "package-win": "electron-packager . --platform=win32 --arch=x64 --icon=./resource/glee.ico --out=./dist --overwrite=true",
+    "package-mac": "electron-packager . --platform=darwin --arch=all --icon=./resource/glee.icns --out=./dist --overwrite=true",
+    "package-linux": "electron-packager . --platform=linux --arch=x64 --icon=./resource/glee.png --out=./dist --overwrite=true"
   },
   "build": {
     "appId": "com.nondanee.glee"
   },
   "devDependencies": {
-    "electron-packager": "^9.1.0",
-    "electron-rebuild": "^1.8.4"
+    "electron": "^3.1.9",
+    "electron-rebuild": "^1.8.4",
+    "electron-packager": "^12.2.0"
   },
   "dependencies": {
-    "electron": "^3.1.9",
     "node-id3": "^0.1.7",
     "windows-swca": "^2.0.2"
   }
