@@ -1,3 +1,6 @@
+const remote = require('electron').remote
+const BrowserWindow = remote.BrowserWindow
+
 const createElement = (tagName, className, innerHTML) => {
 	let element = document.createElement(tagName)
 	if(className != undefined) element.className = className

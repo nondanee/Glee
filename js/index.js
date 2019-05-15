@@ -1,12 +1,5 @@
-const {remote} = require('electron')
-const currentWindow = remote.BrowserWindow.getFocusedWindow()
-
-document.getElementsByClassName('minimize')[0].onclick = () => {
-	currentWindow.minimize()
-}
-document.getElementsByClassName('close')[0].onclick = () => {
-	currentWindow.close()
-}
+document.getElementsByClassName('minimize')[0].onclick = () => BrowserWindow.getFocusedWindow().minimize()
+document.getElementsByClassName('close')[0].onclick = () => BrowserWindow.getFocusedWindow().close()
 
 const container = document.getElementsByTagName("container")[0]
 const maintab = document.getElementById("maintab")

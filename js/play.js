@@ -261,14 +261,8 @@ const player = (() => {
 		control.download()
 	}
 	button.fullscreen.onclick = () => {
-		if(currentWindow.isFullScreen()){
-			currentWindow.setFullScreen(false)
-			button.fullscreen.classList.remove('on')
-		}
-		else{
-			currentWindow.setFullScreen(true)
-			button.fullscreen.classList.add('on')
-		}
+		const focusedWindow = BrowserWindow.getFocusedWindow()
+		focusedWindow.setFullScreen(!focusedWindow.isFullScreen())
 	}
 	button.play.onclick = () => {
 		if(!audio.src) return
@@ -320,10 +314,8 @@ const player = (() => {
 	document.addEventListener('keydown', event => {
 		if(event.keyCode == 27){
 			event.preventDefault()
-			if(currentWindow.isFullScreen()){
-				currentWindow.setFullScreen(false)
-				button.fullscreen.className = "fullscreen"
-			}
+			const focusedWindow = BrowserWindow.getFocusedWindow()
+			if(focusedWindow.isFullScreen()) button.fullscreen.click()
 		}
 		else if(event.keyCode == 32){
 			event.preventDefault()
@@ -348,6 +340,11 @@ const player = (() => {
 		Array.from([element.blur, element.mediaInfo, element.timeLine, element.controller, element.playList, element.drag]).forEach(item => element.playBar.appendChild(item))
 		element.controller.insertBefore(createElement('div', 'filler'), element.controller.children[5])
 		document.body.appendChild(element.playBar)
+
+		const focusedWindow = BrowserWindow.getFocusedWindow()
+		focusedWindow.on('enter-full-screen', () => button.fullscreen.classList.add('on'))
+		focusedWindow.on('leave-full-screen', () => button.fullscreen.classList.remove('on'))
+
 		recover()
 	}
 

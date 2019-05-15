@@ -62,9 +62,7 @@ module.exports = {
 	},
 	decode: id => {
 		const key = '3go8&$8*3*3h0k(2)2'
-		const string = id.split('').map((_, index) => 
-			String.fromCharCode(id.charCodeAt(index) ^ key.charCodeAt(index % key.length))
-		).join('')
+		const string = Array.from(Array(id.length).keys()).map(index => String.fromCharCode(id.charCodeAt(index) ^ key.charCodeAt(index % key.length))).join('')
 		const result = crypto.createHash('md5').update(string).digest('base64').replace(/\//g, '_').replace(/\+/g, '-')
 		return `http://p2.music.126.net/${result}/${id}`
 	}
