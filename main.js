@@ -47,8 +47,6 @@ const createWindow = () => {
 		app.dock.setIcon(dockIcon)
 	}
 
-	// electronAcrylic.setAcrylic(mainWindow, 0xFFFFFF)
-
 	mainWindow.loadURL(url.format({
 		pathname: path.join(__dirname, 'index.html'),
 		protocol: 'file:',
@@ -77,9 +75,9 @@ const createWindow = () => {
 		}
 	)
 
-	mainWindow.once('ready-to-show', () => {
-		mainWindow.show()
-	})
+	// mainWindow.once('ready-to-show', () => {
+	// 	mainWindow.show()
+	// })
 
 	// mainWindow.on('focus', () => {
 	// 	console.log('focus')
@@ -119,17 +117,3 @@ app.on('activate', () => {
 		createWindow()
 	}
 })
-
-// ipcMain.on('download', (event, task) => {
-// 	console.log('get download request', task)
-// 	downloadTask = JSON.parse(task)
-// 	event.sender.send('feedback','i will download')
-// 	mainWindow.webContents.downloadURL(downloadTask.url;
-// });
-
-
-
-
-
-
-

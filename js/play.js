@@ -17,7 +17,7 @@ const player = (() => {
 		index = parseInt(localStorage.getItem('index'))
 		control.play(false)
 		if(localStorage.getItem('random') == 'true') button.random.click()
-		Array.apply(null, {length: parseInt(localStorage.getItem('cycle')) || 0}).forEach(() => button.cycle.click())		
+		Array.from(Array(parseInt(localStorage.getItem('cycle')) || 0).keys()).forEach(() => button.cycle.click())
 	}
 
 	const element = {
@@ -122,7 +122,7 @@ const player = (() => {
 		},
 		locate: progress => {
 			let expectTime = audio.duration * progress
-			let seekable = Array.apply(null, {length: audio.seekable.length}).some((_, index) => audio.seekable.start(index) <= expectTime && expectTime <= audio.seekable.end(index))
+			let seekable = Array.from(Array(audio.seekable.length).keys()).some(index => audio.seekable.start(index) <= expectTime && expectTime <= audio.seekable.end(index))
 			if(seekable) audio.currentTime = expectTime
 		},
 		reset: () => {
@@ -232,7 +232,7 @@ const player = (() => {
 		}
 	},false)
 	audio.addEventListener('timeupdate', () => {
-		if (!isNaN(audio.duration)) {
+		if(!isNaN(audio.duration) && !audio.paused){
 			let progress = audio.currentTime / audio.duration;
 			progress = (progress == 1) ? 0 : progress
 	
