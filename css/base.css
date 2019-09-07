@@ -44,11 +44,6 @@ body{
 	background-color: rgba(0,0,0,0.3);
 }
 
-.filler{
-	flex: auto;
-	pointer-events: none;
-}
-
 button{
 	-webkit-app-region: no-drag;
 	display: block;

@@ -21,6 +21,9 @@
 	flex-grow: 0;
 	flex-shrink: 0;
 }
+.sidebar button:last-child{
+	margin-top: auto;
+}
 .sidebar button.active::before{
 	content: "";
 	position: absolute;

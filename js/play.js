@@ -343,7 +343,6 @@ const player = (() => {
 		Array.from(['previous', 'play', 'next', 'random', 'cycle', 'list', 'download', 'fullscreen']).forEach(key => element.controller.appendChild(button[key]))
 		Array.from(['fold']).forEach(key => element.drag.appendChild(button[key]))
 		Array.from([element.blur, element.mediaInfo, element.timeLine, element.controller, element.playList, element.drag]).forEach(item => element.playBar.appendChild(item))
-		element.controller.insertBefore(createElement('div', 'filler'), element.controller.children[5])
 		document.body.appendChild(element.playBar)
 
 		const focusedWindow = BrowserWindow.getFocusedWindow()

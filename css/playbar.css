@@ -130,12 +130,12 @@
 	height: 2px;
 }
 .progressbar .filler.played {
-	flex-grow: 0;
+	flex: none;
 	background-color: currentColor;
 	-webkit-transition: width 25ms linear;
 }
 .progressbar .filler.unplayed {
-	flex-grow: 1;
+	flex: auto;
 	background-color: rgba(255, 255, 255, 0.4);
 }
 .progressbar .cursor {
@@ -175,6 +175,9 @@
 	font-size: 20px;
 	cursor: pointer;
 	-webkit-transition: all 0.08s linear;
+}
+.controller button:nth-last-of-type(3) {
+	margin-left: auto;
 }
 .controller button:hover {
 	color: rgba(255, 255, 255, 0.4);
