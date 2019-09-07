@@ -1,12 +1,13 @@
-.playbar{
+.playbar {
 	display: block;
 	position: fixed;
 	box-sizing: border-box;
-	bottom: 0;left: 0;
+	bottom: 0;
+	left: 0;
 	height: 64px;
 	width: 100%;
 	overflow: hidden;
-	background-color: rgba(0,0,0,0.5);
+	background-color: rgba(0, 0, 0, 0.5);
 	z-index: 10;
 	/*transform&drag cause button unfocus*/
 	backdrop-filter: blur(20px);
@@ -18,29 +19,30 @@
 .playbar .controller,
 .playbar .playlist,
 .playbar .blur,
-.playbar .drag
-{
+.playbar .drag {
 	position: absolute;
 }
 
-.playbar .mediainfo{
+.playbar .mediainfo {
 	bottom: 0;
 	left: 0;
 	height: 64px;
 	width: 320px;
-	overflow: hidden;
 	cursor: pointer;
 	-webkit-app-region: no-drag;
+	color: #ffffff;
+	display: flex;
+	align-items: center;
 }
-.playbar .mediainfo:hover::before{
+.playbar .mediainfo:hover::before {
 	content: "";
-	background-color: rgba(0,0,0,0.1);
+	background-color: rgba(0, 0, 0, 0.1);
 	width: 100%;
 	height: 100%;
 	position: absolute;
 	z-index: 1;
 }
-.playbar .mediainfo:hover>.cover::before{
+.playbar .mediainfo:hover > .cover::before {
 	content: "\e70e";
 	text-align: center;
 	line-height: 48px;
@@ -48,57 +50,57 @@
 	height: 100%;
 	position: absolute;
 	font-family: "groove style";
-	color: #ffffff;
-	background-color: rgba(0,0,0,0.3);
+	background-color: rgba(0, 0, 0, 0.3);
 }
 
 
 .playbar.extend .mediainfo:hover::before,
-.playbar.extend .mediainfo:hover>.cover::before{
+.playbar.extend .mediainfo:hover > .cover::before {
 	content: none;
 }
 
-
-.mediainfo>.cover,
-.mediainfo>.name,
-.mediainfo>.related
-{
-	position: absolute;
-}
-.mediainfo>.cover{
-	margin: 8px;
-	width: 48px;height: 48px;
-	background-color: rgba(255,255,255,0.1);
+.mediainfo > .cover {
+	position: relative;
+	flex: none;
+	margin: auto 8px;
+	width: 48px;
+	height: 48px;
+	background-color: rgba(255, 255, 255, 0.1);
 	background-position: center;
 	background-size: cover;
-	left: 0px;bottom: 0px;
 	z-index: 0;
 }
-.mediainfo>.name,.mediainfo>.related{
-	color: #ffffff;
-	left: 64px;
-	max-width: 210px;
+.mediainfo > .text {
+	display: flex;
+	flex: auto;
+	width: 0;
+	height: 100%;
+	flex-direction: column;
+	justify-content: space-between;
+	z-index: 2;
+}
+.mediainfo .name,
+.mediainfo .related {
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
-	z-index: 2;
 }
-.mediainfo>.name{
-	bottom: 34px;
+.mediainfo .name {
+	margin-top: 10px;
 	font-size: 15px;
 }
-.mediainfo>.related{
-	bottom: 12px;
+.mediainfo .related {
+	margin-bottom: 12px;
 	font-size: 14px;
 	opacity: 0.7;
 }
-.mediainfo>.name::after{
+.mediainfo .name::after {
 	content: attr(name);
 }
-.mediainfo>.related::after{
+.mediainfo .related::after {
 	content: attr(artist);
 }
-.playbar .timeline{
+.playbar .timeline {
 	bottom: 0px;
 	left: 340px;
 	height: 64px;
@@ -106,56 +108,54 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-}
-.timeline .time{
-	font-size: 11px;
 	color: #ffffff;
-	line-height: 66px;/*for vertical center*/
-	height: 64px;
+}
+.timeline .time {
+	font-size: 11px;
+	height: 100%;
+	line-height: 64px;
 	cursor: default;
 }
-.progressbar{
+.progressbar {
 	-webkit-app-region: no-drag;
-	margin: 15px 12px 17px 12px;/*15+17 for vertical center*/
+	margin: auto 12px;
 	height: 32px;
-	flex-basis: auto;
-	flex-grow: 1;
+	flex: auto;
 	cursor: pointer;
 	display: flex;
+	align-items: center;
+	--cursorSize: 18px;
 }
-.progressbar .filler{
-	margin: 17px 0;
+.progressbar .filler {
 	height: 2px;
 }
-.progressbar .filler.played{
-	background-color: rgba(255,255,255,1);
-	-webkit-transition: width 20ms linear;
+.progressbar .filler.played {
 	flex-grow: 0;
+	background-color: currentColor;
+	-webkit-transition: width 25ms linear;
 }
-.progressbar .filler.unplayed{
+.progressbar .filler.unplayed {
 	flex-grow: 1;
-	background-color: rgba(255,255,255,0.4);
+	background-color: rgba(255, 255, 255, 0.4);
 }
-.progressbar .cursor{
-	flex-grow: 0;
-	flex-shrink: 0;
-	margin: 9px 0px 9px 0px;
-	width: 18px;
-	height: 18px;
+.progressbar .cursor {
+	flex: none;
+	width: var(--cursorSize);
+	height: var(--cursorSize);
 	border-radius: 50%;
 	box-sizing: border-box;
-	border: 2px solid #ffffff;
+	border: 2px solid currentColor;
 	-webkit-transition: all 0.04s linear;
 }
-.progressbar .cursor:hover{
-	border: 2px solid rgba(255,255,255,0.6);
+.progressbar .cursor:hover {
+	border: 2px solid rgba(255, 255, 255, 0.6);
 }
-.progressbar .cursor:active{
+.progressbar .cursor:active {
 	background-color: #ffffff;
 }
 
 
-.playbar .controller{
+.playbar .controller {
 	bottom: 0px;
 	/*right: 12px;*/
 	left: calc(100% - 252px);
@@ -164,57 +164,59 @@
 	display: flex;
 	overflow: hidden;
 }
-.controller button{
+.controller button {
 	font-family: "groove style";
-	width: 36px; height: 36px;
+	width: 36px;
+	height: 36px;
 	flex: none;
 	margin: auto 6px;
 	border-radius: 50%;
-	color: rgba(255,255,255,1);
+	color: rgba(255, 255, 255, 1);
 	font-size: 20px;
 	cursor: pointer;
 	-webkit-transition: all 0.08s linear;
 }
-.controller button:hover{
-	color: rgba(255,255,255,0.4);
+.controller button:hover {
+	color: rgba(255, 255, 255, 0.4);
 }
-.controller button:active{
-	color: rgba(255,255,255,1);
-	background-color: rgba(0,0,0,0.2);
+.controller button:active {
+	color: rgba(255, 255, 255, 1);
+	background-color: rgba(0, 0, 0, 0.2);
 }
 
-button.random.on,button.cycle.all,button.cycle.single{
-	background-color: rgba(255,255,255,0.2);
+button.random.on,
+button.cycle.all,
+button.cycle.single {
+	background-color: rgba(255, 255, 255, 0.2);
 }
-button.download.ing{
+button.download.ing {
 	-webkit-animation: twinkle 1s ease-in-out infinite;
 }
 @-webkit-keyframes twinkle {
 	0% {
-		background-color: rgba(255,255,255,0.2);
+		background-color: rgba(255, 255, 255, 0.2);
 	}
 	50% {
-		background-color: rgba(255,255,255,0);
+		background-color: rgba(255, 255, 255, 0);
 	}
 	100% {
-		background-color: rgba(255,255,255,0.2);
+		background-color: rgba(255, 255, 255, 0.2);
 	}
 }
 
 .playbar,
 .playbar .mediainfo,
-.playbar .mediainfo>.cover,
-.playbar .mediainfo>.name,
-.playbar .mediainfo>.related,
+.playbar .mediainfo > .cover,
+.playbar .mediainfo .name,
+.playbar .mediainfo .related,
 .playbar .timeline,
 .playbar .controller,
-.playbar .blur
-{
+.playbar .blur {
 	-webkit-transition: all 0.36s cubic-bezier(0.37, -0.11, 0.14, 0.85);
 }
 
 
-.playbar .blur{
+.playbar .blur {
 	width: 100%;
 	height: 100%;
 	padding: 50px;
@@ -227,13 +229,13 @@ button.download.ing{
 	z-index: -1;
 }
 
-.playbar.extend .drag{
+.playbar.extend .drag {
 	top: 0;left: 0;
 	width: 100%;
 	height: 40px;
 	-webkit-app-region: drag;
 }
-.playbar .fold{
+.playbar .fold {
 	margin: 6px auto;
 	font-family: "groove style";
 	color: #ffffff;
@@ -241,106 +243,99 @@ button.download.ing{
 	width: 28px;
 	height: 28px;
 }
-.playbar .fold:hover{
-	color: rgba(255,255,255,0.6);
+.playbar .fold:hover {
+	color: rgba(255, 255, 255, 0.6);
 }
-.playbar .fold:active{
-	color: rgba(255,255,255,0.3);
+.playbar .fold:active {
+	color: rgba(255, 255, 255, 0.3);
 }
 
 
 .playbar .blur,
 .playbar .drag,
-.playbar .playlist
-{
+.playbar .playlist {
 	opacity: 0;
 	visibility: hidden;
 }
 
 
-.playbar.extend{
+.playbar.extend {
 	width: 100%;
 	height: 100%;
 }
 .playbar.extend .blur,
-.playbar.extend .drag
-{
+.playbar.extend .drag {
 	opacity: 1;
 	visibility: visible;
 }
-.playbar.extend .mediainfo{
+.playbar.extend .mediainfo {
 	bottom: 130px;
 	left: 24px;
 	height: 110px;
 	width: calc(100% - 48px);
 	cursor: default;
 }
-.playbar.extend .mediainfo>.cover{
+.playbar.extend .mediainfo > .cover {
 	width: 110px;
 	height: 110px;
-	margin: 0;
+	margin: auto 16px auto 0;
 }
-.playbar.extend .mediainfo>.name{
+.playbar.extend .mediainfo > .text {
+	font-weight: 200;
+}
+.playbar.extend .mediainfo .name {
+	margin-top: 20px;
 	font-size: 34px;
-	bottom: 44px;
 }
-.playbar.extend .mediainfo>.related{
+.playbar.extend .mediainfo .related {
+	margin-bottom: 16px;
 	font-size: 18px;
 	opacity: 1;
-	bottom: 16px;
 }
-.playbar.extend .mediainfo>.name,
-.playbar.extend .mediainfo>.related
-{
-	font-weight: 200;
-	left: 126px;
-	max-width: calc(100% - 126px);
-}
-.playbar.extend .mediainfo>.related::after{
+.playbar.extend .mediainfo .related::after {
 	content: attr(artist) " • " attr(album);
 }
-.playbar.extend .timeline{
+.playbar.extend .timeline {
 	bottom: 72px;
 	left: 24px;
 	width: calc(100% - 48px);
 }
-.playbar.extend .controller{
+.playbar.extend .controller {
 	bottom: 24px;
 	left: 10px;
 	width: calc(100% - 20px);
 }
-.playbar.extend .controller button:active{
-	background-color: rgba(255,255,255,0.12);
+.playbar.extend .controller button:active {
+	background-color: rgba(255, 255, 255, 0.12);
 }
 
 
-.playbar.list .blur{
+.playbar.list .blur {
 	filter: blur(20px) brightness(0.4);
 }
 /*.playbar.list .mediainfo,
 .playbar.list .timeline,
 .playbar.list .controller,
-.playbar.list .extra
-{
+.playbar.list .extra {
 	transform: translateY(-540px);
 }*/
 
-.playbar.list .mediainfo{
+.playbar.list .mediainfo {
 	bottom: calc(130px + 100% - 280px);
 }
-.playbar.list .timeline{
+.playbar.list .timeline {
 	bottom: calc(72px + 100% - 280px);
 }
-.playbar.list .controller{
+.playbar.list .controller {
 	bottom: calc(24px + 100% - 280px);
 }
-.playbar.list .playlist{
+.playbar.list .playlist {
 	opacity: 1;
 	visibility: visible;
 	transform: translateY(0px);
 }
 
-.playbar .playlist{
+.playbar .playlist {
 	bottom: 0px;
 	transform: translateY(100%);
 	height: calc(100% - 280px);
@@ -350,35 +345,35 @@ button.download.ing{
 	overflow-y: scroll;
 	-webkit-transition: 0.12s transform cubic-bezier(0.37, -0.11, 0.14, 0.85) 0.3s;
 }
-.playlist>.entry{
+.playlist > .entry {
 	position: relative;
 	-webkit-app-region: no-drag;
 	height: 48px;
 	color: #ffffff;
 	font-size: 13px;
 	font-weight: 200;
-	border-bottom: 1px solid rgba(255,255,255,0.05);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 	cursor: default;
 }
-.playlist>.entry:last-child{
+.playlist > .entry:last-child {
 	border-bottom-width: 0;
 }
 
-.playlist .entry .mat{
+.playlist .entry .mat {
 	width: 100%;
 	height: 100%; 
 }
-.playlist .entry:hover .mat{
-	background-color: rgba(255,255,255,0.05);
+.playlist .entry:hover .mat {
+	background-color: rgba(255, 255, 255, 0.05);
 }
-.playlist .entry .mat:active{
-	background-color: rgba(255,255,255,0.1);
+.playlist .entry .mat:active {
+	background-color: rgba(255, 255, 255, 0.1);
 }
-.playlist .entry .mat:active + .content{
+.playlist .entry .mat:active + .content {
 	padding: 0 40px;
 	-webkit-transition: padding ease-out 0s;
 }
-.playlist>.entry .content{
+.playlist > .entry .content {
 	width: 100%;
 	height: 100%;
 	position: absolute;
@@ -389,32 +384,32 @@ button.download.ing{
 	-webkit-transition: padding ease-out 0.18s;
 	pointer-events: none;
 }
-.playlist>.entry .text{
+.playlist > .entry .text {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
 	flex: 0 1 auto;
 }
 
-.playlist .content>div{
+.playlist .content > div {
 	padding-right: 18px;
 	box-sizing: border-box;
 	overflow: hidden;
 	display: flex;
 	align-items: center;
 }
-.playlist .song{
+.playlist .song {
 	width: 40%;
 }
 .playlist .artist,
-.playlist .album{
+.playlist .album {
 	width: 28%;
 }
-.playlist .duration{
+.playlist .duration {
 	width: 4%;
 	text-align: right;
 }
-.playlist .entry button{
+.playlist .entry button {
 	font-family: "groove style";
 	font-size: 16px;
 	height: 48px;
@@ -424,30 +419,30 @@ button.download.ing{
 	pointer-events: auto;
 	flex: none;
 }
-.playlist .song .text{
+.playlist .song .text {
 	margin-right: 16px;
 }
 .playlist .artist .text,
-.playlist .album .text{
+.playlist .album .text {
 	margin-right: 4px;
 	cursor: pointer;
 	pointer-events: auto;
 }
 .playlist .artist .text:hover,
-.playlist .album .text:hover{
+.playlist .album .text:hover {
 	opacity: 0.8;
 }
-.playlist .entry:hover button{
+.playlist .entry:hover button {
 	opacity: 1;
 	width: 48px;
 }
-.playlist .entry button:hover{
-	background-color: rgba(255,255,255,0.08);
+.playlist .entry button:hover {
+	background-color: rgba(255, 255, 255, 0.08);
 }
-.playlist .entry button:active{
-	background-color: rgba(255,255,255,0.1);
+.playlist .entry button:active {
+	background-color: rgba(255, 255, 255, 0.1);
 }
-.playlist .entry.playing .song::before{
+.playlist .entry.playing .song::before {
 	content: "\e93d";
 	font-family: "groove style";
 	margin-right: 6px;

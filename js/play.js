@@ -200,13 +200,9 @@ const player = (() => {
 		}
 	}
 
-	audio.addEventListener('play', () => {
-		button.play.className = 'pause'
-	}, false)
-	audio.addEventListener('pause', () => {
-		button.play.className = 'play'
-	}, false)
-	audio.addEventListener('ended', () => {
+	audio.onplay = () => button.play.className = 'pause'
+	audio.onpause = () => button.play.className = 'play'
+	audio.onended = () => {
 		if(cycle == 2){
 			control.play()
 		}
@@ -230,16 +226,24 @@ const player = (() => {
 		else if(cycle == 1){
 			control.next()
 		}
-	},false)
-	audio.addEventListener('timeupdate', () => {
-		if(!isNaN(audio.duration) && !audio.paused){
-			let progress = audio.currentTime / audio.duration;
-			progress = (progress == 1) ? 0 : progress
-	
-			element.filler.played.style.width = `calc(${progress} * (100% - ${element.cursor.offsetWidth}px))`
-			element.time.played.innerHTML = secondFormatter(audio.currentTime)
+	}
+	const throttle = (() => {
+		let previous = NaN
+		return time => {
+			time = parseInt(time)
+			let judge = time == previous
+			previous = time
+			return judge
 		}
-	}, false)
+	})()
+	audio.ontimeupdate = () => {
+		if(!isNaN(audio.duration) && !audio.paused){
+			let currentTime = audio.currentTime
+			if(!throttle(currentTime)) element.time.played.innerHTML = secondFormatter(currentTime)
+			let progress = currentTime / audio.duration
+			element.filler.played.style.width = `calc(${progress % 1} * (100% - var(--cursorSize)))`
+		}
+	}
 
 	element.mediaInfo.onclick = () => {
 		element.playBar.classList.contains('list') ? element.playBar.classList.remove('list') : element.playBar.classList.add('extend')
@@ -281,18 +285,18 @@ const player = (() => {
 		control.random()
 	}
 	element.progressBar.onmousedown = event => {
-		let cursorWith = element.cursor.offsetWidth
-		let maxWidth = element.progressBar.offsetWidth - cursorWith
+		let cursorWidth = element.cursor.offsetWidth
+		let maxWidth = element.progressBar.offsetWidth - cursorWidth
 		let offsetLeft = element.progressBar.offsetLeft + element.timeLine.offsetLeft
 		let progress = null
 		
 		const follow = clientX => {
-			progress = (clientX - offsetLeft - cursorWith / 2) / maxWidth
+			progress = (clientX - offsetLeft - cursorWidth / 2) / maxWidth
 			progress = progress > 1 ? 1 : progress
 			progress = progress < 0 ? 0 : progress
 
 			element.time.played.innerHTML = secondFormatter(audio.duration * progress)
-			element.filler.played.style.width = `calc(${progress} * (100% - ${cursorWith}px))`
+			element.filler.played.style.width = `calc(${progress} * (100% - var(--cursorSize)))`
 		}
 
 		let paused = true
@@ -332,7 +336,8 @@ const player = (() => {
 	}, false)
 
 	init = () => {
-		Array.from(['cover', 'name' ,'related']).forEach(key => element.mediaInfo.appendChild(element[key]))
+		const text = Array.from(['name' ,'related']).reduce((item, key) => (item.appendChild(element[key]), item), createElement('div', 'text'))
+		Array.from([element.cover, text]).forEach(item => element.mediaInfo.appendChild(item))
 		Array.from([element.filler.played, element.cursor, element.filler.unplayed]).forEach(item => element.progressBar.appendChild(item))
 		Array.from([element.time.played, element.progressBar, element.time.total]).forEach(item => element.timeLine.appendChild(item))
 		Array.from(['previous', 'play', 'next', 'random', 'cycle', 'list', 'download', 'fullscreen']).forEach(key => element.controller.appendChild(button[key]))
