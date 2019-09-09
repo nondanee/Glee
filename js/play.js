@@ -241,7 +241,7 @@ const player = (() => {
 			let currentTime = audio.currentTime
 			if(!throttle(currentTime)) element.time.played.innerHTML = secondFormatter(currentTime)
 			let progress = currentTime / audio.duration
-			element.filler.played.style.width = `calc(${progress % 1} * (100% - var(--cursorSize)))`
+			element.progressBar.style.setProperty(`--progressValue`, progress % 1)
 		}
 	}
 
@@ -296,7 +296,7 @@ const player = (() => {
 			progress = progress < 0 ? 0 : progress
 
 			element.time.played.innerHTML = secondFormatter(audio.duration * progress)
-			element.filler.played.style.width = `calc(${progress} * (100% - var(--cursorSize)))`
+			element.progressBar.style.setProperty(`--progressValue`, progress)
 		}
 
 		let paused = true

@@ -125,12 +125,14 @@
 	display: flex;
 	align-items: center;
 	--cursorSize: 18px;
+	--progressValue: 0;
 }
 .progressbar .filler {
 	height: 2px;
 }
 .progressbar .filler.played {
 	flex: none;
+	width: calc(var(--progressValue) * (100% - var(--cursorSize)));
 	background-color: currentColor;
 	-webkit-transition: width 25ms linear;
 }
