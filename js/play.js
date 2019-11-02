@@ -5,12 +5,10 @@ const player = (() => {
 	let random = false
 	let cycle = 0
 
-	const sync = key => {
-		if(key == 'list') localStorage.setItem('list', JSON.stringify(list))
-		if(key == 'index') localStorage.setItem('index', index)
-		if(key == 'random') localStorage.setItem('random', random)
-		if(key == 'cycle') localStorage.setItem('cycle', cycle)
-	}
+	const sync = pairs =>
+		Object.entries(pairs).forEach(pair =>
+			localStorage.setItem(pair[0], typeof(pair[1]) === 'object' ? JSON.stringify(pair[1]) : pair[1])
+		)
 
 	const recover = () => {
 		control.add(JSON.parse(localStorage.getItem('list') || '[]'), false)
@@ -84,7 +82,7 @@ const player = (() => {
 				control.remove(postition)
 			}
 			let artist = content.appendChild(createElement('div', 'artist'))
-			song.artist.forEach(item => {
+			song.artists.forEach(item => {
 				item = artist.appendChild(createElement('div', 'text', item.name))
 				item.onclick = () => {}
 			})
@@ -129,8 +127,7 @@ const player = (() => {
 			list = []
 			index = 0
 			element.playList.innerHTML = ''
-			sync('list')
-			sync('index')
+			sync({list, index})
 		},
 		add: (part, cover = true) => {
 			if(cover) control.reset()
@@ -139,26 +136,26 @@ const player = (() => {
 			list = list.concat(part)
 			element.playList.appendChild(build(length))
 			if(cover) control.play()
-			sync('list')
+			sync({list})
 		},
 		remove: postition => {
 			list.splice(postition, 1)
 			element.playList.removeChild(element.playList.children[postition])
 			if(postition < index) index -= 1
 			else if(postition == index) control.play()
-			sync('list')
+			sync({list})
 		},
 		random: () => {
 			random = !random
 			button.random.title = random ? '随机播放:打开' : '随机播放:关闭'
 			button.random.className = 'random' + ' ' + (random ? 'on' : 'off')
-			sync('random')
+			sync({random})
 		},
 		cycle: () => {
 			cycle = (cycle + 1) % 3
 			button.cycle.title = ['重复播放:关闭', '重复播放:全部', '重复播放:单曲'][cycle]
 			button.cycle.className = 'cycle' + ' ' +  ['off', 'all', 'single'][cycle]
-			sync('cycle')
+			sync({cycle})
 		},
 		play: (immediate = true) => {
 			if(!list.length)  return
@@ -168,11 +165,20 @@ const player = (() => {
 				element.playList.children[index].classList.add('playing')
 
 				element.name.setAttribute('name', song.name)
-				element.related.setAttribute('artist', song.artist.map(artist => artist.name).join('/'))
+				element.related.setAttribute('artist', song.artists.map(artist => artist.name).join('/'))
 				element.related.setAttribute('album', song.album.name)
 				element.time.played.innerHTML = secondFormatter()
 				element.time.total.innerHTML = secondFormatter(song.duration)
-				
+
+				if ('mediaSession' in navigator) {
+					navigator.mediaSession.metadata = new MediaMetadata({
+						title: song.name,
+						artist: song.artists.map(artist => artist.name).join(' / '),
+						album: song.album.name,
+						artwork: [{src: song.cover + '?param=200y200',  sizes: '200x200', type: 'image/jpeg'}]
+					})
+				}
+
 				song.url = meta.url.replace(/(m\d+?)(?!c)\.music\.126\.net/, '$1c.music.126.net')
 				audio.src = song.url
 				if(immediate) audio.play()
@@ -188,7 +194,7 @@ const player = (() => {
 					element.blur.style.backgroundImage = `-webkit-linear-gradient(90deg, rgba(${rgbColor.join(',')},0.6), rgba(255, 255, 255, 0),rgba(${rgbColor.join(',')},0.3)),url(${cover})`
 					element.playBar.style.backgroundColor = `hsla(${hslColor[0]}, ${hslColor[1] * 100}%, ${hslColor[2] * 100}%, 0.8)`
 				})
-				sync('index')
+				sync({index})
 			}).catch(() => control.remove(index))
 		},
 		download: () => {
@@ -241,8 +247,14 @@ const player = (() => {
 			let currentTime = audio.currentTime
 			if(!throttle(currentTime)) element.time.played.innerHTML = secondFormatter(currentTime)
 			let progress = currentTime / audio.duration
-			element.progressBar.style.setProperty(`--progressValue`, progress % 1)
+			element.progressBar.style.setProperty(`--progress-value`, progress % 1)
 		}
+	}
+	if ('mediaSession' in navigator) {
+		navigator.mediaSession.setActionHandler('play', () => audio.play())
+		navigator.mediaSession.setActionHandler('pause', () => audio.pause())
+		navigator.mediaSession.setActionHandler('previoustrack', () => control.previous())
+		navigator.mediaSession.setActionHandler('nexttrack', () => control.next())
 	}
 
 	element.mediaInfo.onclick = () => {
@@ -296,7 +308,7 @@ const player = (() => {
 			progress = progress < 0 ? 0 : progress
 
 			element.time.played.innerHTML = secondFormatter(audio.duration * progress)
-			element.progressBar.style.setProperty(`--progressValue`, progress)
+			element.progressBar.style.setProperty(`--progress-value`, progress)
 		}
 
 		let paused = true

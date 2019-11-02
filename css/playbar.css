@@ -124,15 +124,15 @@
 	cursor: pointer;
 	display: flex;
 	align-items: center;
-	--cursorSize: 18px;
-	--progressValue: 0;
+	--cursor-size: 18px;
+	--progress-value: 0;
 }
 .progressbar .filler {
 	height: 2px;
 }
 .progressbar .filler.played {
 	flex: none;
-	width: calc(var(--progressValue) * (100% - var(--cursorSize)));
+	width: calc(var(--progress-value) * (100% - var(--cursor-size)));
 	background-color: currentColor;
 	-webkit-transition: width 25ms linear;
 }
@@ -142,8 +142,8 @@
 }
 .progressbar .cursor {
 	flex: none;
-	width: var(--cursorSize);
-	height: var(--cursorSize);
+	width: var(--cursor-size);
+	height: var(--cursor-size);
 	border-radius: 50%;
 	box-sizing: border-box;
 	border: 2px solid currentColor;
@@ -215,15 +215,13 @@ button.download.ing {
 .playbar .mediainfo .name,
 .playbar .mediainfo .related,
 .playbar .timeline,
-.playbar .controller,
-.playbar .blur {
+.playbar .controller {
 	-webkit-transition: all 0.36s cubic-bezier(0.37, -0.11, 0.14, 0.85);
 }
 
-
 .playbar .blur {
-	width: 100%;
-	height: 100%;
+	width: 100vw;
+	height: 100vh;
 	padding: 50px;
 	top: -50px;
 	left: -50px;
@@ -234,8 +232,8 @@ button.download.ing {
 	z-index: -1;
 }
 
-.playbar.extend .drag {
-	top: 0;left: 0;
+.playbar .drag {
+	top: 0; left: 0;
 	width: 100%;
 	height: 40px;
 	-webkit-app-region: drag;
@@ -265,7 +263,6 @@ button.download.ing {
 
 
 .playbar.extend {
-	width: 100%;
 	height: 100%;
 }
 .playbar.extend .blur,

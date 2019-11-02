@@ -34,7 +34,7 @@ const extractor = {
 		duration: song.dt / 1000,
 		cover: song.al.picUrl || netease.decode(song.al.pic_str),
 		album: {id: song.al.id, name: song.al.name},
-		artist: song.ar.map(artist => ({id: artist.id, name: artist.name})),
+		artists: song.ar.map(artist => ({id: artist.id, name: artist.name})),
 	})
 }
 

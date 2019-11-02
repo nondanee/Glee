@@ -5,6 +5,10 @@ const url = require('url')
 const os = require('os')
 const childProcess = require('child_process')
 const package = require('./package.json')
+// app.commandLine.appendSwitch('enable-experimental-web-platform-features', true)
+// app.commandLine.appendSwitch('enable-media-session-service', true)
+// app.commandLine.appendSwitch('hardware-media-key-handling', true)
+// app.commandLine.appendSwitch('global-media-controls', true)
 // app.commandLine.appendSwitch('proxy-server', '127.0.0.1:1080')
 
 // 保持一个对于 window 对象的全局引用，如果你不这样做，
@@ -37,7 +41,10 @@ const createWindow = () => {
 		transparent: false,
 		backgroundColor: '#00000000',
 
-		webPreferences: {experimentalFeatures: true},
+		webPreferences: {
+			nodeIntegration: true,
+			experimentalFeatures: true
+		},
 
 		title: package.name,
 		icon: taskbarIcon

@@ -12,13 +12,13 @@ module.exports = song => {
 	const tempFolder = path.join(remote.app.getPath('temp'), 'Glee')
 	const substitution = {':': '：', '\\*': '＊', '\\?': '？', '\"': '＂', '<': '＜', '>': '＞', '/': '／', '\\\\': '＼'}
 
-	let songFile = `${song.artist.map(artist => artist.name).join(',')} - ${song.name}.mp3`
+	let songFile = `${song.artists.map(artist => artist.name).join(',')} - ${song.name}.mp3`
 	let coverFile = `${song.id}.jpg`
 	Object.keys(substitution).forEach(forbid => songFile = songFile.replace(new RegExp(forbid, 'g'), substitution[forbid]))
 
 	let tag = {
 		title: song.name,
-		artist: song.artist.map(artist => artist.name).join('/'),
+		artist: song.artists.map(artist => artist.name).join('/'),
 		album: song.album.name,
 		image: path.join(tempFolder, coverFile),
 		trackNumber: song.number
