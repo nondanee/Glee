@@ -7,11 +7,12 @@
 	height: 64px;
 	width: 100%;
 	overflow: hidden;
-	background-color: rgba(0, 0, 0, 0.5);
 	z-index: 10;
 	/*transform&drag cause button unfocus*/
 	backdrop-filter: blur(20px);
 	-webkit-app-region: no-drag;
+	--theme-color: 0, 0, 0;
+	background-color: rgba(var(--theme-color), 0.8);
 }
 
 .playbar .mediainfo,
@@ -215,21 +216,37 @@ button.download.ing {
 .playbar .mediainfo .name,
 .playbar .mediainfo .related,
 .playbar .timeline,
+.playbar .blur,
 .playbar .controller {
 	-webkit-transition: all 0.36s cubic-bezier(0.37, -0.11, 0.14, 0.85);
 }
 
 .playbar .blur {
-	width: 100vw;
-	height: 100vh;
-	padding: 50px;
-	top: -50px;
-	left: -50px;
+	width: 100%;
+	height: 100%;
+	/*padding: 50px;*/
+	/*top: -50px;*/
+	/*left: -50px;*/
 	/*margin: -50px;*/
-	filter: blur(20px);
+	/*filter: blur(20px);*/
 	background-position: top;
 	background-size: cover;
 	z-index: -1;
+	pointer-events: none;
+}
+
+.playbar .blur::after {
+	content: "";
+	display: block;
+	width: 100%;
+	height: 100%;
+	background-image:
+		-webkit-linear-gradient(
+			90deg,
+			rgba(var(--theme-color), 0.6),
+			transparent,
+			rgba(var(--theme-color), 0.3)
+		);
 }
 
 .playbar .drag {
@@ -313,7 +330,8 @@ button.download.ing {
 
 
 .playbar.list .blur {
-	filter: blur(20px) brightness(0.4);
+	/*filter: blur(20px) brightness(0.4);*/
+	filter: brightness(0.4);
 }
 /*.playbar.list .mediainfo,
 .playbar.list .timeline,
@@ -450,4 +468,3 @@ button.download.ing {
 	margin-right: 6px;
 	font-size: 15px;
 }
-

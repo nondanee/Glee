@@ -170,7 +170,7 @@ const player = (() => {
 				element.time.played.innerHTML = secondFormatter()
 				element.time.total.innerHTML = secondFormatter(song.duration)
 
-				if ('mediaSession' in navigator) {
+				if('mediaSession' in navigator){
 					navigator.mediaSession.metadata = new MediaMetadata({
 						title: song.name,
 						artist: song.artists.map(artist => artist.name).join(' / '),
@@ -184,15 +184,30 @@ const player = (() => {
 				if(immediate) audio.play()
 
 				let cover = song.cover + '?param=360y360'
-				pickColor(cover).then(color => {
+				loadImage(cover)
+				.then(image => {
+					let canvas = createElement('canvas')
+					canvas.height = image.naturalHeight
+					canvas.width = image.naturalWidth
+					StackBlur.image(image, canvas, 20)
+					element.blur.style.backgroundImage = `url(${canvas.toDataURL()})`
+					return pickColor(image)
+				})
+				.then(color => {
 					// let hslColor = color.getHsl()
 					let hslColor = colorConverter.rgbToHsl(color)
 					hslColor[1] = hslColor[1] > 0.8 ? 0.8 : hslColor[1]
 					hslColor[2] = hslColor[2] > 0.6 ? 0.6 : hslColor[2]
 					let rgbColor = colorConverter.hslToRgb(hslColor)
 					element.cover.style.backgroundImage = `url(${cover})`
-					element.blur.style.backgroundImage = `-webkit-linear-gradient(90deg, rgba(${rgbColor.join(',')},0.6), rgba(255, 255, 255, 0),rgba(${rgbColor.join(',')},0.3)),url(${cover})`
-					element.playBar.style.backgroundColor = `hsla(${hslColor[0]}, ${hslColor[1] * 100}%, ${hslColor[2] * 100}%, 0.8)`
+					element.playBar.style.setProperty('--theme-color', rgbColor.join(', '))
+					// let context = element.canvas.getContext('2d')
+					// let gradient = context.createLinearGradient(0, 0, 0, element.canvas.height)
+					// gradient.addColorStop(0, `rgba(${rgbColor.join(',')}, 0.3)`)
+					// gradient.addColorStop(0.5, `transparent`)
+					// gradient.addColorStop(1, `rgba(${rgbColor.join(',')}, 0.6)`)
+					// context.fillStyle = gradient
+					// context.fillRect(0, 0, element.canvas.width, element.canvas.height)
 				})
 				sync({index})
 			}).catch(() => control.remove(index))
@@ -250,7 +265,7 @@ const player = (() => {
 			element.progressBar.style.setProperty(`--progress-value`, progress % 1)
 		}
 	}
-	if ('mediaSession' in navigator) {
+	if('mediaSession' in navigator){
 		navigator.mediaSession.setActionHandler('play', () => audio.play())
 		navigator.mediaSession.setActionHandler('pause', () => audio.pause())
 		navigator.mediaSession.setActionHandler('previoustrack', () => control.previous())
@@ -370,25 +385,26 @@ const player = (() => {
 	
 })()
 
-const pickColor = url => {
+const loadImage = url => {
 	const image = new Image()
 	image.width = 480
 	image.height = 480
 	image.src = url
-	return new Promise((resolve, reject) => {
-		image.onload = () => {
-			// Palette.generate([image]).done(
-			// 	palette => {
-			// 		let accentColors = palette.getAccentColors()
-			// 		let color = (accentColors.vibrant || accentColors.muted || accentColors.darkVibrant || accentColors.darkMuted || accentColors.lightVibrant || accentColors.lightMuted)
-			// 		resolve(color)
-			// 	},
-			// 	error => {
-			// 		reject(error)
-			// 	}
-			// )
-			const color = (new ColorThief()).getColor(image)
-			resolve(color)
-		}
-	})
+	return new Promise((resolve, reject) => image.onload = () => resolve(image))
 }
+
+const pickColor = image =>
+	new Promise((resolve, reject) => {
+		// Palette.generate([image]).done(
+		// 	palette => {
+		// 		let accentColors = palette.getAccentColors()
+		// 		let color = (accentColors.vibrant || accentColors.muted || accentColors.darkVibrant || accentColors.darkMuted || accentColors.lightVibrant || accentColors.lightMuted)
+		// 		resolve(color)
+		// 	},
+		// 	error => {
+		// 		reject(error)
+		// 	}
+		// )
+		const color = (new ColorThief()).getColor(image)
+		resolve(color)
+	})

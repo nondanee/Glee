@@ -39,6 +39,13 @@ $ npm run package-win
 ![image](https://user-images.githubusercontent.com/26399680/50385326-d79f7900-070e-11e9-95da-0d5a905e4979.png)
 ![image](https://user-images.githubusercontent.com/26399680/63419659-c5a9dd80-c437-11e9-87e4-b9f300271561.png)
 
+## Credit
+- [lokesh/color-thief](https://github.com/lokesh/color-thief)
+- [marijnvdwerf/material-palette](https://github.com/marijnvdwerf/material-palette)
+- [Zazama/node-id3](https://github.com/Zazama/node-id3)
+- [flozz/StackBlur](https://github.com/flozz/StackBlur)
+- [sylveon/windows-swca](https://github.com/sylveon/windows-swca)
+
 ## License
 MIT
 
