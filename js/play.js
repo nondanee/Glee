@@ -58,9 +58,9 @@ const player = (() => {
 	}
 
 	const build = offset => {
-		let fragemnt = document.createDocumentFragment()
+		let fragment = document.createDocumentFragment()
 		list.slice(offset).forEach((song, number) => {
-			let entry = fragemnt.appendChild(createElement('div', 'entry'))
+			let entry = fragment.appendChild(createElement('div', 'entry'))
 			
 			let mat = entry.appendChild(createElement('div', 'mat'))
 			mat.onclick = () => {
@@ -91,7 +91,7 @@ const player = (() => {
 			
 			content.appendChild(createElement('div', 'duration').appendChild(createElement('div', 'text', secondFormatter(song.duration))))
 		})
-		return fragemnt
+		return fragment
 	}
 
 	const control = {
@@ -119,7 +119,7 @@ const player = (() => {
 			control.play()
 		},
 		locate: progress => {
-			let expectTime = audio.duration * progress
+			let expectTime = (isFinite(audio.duration) ? audio.duration : audio.period) * progress
 			let seekable = Array.from(Array(audio.seekable.length).keys()).some(index => audio.seekable.start(index) <= expectTime && expectTime <= audio.seekable.end(index))
 			if(seekable) audio.currentTime = expectTime
 		},
@@ -180,12 +180,20 @@ const player = (() => {
 				}
 
 				song.url = meta.url.replace(/(m\d+?)(?!c)\.music\.126\.net/, '$1c.music.126.net')
-				audio.src = song.url
-				if(immediate) audio.play()
+				
+				audio.url = song.url
+				audio.period = song.duration
+				loadAudio(audio, immediate)
+
+				// audio.src = song.url
+				// if(immediate) audio.play()
 
 				let cover = song.cover + '?param=360y360'
+				element.cover.url = cover
+				
 				loadImage(cover)
 				.then(image => {
+					if (element.cover.url !== cover) return Promise.reject('aborted')
 					let canvas = createElement('canvas')
 					canvas.height = image.naturalHeight
 					canvas.width = image.naturalWidth
@@ -209,6 +217,7 @@ const player = (() => {
 					// context.fillStyle = gradient
 					// context.fillRect(0, 0, element.canvas.width, element.canvas.height)
 				})
+				.catch(() => null)
 				sync({index})
 			}).catch(() => control.remove(index))
 		},
@@ -261,7 +270,7 @@ const player = (() => {
 		if(!isNaN(audio.duration) && !audio.paused){
 			let currentTime = audio.currentTime
 			if(!throttle(currentTime)) element.time.played.innerHTML = secondFormatter(currentTime)
-			let progress = currentTime / audio.duration
+			let progress = currentTime / (isFinite(audio.duration) ? audio.duration : audio.period)
 			element.progressBar.style.setProperty(`--progress-value`, progress % 1)
 		}
 	}
@@ -322,7 +331,7 @@ const player = (() => {
 			progress = progress > 1 ? 1 : progress
 			progress = progress < 0 ? 0 : progress
 
-			element.time.played.innerHTML = secondFormatter(audio.duration * progress)
+			element.time.played.innerHTML = secondFormatter((isFinite(audio.duration) ? audio.duration : audio.period) * progress)
 			element.progressBar.style.setProperty(`--progress-value`, progress)
 		}
 
@@ -381,9 +390,59 @@ const player = (() => {
 
 	init()
 
-	return {add: control.add, debug: () => list}
+	return {add: control.add, debug: () => list, audio}
 	
 })()
+
+const loadAudio = (audio, immediatePlay) => {
+	const url = audio.url
+	const mediaSource = new MediaSource()
+	audio.src = URL.createObjectURL(mediaSource)
+	
+	const sourceOpen = () => {
+		URL.revokeObjectURL(audio.src)
+		fragmentFetch()
+	}
+	mediaSource.onsourceopen = sourceOpen
+
+	let start = 0, total = Infinity
+	const fragment = 1.5 * 1024 ** 2
+
+	const fragmentFetch = () => {
+		if (start >= total) return Promise.resolve()
+		let initial = start === 0
+		let end = start + fragment
+		end = end < total ? end : total - 1
+		fetch(url, {headers: {Range: `bytes=${start}-${end}`}})
+		.then(response => {
+			if (url !== audio.url) return Promise.reject('aborted')
+			let length = parseInt(response.headers.get('Content-Length'))
+			let [range, size] = (response.headers.get('Content-Range') || '').replace(/bytes\s*/, '').split('/')
+			let cursor = parseInt(range.split('-').pop())
+			if (initial) {
+				mediaSource.addSourceBuffer(response.headers.get('Content-Type') || 'audio/mpeg')
+				total = size ? parseInt(size) : length
+			}
+			start = cursor ? cursor + 1 : start + length + 1
+			return response.arrayBuffer()
+		})
+		.then(arrayBuffer => {
+			let sourceBuffer = mediaSource.sourceBuffers[0]
+			sourceBuffer.onupdateend = () => {
+				sourceBuffer.onupdateend = null
+				if (initial && immediatePlay) audio.play()
+				if (end >= total - 1 && !sourceBuffer.updating && mediaSource.readyState === 'open') {
+					mediaSource.endOfStream()
+				}
+				else {
+					fragmentFetch()
+				}
+			}
+			sourceBuffer.appendBuffer(arrayBuffer)
+		})
+		.catch(() => null)
+	}
+}
 
 const loadImage = url => {
 	const image = new Image()
