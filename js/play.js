@@ -120,6 +120,7 @@ const player = (() => {
 		},
 		locate: progress => {
 			let expectTime = (isFinite(audio.duration) ? audio.duration : audio.period) * progress
+			// let seekable = true
 			let seekable = Array.from(Array(audio.seekable.length).keys()).some(index => audio.seekable.start(index) <= expectTime && expectTime <= audio.seekable.end(index))
 			if(seekable) audio.currentTime = expectTime
 		},
@@ -181,12 +182,12 @@ const player = (() => {
 
 				song.url = meta.url.replace(/(m\d+?)(?!c)\.music\.126\.net/, '$1c.music.126.net')
 				
-				audio.url = song.url
-				audio.period = song.duration
-				loadAudio(audio, immediate)
+				// audio.url = song.url
+				// audio.period = song.duration
+				// loadAudio(audio, immediate)
 
-				// audio.src = song.url
-				// if(immediate) audio.play()
+				audio.src = song.url
+				if(immediate) audio.play()
 
 				let cover = song.cover + '?param=360y360'
 				element.cover.url = cover
@@ -408,6 +409,10 @@ const loadAudio = (audio, immediatePlay) => {
 	let start = 0, total = Infinity
 	const fragment = 1.5 * 1024 ** 2
 
+	audio.onseeking = () => {
+		console.log(audio.currentTime)
+	}
+
 	const fragmentFetch = () => {
 		if (start >= total) return Promise.resolve()
 		let initial = start === 0
@@ -438,8 +443,9 @@ const loadAudio = (audio, immediatePlay) => {
 					fragmentFetch()
 				}
 			}
-			sourceBuffer.appendBuffer(arrayBuffer)
+			sourceBuffer.appendBuffer(arrayBuffer) // DOMException: Failed to execute 'appendBuffer' on 'SourceBuffer': The SourceBuffer is full, and cannot free space to append additional buffers.
 		})
+		.catch(console.error) // https://developers.google.com/web/updates/2017/10/quotaexceedederror
 		.catch(() => null)
 	}
 }
