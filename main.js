@@ -27,6 +27,39 @@ if(process.platform === 'win32'){
 	}
 }
 
+const send = action => mainWindow && mainWindow.webContents.send(action)
+const setThumbarButtons = play => mainWindow && mainWindow.setThumbarButtons(
+	['previous', play ? 'pause' : 'play', 'next'].map(key => thumbarButton[key])
+)
+
+const thumbarButton = {
+	previous: {
+		tooltip: '上一个',
+		icon: path.join(__dirname, 'resource', 'previous.png'),
+		click: () => send('previous')
+	},
+	next: {
+		tooltip: '下一个',
+		icon: path.join(__dirname, 'resource', 'next.png'),
+		click: () => send('next')
+	},
+	play: {
+		tooltip: '播放',
+		icon: path.join(__dirname, 'resource', 'play.png'),
+		click: () => send('play')
+	},
+	pause: {
+		tooltip: '暂停',
+		icon: path.join(__dirname, 'resource', 'pause.png'),
+		click: () => send('pause'),
+		// flags: ['hidden'] // 有 BUG, 无法更新
+	}
+}
+
+ipcMain
+.on('play', () => setThumbarButtons(true))
+.on('pause', () => setThumbarButtons(false))
+
 const createWindow = () => {
 
 	mainWindow = new BrowserWindow({
@@ -62,6 +95,7 @@ const createWindow = () => {
 
 
 	if(process.platform === 'win32') swca.SetWindowCompositionAttribute(mainWindow.getNativeWindowHandle(), 4, 0x10000000)
+	if(process.platform === 'win32') setThumbarButtons()
 
 	// mainWindow.webContents.openDevTools()
 

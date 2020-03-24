@@ -1,3 +1,5 @@
+const {ipcRenderer} = require('electron')
+
 const player = (() => {
 	const audio = new Audio()
 	let list = []
@@ -231,8 +233,8 @@ const player = (() => {
 		}
 	}
 
-	audio.onplay = () => button.play.className = 'pause'
-	audio.onpause = () => button.play.className = 'play'
+	audio.onplay = () => (button.play.className = 'pause', ipcRenderer.send('play'))
+	audio.onpause = () => (button.play.className = 'play', ipcRenderer.send('pause'))
 	audio.onended = () => {
 		if(cycle == 2){
 			control.play()
@@ -391,7 +393,7 @@ const player = (() => {
 
 	init()
 
-	return {add: control.add, debug: () => list, audio}
+	return {add: control.add, debug: () => list, audio, button}
 	
 })()
 
@@ -473,3 +475,9 @@ const pickColor = image =>
 		const color = (new ColorThief()).getColor(image)
 		resolve(color)
 	})
+
+ipcRenderer
+.on('previous', () => player.button.previous.click())
+.on('next', () => player.button.next.click())
+.on('play', () => player.button.play.click())
+.on('pause', () => player.button.play.click())
