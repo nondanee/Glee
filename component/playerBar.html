@@ -32,7 +32,7 @@
 <!-- playlist-item -->
 <template>
   <div class="entry">
-    <div class="mat"></div>
+    <div class="spot"></div>
     <div class="content">
       <div class="song"></div>
       <div class="artist"></div>
@@ -284,7 +284,7 @@
       data.forEach(song => {
         const node = this.template[1].content.cloneNode(true)
         const getElement = className => node.querySelector(`.${className}`)
-        getElement('mat').onclick = () => {
+        getElement('spot').onclick = () => {
           this.index = findIndex(song)
           this.play()
         }

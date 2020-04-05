@@ -379,17 +379,17 @@ button.download.ing {
 	border-bottom-width: 0;
 }
 
-.playlist .entry .mat {
+.playlist .entry .spot{
 	width: 100%;
 	height: 100%; 
 }
-.playlist .entry:hover .mat {
+.playlist .entry:hover .spot{
 	background-color: rgba(255, 255, 255, 0.05);
 }
-.playlist .entry .mat:active {
+.playlist .entry .spot:active {
 	background-color: rgba(255, 255, 255, 0.1);
 }
-.playlist .entry .mat:active + .content {
+.playlist .entry .spot:active + .content {
 	padding: 0 40px;
 	-webkit-transition: padding ease-out 0s;
 }

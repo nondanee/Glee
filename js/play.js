@@ -62,8 +62,8 @@ const player = (() => {
 		list.slice(offset).forEach((song, number) => {
 			let entry = fragment.appendChild(createElement('div', 'entry'))
 			
-			let mat = entry.appendChild(createElement('div', 'mat'))
-			mat.onclick = () => {
+			let spot= entry.appendChild(createElement('div', 'spot'))
+			spot.onclick = () => {
 				index = Array.from(element.playList.children).indexOf(entry)
 				control.play()
 			}
