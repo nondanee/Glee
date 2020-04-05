@@ -91,7 +91,7 @@ const player = (() => {
 			let album = content.appendChild(createElement('div', 'album')).appendChild(createElement('div', 'text', song.album.name))
 			album.onclick = () => {}
 			
-			content.appendChild(createElement('div', 'duration').appendChild(createElement('div', 'text', secondFormatter(song.duration))))
+			content.appendChild(createElement('div', 'duration').appendChild(createElement('div', 'text', formatSecond(song.duration))))
 		})
 		return fragment
 	}
@@ -170,8 +170,8 @@ const player = (() => {
 				element.name.setAttribute('name', song.name)
 				element.related.setAttribute('artist', song.artists.map(artist => artist.name).join('/'))
 				element.related.setAttribute('album', song.album.name)
-				element.time.played.innerHTML = secondFormatter()
-				element.time.total.innerHTML = secondFormatter(song.duration)
+				element.time.played.innerHTML = formatSecond()
+				element.time.total.innerHTML = formatSecond(song.duration)
 
 				if('mediaSession' in navigator){
 					navigator.mediaSession.metadata = new MediaMetadata({
@@ -206,10 +206,10 @@ const player = (() => {
 				})
 				.then(color => {
 					// let hslColor = color.getHsl()
-					let hslColor = colorConverter.rgbToHsl(color)
+					let hslColor = convertColor.RGB2HSL(color)
 					hslColor[1] = hslColor[1] > 0.8 ? 0.8 : hslColor[1]
 					hslColor[2] = hslColor[2] > 0.6 ? 0.6 : hslColor[2]
-					let rgbColor = colorConverter.hslToRgb(hslColor)
+					let rgbColor = convertColor.HSL2RGB(hslColor)
 					element.cover.style.backgroundImage = `url(${cover})`
 					element.playBar.style.setProperty('--theme-color', rgbColor.join(', '))
 					// let context = element.canvas.getContext('2d')
@@ -272,7 +272,7 @@ const player = (() => {
 	audio.ontimeupdate = () => {
 		if(!isNaN(audio.duration) && !audio.paused){
 			let currentTime = audio.currentTime
-			if(!throttle(currentTime)) element.time.played.innerHTML = secondFormatter(currentTime)
+			if(!throttle(currentTime)) element.time.played.innerHTML = formatSecond(currentTime)
 			let progress = currentTime / (isFinite(audio.duration) ? audio.duration : audio.period)
 			element.progressBar.style.setProperty(`--progress-value`, progress % 1)
 		}
@@ -334,7 +334,7 @@ const player = (() => {
 			progress = progress > 1 ? 1 : progress
 			progress = progress < 0 ? 0 : progress
 
-			element.time.played.innerHTML = secondFormatter((isFinite(audio.duration) ? audio.duration : audio.period) * progress)
+			element.time.played.innerHTML = formatSecond((isFinite(audio.duration) ? audio.duration : audio.period) * progress)
 			element.progressBar.style.setProperty(`--progress-value`, progress)
 		}
 

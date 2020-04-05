@@ -16,14 +16,14 @@ const extractor = {
 		id: album.id,
 		name: album.name,
 		cover: album.picUrl,
-		description: dateFormatter(album.publishTime)
+		description: formatDate(album.publishTime)
 	}),
 	playlist: playlist => ({
 		type: 'playlist',
 		id: playlist.id,
 		name: playlist.name,
 		cover: playlist.coverImgUrl || playlist.picUrl,
-		description: numberFormatter(playlist.playCount) //updateTime
+		description: formatNumber(playlist.playCount) //updateTime
 	}),
 	song: song => ({
 		type: 'song',

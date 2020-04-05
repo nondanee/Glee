@@ -8,7 +8,7 @@ const createElement = (tagName, className, innerHTML) => {
 	return element
 }
 
-const dateFormatter = timestamp => {
+const formatDate = timestamp => {
 	if (!timestamp) return ''
 	let date = new Date(timestamp)
 	let year = date.getFullYear()
@@ -17,14 +17,14 @@ const dateFormatter = timestamp => {
 	return `${year}.${month}.${day}`
 }
 
-const numberFormatter = number => {
+const formatNumber = number => {
 	if (number / 100000 >= 1)
 		return parseInt(number / 10000) + '万'
 	else
 		return parseInt(number)
 }
 
-const secondFormatter = value => {
+const formatSecond = value => {
 	if(isNaN(value)) return '0:00'
 	let minute = Math.floor(value / 60)
 	let second = Math.floor(value - minute * 60)
@@ -32,8 +32,8 @@ const secondFormatter = value => {
 	return minute.toString() + ':' + second
 }
 
-const colorConverter = {
-	rgbToHsl: color => {
+const convertColor = {
+	RGB2HSL: color => {
 		let r = color[0] / 255, g = color[1] / 255, b = color[2] / 255
 		let max = Math.max(r, g, b)
 		let min = Math.min(r, g, b)
@@ -47,7 +47,7 @@ const colorConverter = {
 		let s = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1))
 		return [h * 60, s, l]
 	},
-	hslToRgb: color => {
+	HSL2RGB: color => {
 		let h = color[0], s = color[1], l = color[2]
 		let c = (1 - Math.abs(2 * l - 1)) * s
 		let hp = h / 60.0
