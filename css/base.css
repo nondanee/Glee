@@ -1,16 +1,16 @@
-html,body{
+html, body {
 	margin: 0;
 	width: 100%;
 	height: 100%;
 }
-body{
+body {
 	display: flex;
 	font-family: 'Noble Scarlet';
 	-webkit-user-select: none;
 	overflow: hidden;
 }
 
-::-webkit-scrollbar{  
+::-webkit-scrollbar {
 	width: 0px;
 	height: 0px;
 }
@@ -20,11 +20,11 @@ body{
 ::-webkit-scrollbar-thumb {
 	background-color: rgba(0,0,0,0.2);
 }
-::-webkit-scrollbar-thumb:hover{
+::-webkit-scrollbar-thumb:hover {
 	background-color: rgba(0,0,0,0.3);
 }
 
-button{
+button {
 	-webkit-app-region: no-drag;
 	display: block;
 	margin: 0;
@@ -36,77 +36,77 @@ button{
 	color: inherit;
 }
 
-button.add::after{
+button.add::after {
 	content: '\e710';
 }
-button.remove::after{
+button.remove::after {
 	content: '\e711';
 }
 
-button.play::after{
+button.play::after {
 	content: '\e768';
 }
-button.pause::after{
+button.pause::after {
 	content: '\e769';
 }
-button.previous::after{
+button.previous::after {
 	content: '\e892';
 }
-button.next::after{
+button.next::after {
 	content: '\e893';
 }
-button.random::after{
+button.random::after {
 	content: '\e8b1';
 }
-button.cycle::after{
+button.cycle::after {
 	content: '\e8ee';
 }
-button.cycle.single::after{
+button.cycle.single::after {
 	content: '\e8ed';
 }
-button.list::after{
+button.list::after {
 	content: '\e93f';
 }
-button.fullscreen::after{
+button.fullscreen::after {
 	content: '\e740';
 }
-button.fullscreen.on::after{
+button.fullscreen.on::after {
 	content: '\e73f';
 }
-button.download::after{
+button.download::after {
 	content: '\e896';
 }
-button.fold::after{
+button.fold::after {
 	content: '\e70d';
 }
 
-button.close::after{
+button.close::after {
 	content: '\e711';
 }
-button.minimize::after{
+button.minimize::after {
 	content: '\e738';
 }
-button.back::after{
+button.back::after {
 	content: '\e72b';
 }
-button.search::after{
+button.search::after {
 	content: '\e721';
 }
-button.explore::after{
+button.explore::after {
 	content: '\e942';
 }
-button.user::after{
+button.user::after {
 	content: '\e940';
 }
-button.playlist::after{
+button.playlist::after {
 	content: '\e90b';
 }
-button.album:after{
+button.album:after {
 	content:'\e93c';
 }
-button.artist::after{
+button.artist::after {
 	content: '\e77b';
 }
-button.setting::after{
+button.setting::after {
 	content:'\e713';
 }
