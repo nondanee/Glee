@@ -11,6 +11,8 @@ const package = require('./package.json')
 // app.commandLine.appendSwitch('global-media-controls', true)
 // app.commandLine.appendSwitch('proxy-server', '127.0.0.1:1080')
 
+// app.commandLine.appendSwitch('disable-blink-features', 'ShadowDOMV0,CustomElementsV0,HTMLImports')
+
 // 保持一个对于 window 对象的全局引用，如果你不这样做，
 // 当 JavaScript 对象被垃圾回收， window 会被自动地关闭
 let mainWindow

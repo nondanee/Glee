@@ -6,6 +6,19 @@ const maintab = document.getElementById("maintab")
 const subtab = document.getElementById("subtab")
 const mainTabs = maintab.getElementsByTagName("li")
 
+
+const player = document.querySelector('player-bar')
+
+player.addEventListener('play', () => ipcRenderer.send('play'))
+player.addEventListener('pause', () => ipcRenderer.send('pause'))
+
+ipcRenderer
+.on('previous', () => player.previous())
+.on('next', () => player.next())
+.on('play', () => player.resume())
+.on('pause', () => player.pause())
+
+
 let reachBottom = () => {}
 let loading = false
 container.onscroll = () => {

@@ -1,0 +1,483 @@
+<!-- player-bar -->
+<template>
+<link rel="stylesheet" type="text/css" href="css/base.css">
+<link rel="stylesheet" type="text/css" href="css/playbar.css">
+  <div class="playbar">
+    <div class="blur"></div>
+
+    <div class="mediainfo">
+      <div class="cover"></div>
+      <div class="text">
+        <a class="name"></a>
+        <a class="related"></a>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="time played">--:--</div>
+      <div class="progressbar">
+        <div class="filler played"></div>
+        <div class="cursor"></div>
+        <div class="filler unplayed"></div>
+      </div>
+      <div class="time total">--:--</div>
+    </div>
+
+    <div class="controller"></div>
+    <div class="playlist"></div>
+    <div class="drag"></div>
+  </div>
+</template>
+
+<!-- playlist-item -->
+<template>
+  <div class="entry">
+    <div class="mat"></div>
+    <div class="content">
+      <div class="song"></div>
+      <div class="artist"></div>
+      <div class="album"></div>
+      <div class="duration"></div>
+    </div>
+  </div>
+</template>
+
+<script type="text/javascript">
+  class PlayerBar extends HTMLElement {
+    constructor() {
+      super()
+      this.mount()
+      this.setup()
+      this.restore()
+      this.addListener()
+      this.setAction()
+      this.bindKey()
+    }
+
+    save = keys =>
+      keys.forEach(key =>
+        localStorage.setItem(key, typeof(this[key]) === 'object' ? JSON.stringify(this[key]) : this[key])
+      )
+
+    restore = () => {
+      this.add(JSON.parse(localStorage.getItem('list') || '[]'), false)
+      this.index = parseInt(localStorage.getItem('index'), 10)
+      this.play(false)
+      this.setRandom(localStorage.getItem('random') === 'true')
+      this.setCycle(parseInt(localStorage.getItem('cycle')) || 0)
+    }
+
+    mount = () => {
+      this.attachShadow({ mode: 'open' })
+      this.emit = (name, payload) => this.dispatchEvent(new CustomEvent(name, payload))
+      this.template = document.currentScript.ownerDocument.querySelectorAll('template')
+      const content = this.template[0].content.cloneNode(true)
+      this.shadowRoot.appendChild(content)
+    }
+
+    setup = () => {
+      const getElement = className => this.shadowRoot.querySelector(
+        className.split(/\s+/).map(key => `.${key}`).join('')
+      )
+
+      const createButton = className => createElement('button', className)
+
+      this.audio = new Audio()
+      this.list = []
+      this.index = 0
+      this.random = false
+      this.cycle = 0
+
+      this.element = {
+        playBar: getElement('playbar'),
+        mediaInfo: getElement('mediainfo'),
+        timeLine: getElement('timeline'),
+        progressBar: getElement('progressbar'),
+        playList: getElement('playlist'),
+
+        name: getElement('name'),
+        related: getElement('related'),
+        blur: getElement('blur'),
+        cover: getElement('cover'),
+        cursor: getElement('cursor'),
+
+        time: {
+          played: getElement('time played'),
+          total: getElement('time total'),
+        },
+        filler: {
+          played: getElement('filler played'),
+          unplayed: getElement('filler unplayed'),
+        },
+
+        controller: getElement('controller'),
+        drag: getElement('drag')
+      }
+
+      this.button = {
+        previous: createButton('previous'),
+        play: createButton('play'),
+        next: createButton('next'),
+        random: createButton('random'),
+        cycle: createButton('cycle'),
+        fold: createButton('fold'),
+        list: createButton('list'),
+        download: createButton('download'),
+        fullscreen: createButton('fullscreen')
+      }
+
+      this.element.drag.appendChild(this.button.fold)
+      Array.from(['previous', 'play', 'next', 'random', 'cycle', 'list', 'download', 'fullscreen'])
+        .forEach(key => this.element.controller.appendChild(this.button[key]))
+
+    }
+
+    addListener = () => {
+      const { element, button, audio, cycle, random, list, index } = this
+
+      audio.onplay = () => (button.play.className = 'pause', this.emit('play'))
+      audio.onpause = () => (button.play.className = 'play', this.emit('pause'))
+      audio.onended = () => {
+        if (cycle === 2) {
+          this.play()
+        }
+        else if (random) {
+          while (true) {
+            const choice = Math.floor(Math.random() * list.length)
+            if (choice != index)
+              break
+          }
+          this.index = choice
+          this.play()
+        }
+        else if (cycle === 0) {
+          if (index + 1 !== list.length) {
+            this.next()
+          }
+          else {
+            audio.currentTime = 0
+          }
+        }
+        else if (cycle === 1) {
+          this.next()
+        }
+      }
+
+      const throttle = (() => {
+        let previous = NaN
+        return time => {
+          time = parseInt(time)
+          const suspend = time == previous
+          previous = time
+          return suspend
+        }
+      })()
+
+      audio.ontimeupdate = () => {
+        if (!isNaN(audio.duration)) {
+          const currentTime = audio.currentTime
+          if(!throttle(currentTime)) element.time.played.innerHTML = formatSecond(currentTime)
+          const progress = currentTime / audio.duration
+          element.progressBar.style.setProperty(`--progress-value`, progress % 1)
+        }
+      }
+
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.setActionHandler('play', () => audio.play())
+        navigator.mediaSession.setActionHandler('pause', () => audio.pause())
+        navigator.mediaSession.setActionHandler('previoustrack', () => this.previous())
+        navigator.mediaSession.setActionHandler('nexttrack', () => this.next())
+      }
+      
+      BrowserWindow.getFocusedWindow()
+      .on('enter-full-screen', () => button.fullscreen.classList.add('on'))
+      .on('leave-full-screen', () => button.fullscreen.classList.remove('on'))
+    }
+
+    bindKey = () => {
+      const { button } = this
+
+      document.addEventListener('keydown', event => {
+        const { ctrlKey, keyCode } = event
+        let prevent = true
+        if (keyCode === 27) this.setFullScreen(fasle)
+        else if (keyCode == 32) button.play.click()
+        else if (ctrlKey && keyCode == 37) this.previous()
+        else if (ctrlKey && keyCode == 39) this.next()
+        else prevent = false
+
+        if (prevent) event.preventDefault()
+      }, false)
+    }
+
+    setAction = () => {
+      const { element, button, audio } = this
+
+      const action = {
+        fold: () => element.playBar.classList.remove('extend', 'list'),
+        list: () => {
+          if (!element.playBar.classList.contains('list')) {
+            element.playBar.classList.add('list')
+            const playing = element.playList.querySelector('.playing')
+            if (playing) element.playList.scrollTop = playing.offsetTop
+          }
+          else if (element.playBar.classList.contains('list')) {
+            element.playBar.classList.remove('list')
+          }
+        },
+        play: () => audio.src && this[audio.paused ? 'resume': 'pause'](),
+        cycle: () => this.setCycle(),
+        random: () => this.setRandom(),
+        fullscreen: () => this.setFullScreen(),
+        previous: this.previous,
+        next: this.next,
+        download: this.download,
+      }
+
+      Object.keys(action).forEach(key => button[key].onclick = action[key])
+
+      element.mediaInfo.onclick = () => {
+        element.playBar.classList.contains('list')
+          ? element.playBar.classList.remove('list')
+          : element.playBar.classList.add('extend')
+      }
+
+      element.progressBar.onmousedown = event => {
+        const cursorWidth = element.cursor.offsetWidth
+        const maxWidth = element.progressBar.offsetWidth - cursorWidth
+        const offsetLeft = element.progressBar.offsetLeft + element.timeLine.offsetLeft
+        let progress = null
+        
+        const follow = clientX => {
+          progress = (clientX - offsetLeft - cursorWidth / 2) / maxWidth
+          progress = progress > 1 ? 1 : progress
+          progress = progress < 0 ? 0 : progress
+
+          element.time.played.innerHTML = formatSecond(audio.duration * progress)
+          element.progressBar.style.setProperty(`--progress-value`, progress)
+        }
+
+        let paused = true
+        if (!audio.paused) {
+          this.pause()
+          paused = false
+        }
+
+        follow(event.clientX)
+        
+        document.onmousemove = event => follow(event.clientX)
+        document.onmouseup = () => {
+          this.seek(progress * audio.duration)
+          if (!paused) this.resume()
+          document.onmousemove = null
+          document.onmouseup = null
+        }
+      }
+    }
+
+    renderList = list => {
+      const data = list == null ? this.list : list
+      const fragment = document.createDocumentFragment()
+      const createText = string => createElement('div', 'text', string)
+      const findIndex = target => this.list.findIndex(item => item.id === target.id)
+
+      data.forEach(song => {
+        const node = this.template[1].content.cloneNode(true)
+        const getElement = className => node.querySelector(`.${className}`)
+        getElement('mat').onclick = () => {
+          this.index = findIndex(song)
+          this.play()
+        }
+
+        const songElement = getElement('song')
+        songElement.appendChild(createText(song.name))
+        songElement.appendChild(createElement('button', 'play')).onclick = () => {
+          this.index = findIndex(song)
+          this.play()
+        }
+        songElement.appendChild(createElement('button', 'remove')).onclick = () => {
+          this.remove(findIndex(song))
+        }
+
+        const artistElement = getElement('artist')
+        song.artists.forEach(artist => {
+          artistElement.appendChild(createText(artist.name)).onclick = () => null
+        })
+
+        getElement('album').appendChild(createText(song.album.name)).onclick = () => null
+        getElement('duration').appendChild(createText(formatSecond(song.duration)))
+
+        fragment.appendChild(node)
+      })
+
+      this.element.playList.appendChild(fragment)
+    }
+
+    pause = () => {
+      const { audio } = this
+      if (audio.src && !audio.paused) audio.pause()
+    }
+
+    resume = () => {
+      const { audio } = this
+      if (audio.src && audio.paused) audio.play()
+    }
+
+    previous = () => {
+      const { audio, index, cycle, list } = this
+      if (audio.currentTime > 2) {
+        audio.currentTime = 0
+      }
+      else if (index == 0 && cycle == 0) {
+        audio.currentTime = 0
+        this.pause()
+      }
+      else {
+        this.index = (index - 1 + list.length) % list.length
+        this.play()
+      }
+    }
+
+    next = () => {
+      const { index, list } = this
+      this.index = (index + 1) % list.length
+      this.play()
+    }
+
+    seek = expectTime => {
+      const { audio } = this
+      const seekable = Array.from(Array(audio.seekable.length).keys())
+        .some(index => audio.seekable.start(index) <= expectTime && expectTime <= audio.seekable.end(index))
+      if (seekable) audio.currentTime = expectTime
+    }
+
+    clean = () => {
+      this.list = []
+      this.index = 0
+      this.element.playList.innerHTML = ''
+      this.save(['list', 'index'])
+    }
+
+    add = (part, cover = true) => {
+      if (cover) this.clean()
+      const { list } = this
+      part = part.filter(item => item.state)
+      let length = list.length
+      this.list = list.concat(part)
+      this.renderList(this.list.slice(length))
+      if (cover) this.play()
+      this.save(['list'])
+    }
+
+    remove = position => {
+      const { list, element, index } = this
+      list.splice(position, 1)
+      element.playList.removeChild(element.playList.children[position])
+      if (position < index) this.index = index - 1
+      else if (position == index) this.play()
+      this.save(['list', 'index'])
+    }
+
+    setRandom = value => {
+      const { button, random } = this
+      if (value === random) return
+      this.random = value == null ? !random : value
+      button.random.title = this.random ? '随机播放:打开' : '随机播放:关闭'
+      button.random.className = 'random' + ' ' + (this.random ? 'on' : 'off')
+      this.save(['random'])
+    }
+
+    setCycle = value => {
+      const { button, cycle } = this
+      if (value === cycle) return
+      this.cycle = value == null ? (cycle + 1) % 3 : value
+      button.cycle.title = ['重复播放:关闭', '重复播放:全部', '重复播放:单曲'][this.cycle]
+      button.cycle.className = 'cycle' + ' ' +  ['off', 'all', 'single'][this.cycle]
+      this.save(['cycle'])
+    }
+
+    setFullScreen = value => {
+      const focusedWindow = BrowserWindow.getFocusedWindow()
+      const isFullScreen = focusedWindow.isFullScreen()
+      if (value === isFullScreen) return
+      focusedWindow.setFullScreen(value == null ? !isFullScreen : value)
+    }
+
+    play = (immediate = true) => {
+      const { element, audio, list, index } = this
+      if (!list.length) return
+      const song = list[index]
+      this.save(['index'])
+
+      track.url(song.id)
+      .then(meta => {
+        Array.from(element.playList.children).forEach(item => item.classList.remove('playing'))
+        const current = element.playList.children[index]
+        if (current) current.classList.add('playing')
+
+        element.name.setAttribute('name', song.name)
+        element.related.setAttribute('artist', song.artists.map(artist => artist.name).join('/'))
+        element.related.setAttribute('album', song.album.name)
+        element.time.played.innerHTML = formatSecond()
+        element.time.total.innerHTML = formatSecond(song.duration)
+
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: song.name,
+            artist: song.artists.map(artist => artist.name).join(' / '),
+            album: song.album.name,
+            artwork: [{ src: song.cover + '?param=200y200',  sizes: '200x200', type: 'image/jpeg' }]
+          })
+        }
+
+        song.url = meta.url.replace(/(m\d+?)(?!c)\.music\.126\.net/, '$1c.music.126.net')
+        audio.src = song.url
+
+        if (immediate) audio.play()
+
+        const cover = song.cover + '?param=360y360'
+        element.cover.url = cover
+        
+        loadImage(cover)
+        .then(image => {
+          if (element.cover.url !== cover) return Promise.reject('aborted')
+          const canvas = createElement('canvas')
+          canvas.height = image.naturalHeight
+          canvas.width = image.naturalWidth
+          StackBlur.image(image, canvas, 20)
+          element.blur.style.backgroundImage = `url(${canvas.toDataURL()})`
+          return pickColor(image)
+        })
+        .then(color => {
+          const hslColor = convertColor.RGB2HSL(color)
+          hslColor[1] = hslColor[1] > 0.8 ? 0.8 : hslColor[1]
+          hslColor[2] = hslColor[2] > 0.6 ? 0.6 : hslColor[2]
+          const rgbColor = convertColor.HSL2RGB(hslColor)
+          element.cover.style.backgroundImage = `url(${cover})`
+          element.playBar.style.setProperty('--theme-color', rgbColor.join(', '))
+          // const context = element.canvas.getContext('2d')
+          // const gradient = context.createLinearGradient(0, 0, 0, element.canvas.height)
+          // gradient.addColorStop(0, `rgba(${rgbColor.join(',')}, 0.3)`)
+          // gradient.addColorStop(0.5, `transparent`)
+          // gradient.addColorStop(1, `rgba(${rgbColor.join(',')}, 0.6)`)
+          // context.fillStyle = gradient
+          // context.fillRect(0, 0, element.canvas.width, element.canvas.height)
+        })
+        .catch(() => null)
+      })
+      .catch(e => this.remove(index))
+    }
+
+    download = () => {
+      const { button, list, index } = this
+      if (!list.length) return
+      if (button.download.classList.contains('ing')) return
+      const song = list[index]
+      button.download.classList.add('ing')
+      require('./js/download.js')(song).catch().then(() => button.download.classList.remove('ing'))
+    }
+
+  }
+
+  window.customElements.define('player-bar', PlayerBar)
+</script>

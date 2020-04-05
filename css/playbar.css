@@ -426,7 +426,7 @@ button.download.ing {
 	width: 28%;
 }
 .playlist .duration {
-	width: 4%;
+	flex: none;
 	text-align: right;
 }
 .playlist .entry button {
