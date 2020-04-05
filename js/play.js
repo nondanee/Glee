@@ -1,5 +1,3 @@
-const {ipcRenderer} = require('electron')
-
 const player = (() => {
 	const audio = new Audio()
 	let list = []

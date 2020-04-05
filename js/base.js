@@ -1,5 +1,5 @@
-const remote = require('electron').remote
-const BrowserWindow = remote.BrowserWindow
+const { remote, ipcRenderer } = require('electron')
+const { BrowserWindow } = remote
 
 const createElement = (tagName, className, innerHTML) => {
 	let element = document.createElement(tagName)
