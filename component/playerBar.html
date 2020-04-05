@@ -133,11 +133,12 @@
     }
 
     addListener = () => {
-      const { element, button, audio, cycle, random, list, index } = this
+      const { element, button, audio } = this
 
       audio.onplay = () => (button.play.className = 'pause', this.emit('play'))
       audio.onpause = () => (button.play.className = 'play', this.emit('pause'))
       audio.onended = () => {
+        const { cycle, random, list, index } = this
         if (cycle === 2) {
           this.play()
         }
@@ -183,8 +184,8 @@
       }
 
       if ('mediaSession' in navigator) {
-        navigator.mediaSession.setActionHandler('play', () => audio.play())
-        navigator.mediaSession.setActionHandler('pause', () => audio.pause())
+        navigator.mediaSession.setActionHandler('play', () => this.resume())
+        navigator.mediaSession.setActionHandler('pause', () => this.pause())
         navigator.mediaSession.setActionHandler('previoustrack', () => this.previous())
         navigator.mediaSession.setActionHandler('nexttrack', () => this.next())
       }
@@ -370,7 +371,7 @@
     }
 
     remove = position => {
-      const { list, element, index } = this
+      const { element, list, index } = this
       list.splice(position, 1)
       element.playList.removeChild(element.playList.children[position])
       if (position < index) this.index = index - 1
