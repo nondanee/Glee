@@ -68,3 +68,27 @@ const colorConverter = {
 		]
 	}
 }
+
+const loadImage = url => {
+	const image = new Image()
+	image.width = 480
+	image.height = 480
+	image.src = url
+	return new Promise((resolve, reject) => image.onload = () => resolve(image))
+}
+
+const pickColor = image =>
+	new Promise((resolve, reject) => {
+		// Palette.generate([image]).done(
+		// 	palette => {
+		// 		let accentColors = palette.getAccentColors()
+		// 		let color = (accentColors.vibrant || accentColors.muted || accentColors.darkVibrant || accentColors.darkMuted || accentColors.lightVibrant || accentColors.lightMuted)
+		// 		resolve(color)
+		// 	},
+		// 	error => {
+		// 		reject(error)
+		// 	}
+		// )
+		const color = (new ColorThief()).getColor(image)
+		resolve(color)
+	})
