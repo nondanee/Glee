@@ -361,9 +361,9 @@
 
     add = (part, cover = true) => {
       if (cover) this.clean()
-      const { list } = this
       part = part.filter(item => item.state)
-      let length = list.length
+      const { list } = this
+      const { length } = list
       this.list = list.concat(part)
       this.renderList(this.list.slice(length))
       if (cover) this.play()
