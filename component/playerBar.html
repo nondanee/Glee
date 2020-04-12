@@ -201,7 +201,7 @@
       document.addEventListener('keydown', event => {
         const { ctrlKey, keyCode } = event
         let prevent = true
-        if (keyCode === 27) this.setFullScreen(fasle)
+        if (keyCode === 27) this.setFullScreen(false)
         else if (keyCode == 32) button.play.click()
         else if (ctrlKey && keyCode == 37) this.previous()
         else if (ctrlKey && keyCode == 39) this.next()
