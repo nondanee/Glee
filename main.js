@@ -4,7 +4,7 @@ const crypto = require('crypto')
 const url = require('url')
 const os = require('os')
 const childProcess = require('child_process')
-const package = require('./package.json')
+const manifest = require('./package.json')
 // app.commandLine.appendSwitch('enable-experimental-web-platform-features', true)
 // app.commandLine.appendSwitch('enable-media-session-service', true)
 // app.commandLine.appendSwitch('hardware-media-key-handling', true)
@@ -18,7 +18,10 @@ const package = require('./package.json')
 let mainWindow
 const taskbarIcon = path.join(__dirname, '/resource/glee.png')
 const dockIcon = path.join(__dirname, '/resource/dock.png')
-const swca = require('windows-swca')
+
+let swca = {}
+try { swca = require('windows-swca') } catch(e) {}
+const setWindowAttribute = swca.SetWindowCompositionAttribute
 
 if(process.platform === 'win32'){
 	cookie = {
@@ -74,14 +77,14 @@ const createWindow = () => {
 		frame: false,
 		thickFrame: true,
 		transparent: false,
-		backgroundColor: '#00000000',
+		backgroundColor: setWindowAttribute ? '#00000000' : '#bbbbbb',
 
 		webPreferences: {
 			nodeIntegration: true,
 			experimentalFeatures: true
 		},
 
-		title: package.name,
+		title: manifest.name,
 		icon: taskbarIcon
 	})
 
@@ -96,7 +99,7 @@ const createWindow = () => {
 	}))
 
 
-	if(process.platform === 'win32') swca.SetWindowCompositionAttribute(mainWindow.getNativeWindowHandle(), 4, 0x10000000)
+	if(process.platform === 'win32' && setWindowAttribute) setWindowAttribute(mainWindow.getNativeWindowHandle(), 4, 0x10000000)
 	if(process.platform === 'win32') setThumbarButtons()
 
 	// mainWindow.webContents.openDevTools()
@@ -104,7 +107,7 @@ const createWindow = () => {
 	// Filter sensitive text from default User-Agent
 	mainWindow.webContents.setUserAgent(
 		mainWindow.webContents.getUserAgent().split(' ').filter(
-			fragment => [package.name, 'Electron'].every(sensitive => !fragment.startsWith(sensitive))
+			fragment => [manifest.name, 'Electron'].every(sensitive => !fragment.startsWith(sensitive))
 		).join(' ')
 	)
 

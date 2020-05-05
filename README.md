@@ -31,7 +31,7 @@ Built by Electron, Vanilla JS, Plain CSS
 ```
 $ npm install
 $ npm start
-$ npm run package-win
+$ npm run package:win
 ```
 
 ## Preview

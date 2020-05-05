@@ -15,9 +15,9 @@
   "scripts": {
     "postinstall": "electron-rebuild",
     "start": "electron .",
-    "package-win": "electron-packager . --platform=win32 --arch=x64 --icon=./resource/glee.ico --out=./dist --overwrite=true",
-    "package-mac": "electron-packager . --platform=darwin --arch=all --icon=./resource/glee.icns --out=./dist --overwrite=true",
-    "package-linux": "electron-packager . --platform=linux --arch=x64 --icon=./resource/glee.png --out=./dist --overwrite=true"
+    "package:win": "electron-packager . --platform=win32 --arch=x64 --icon=./resource/glee.ico --out=./dist --overwrite=true",
+    "package:mac": "electron-packager . --platform=darwin --arch=all --icon=./resource/glee.icns --out=./dist --overwrite=true",
+    "package:linux": "electron-packager . --platform=linux --arch=x64 --icon=./resource/glee.png --out=./dist --overwrite=true"
   },
   "build": {
     "appId": "com.nondanee.glee"
