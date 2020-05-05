@@ -29,7 +29,9 @@
   },
   "dependencies": {
     "@webcomponents/html-imports": "^1.2.4",
-    "node-id3": "^0.1.11",
+    "node-id3": "^0.1.11"
+  },
+  "optionalDependencies": {
     "windows-swca": "^2.0.2"
   }
 }
