@@ -145,11 +145,12 @@
         else if (random) {
           while (true) {
             const choice = Math.floor(Math.random() * list.length)
-            if (choice != index)
+            if (choice !== index) {
+              this.index = choice
+              this.play()
               break
+            }
           }
-          this.index = choice
-          this.play()
         }
         else if (cycle === 0) {
           if (index + 1 !== list.length) {
@@ -217,13 +218,13 @@
       const action = {
         fold: () => element.playBar.classList.remove('extend', 'list'),
         list: () => {
-          if (!element.playBar.classList.contains('list')) {
+          if (element.playBar.classList.contains('list')) {
+            element.playBar.classList.remove('list')
+          }
+          else {
             element.playBar.classList.add('list')
             const playing = element.playList.querySelector('.playing')
             if (playing) element.playList.scrollTop = playing.offsetTop
-          }
-          else if (element.playBar.classList.contains('list')) {
-            element.playBar.classList.remove('list')
           }
         },
         play: () => audio.src && this[audio.paused ? 'resume': 'pause'](),
@@ -427,7 +428,7 @@
             title: song.name,
             artist: song.artists.map(artist => artist.name).join(' / '),
             album: song.album.name,
-            artwork: [{ src: song.cover + '?param=200y200',  sizes: '200x200', type: 'image/jpeg' }]
+            artwork: [{ src: song.cover + '?param=200y200', sizes: '200x200', type: 'image/jpeg' }]
           })
         }
 
@@ -471,8 +472,7 @@
 
     download = () => {
       const { button, list, index } = this
-      if (!list.length) return
-      if (button.download.classList.contains('ing')) return
+      if (!list.length || button.download.classList.contains('ing')) return
       const song = list[index]
       button.download.classList.add('ing')
       require('./js/download.js')(song).catch().then(() => button.download.classList.remove('ing'))
