@@ -33,3 +33,9 @@ jobs:
       -
         name: Check output
         run: ls ./dist/Glee-win32-x64/
+      - 
+        name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Glee-windows
+          path: ./dist/Glee-win32-x64/
