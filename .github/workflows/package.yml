@@ -34,16 +34,9 @@ jobs:
       -
         name: Check output
         run: ls ./dist/Glee-win32-x64/
-      -
-        name: Compress output
-        run: Compress-Archive -Path ./dist/Glee-win32-x64/* -DestinationPath ./dist/Glee-win32-x64.zip
-        shell: powershell
-      -
-        name: Show size
-        run: ls ./dist/
       - 
         name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: Glee-windows.zip
-          path: ./dist/Glee-win32-x64.zip
+          name: Glee-windows
+          path: ./dist/Glee-win32-x64/
