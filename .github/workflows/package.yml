@@ -1,0 +1,35 @@
+name: package
+
+on: [push]
+
+jobs:
+  windows:
+    runs-on: windows-2016
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2      
+      -
+        name: Setup Node.js
+        uses: actions/setup-node@master
+      -
+        name: Install windows-build-tools
+        run: npm i -g --production windows-build-tools@4.0.0
+      -
+        name: Install node-gyp
+        run: npm i -g node-gyp@latest
+      -
+        name: Config python version
+        run: npm config set python python2.7
+      - 
+        name: Config msvs version
+        run: npm config set msvs_version 2015
+      -
+        name: Install dependencies
+        run: npm i
+      -
+        name: Run package
+        run: npm run package:win
+      -
+        name: Check output
+        run: ls ./dist/Glee-win32-x64/
