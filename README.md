@@ -1,7 +1,7 @@
 <img src="resource/dock.png" alt="logo" width="144" height="144" align="right" />
 
 
-# Glee
+# Glee [![](https://github.com/nondanee/Glee/workflows/package/badge.svg)](https://github.com/nondanee/Glee/actions?query=workflow:package)
 Built by Electron, Vanilla JS, Plain CSS
 
 *The logo is a rebound of [Music Service Branding - G](https://dribbble.com/shots/1203920-Music-Service-Branding-G) by [Zack McBride](https://dribbble.com/zMcBride) in [Dribbble](https://dribbble.com/)*
