@@ -12,12 +12,23 @@ jobs:
       -
         name: Setup Node.js
         uses: actions/setup-node@master
+      # -
+      #   name: Cache global dependencies
+      #   uses: actions/cache@v1
+      #   with:
+      #     path: node_modules
+      #     key: ${{ runner.OS }}-npm-global-cache
+      #     restore-keys: |
+      #       ${{ runner.OS }}-npm-global-cache
       -
         name: Install windows-build-tools
         run: npm i -g --production windows-build-tools@4.0.0
       -
         name: Install node-gyp
         run: npm i -g node-gyp@latest
+      -
+        name: Check global dependencies
+        run: npm list -g --depth 0
       -
         name: Config python version
         run: npm config set python python2.7
