@@ -47,7 +47,7 @@ const display = {
 				limit: size,
 				offset: 0
 			}
-			
+
 			return {
 				next: () => {
 					if (!more) return Promise.resolve([])
@@ -68,7 +68,7 @@ const display = {
 				limit: size,
 				lasttime: 0
 			}
-		
+
 			return {
 				next: () => {
 					if (!more) return Promise.resolve([])
@@ -88,7 +88,7 @@ const display = {
 				limit: size,
 				offset: 0
 			}
-		
+
 			return {
 				next: () => {
 					if (!more) return Promise.resolve([])
@@ -110,7 +110,7 @@ const display = {
 				offset: 0,
 				total: true
 			}
-		
+
 			return {
 				next: () => {
 					if (!more) return Promise.resolve([])
@@ -127,7 +127,7 @@ const display = {
 		chart: () => {
 			let more = true
 			const query = {}
-		
+
 			return {
 				next: () => {
 					if (!more) return Promise.resolve([])
@@ -149,7 +149,7 @@ const display = {
 				offset: 0,
 				total: true
 			}
-		
+
 			return {
 				next: () => {
 					if (!more) return Promise.resolve([])
@@ -171,7 +171,7 @@ const display = {
 				offset: 0,
 				total: true
 			}
-		
+
 			return {
 				next: () => {
 					if (!more) return Promise.resolve([])
@@ -193,7 +193,7 @@ const display = {
 				limit: size,
 				offset: 0
 			}
-		
+
 			return {
 				next: () => {
 					if (!more) return Promise.resolve([])
@@ -210,7 +210,7 @@ const display = {
 		hot: () => {
 			let more = true
 			const query = {}
-		
+
 			return {
 				next: () => {
 					if (!more) return Promise.resolve([])
@@ -222,7 +222,7 @@ const display = {
 					})
 				}
 			}
-		
+
 		},
 		new: (type, size = 35) => {
 			let more = true
@@ -232,7 +232,7 @@ const display = {
 				offset: 0,
 				total: true
 			}
-		
+
 			return {
 				next: () => {
 					if (!more) return Promise.resolve([])
@@ -249,26 +249,40 @@ const display = {
 	}
 }
 
+const mapify = list => list.reduce((output, item) => Object.assign(output, { [item.id]: item }), {})
+
 const track = {
-	artist: id => apiRequest(`v1/artist/${id}`, {})
+	artist:
+		id => apiRequest(`v1/artist/${id}`, {})
 		.then(data => data.hotSongs).then(data => data.map(extractor.song)),
-	album: id => apiRequest(`v1/album/${id}`, {})
+	album:
+		id => apiRequest(`v1/album/${id}`, {})
 		.then(data => data.songs).then(data => data.map(extractor.song)),
-	playlist: id => apiRequest('v3/playlist/detail', { id: id, n: 0 })
+	playlist:
+		id => apiRequest('v3/playlist/detail', { id: id, n: 0 })
 		.then(data => {
-			data.playlist.tracks.forEach((song, index) => {
-				if (data.privileges.length > index) song.privilege = data.privileges[index]
+			const trackIds = (data.playlist || {}).trackIds || []
+			return Promise.all(
+				Array.from(Array(Math.ceil(trackIds.length / 1000)).keys())
+				.map(index => trackIds.slice(index * 1000).slice(0, 1000).map(({ id }) => ({ id })))
+				.map(part => apiRequest('v3/song/detail', { c: JSON.stringify(part) }))
+			)
+			.then(result => {
+				const songMap = mapify(Array.prototype.concat.apply([], result.map(({ songs }) => songs)))
+				const privilegeMap = mapify(Array.prototype.concat.apply([], result.map(({ privileges }) => privileges)))
+				return trackIds.map(({ id }) => Object.assign({ privilege: privilegeMap[id] }, songMap[id]))
 			})
-			return data.playlist.tracks
-		}).then(data => data.map(extractor.song)),
-	url: id => apiRequest('song/enhance/player/url', { ids: [id], br: 320000 })
+		})
+		.then(data => data.map(extractor.song)),
+	url:
+		id => apiRequest('song/enhance/player/url', { ids: [id], br: 320000 })
 		.then(data => data.data[0].url ? data.data[0] : Promise.reject())
 }
 
 const random = space => crypto.randomBytes(1)[0] % space
 const apiRequest = (path, data) => {
 	data.header = { os: 'pc' }
-	const query = netease.encrypt.eapi(`https://music.163.com/api/${path}`, data || {})
+	const query = netease.encrypt.weapi(`https://music.163.com/api/${path}`, data || {})
 
 	return fetch(query.url, {
 		method: 'POST',
