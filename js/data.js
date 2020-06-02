@@ -33,8 +33,8 @@ const extractor = {
 		number: song.no,
 		duration: song.dt / 1000,
 		cover: song.al.picUrl || netease.decode(song.al.pic_str),
-		album: {id: song.al.id, name: song.al.name},
-		artists: song.ar.map(artist => ({id: artist.id, name: artist.name})),
+		album: { id: song.al.id, name: song.al.name },
+		artists: song.ar.map(({ id, name }) => ({ id, name })),
 	})
 }
 
@@ -270,7 +270,9 @@ const track = {
 			.then(result => {
 				const songMap = mapify(Array.prototype.concat.apply([], result.map(({ songs }) => songs)))
 				const privilegeMap = mapify(Array.prototype.concat.apply([], result.map(({ privileges }) => privileges)))
-				return trackIds.map(({ id }) => Object.assign({ privilege: privilegeMap[id] }, songMap[id]))
+				return trackIds
+				.map(({ id }) => songMap[id] ? Object.assign({ privilege: privilegeMap[id] }, songMap[id]) : null)
+				.filter(song => song)
 			})
 		})
 		.then(data => data.map(extractor.song)),
